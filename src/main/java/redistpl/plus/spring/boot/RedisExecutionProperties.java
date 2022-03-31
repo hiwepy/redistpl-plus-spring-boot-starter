@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
 
-@ConfigurationProperties(prefix = "spring.redis.execution")
+@ConfigurationProperties(prefix = "spring.redis.executor")
 public class RedisExecutionProperties {
 
     /**
