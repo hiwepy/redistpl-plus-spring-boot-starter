@@ -31,7 +31,7 @@ public enum RedisKey {
 
     /**
      * 1、获取全名称key
-     * @return
+     * @return 无参数组合后的redis缓存key
      */
     public String getKey() {
         return this.function.apply(null);
@@ -39,8 +39,8 @@ public enum RedisKey {
 
     /**
      * 1、获取全名称key
-     * @param key
-     * @return
+     * @param key 缓存key的部分值
+     * @return key参数组合后的redis缓存key
      */
     public String getKey(Object key) {
         return this.function.apply(key);

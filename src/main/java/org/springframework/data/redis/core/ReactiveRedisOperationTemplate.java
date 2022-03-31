@@ -173,23 +173,23 @@ public class ReactiveRedisOperationTemplate {
 
 	// =============================Keys============================
 
-	/**
+	/*
 	 * 指定缓存失效时间
 	 *
 	 * @param key     键
 	 * @param seconds 时间(秒)
-	 * @return
+	 * @return 缓存过期设置结果
 	 */
 	public Mono<Boolean> expire(String key, long seconds) {
 		return this.expire(key, Duration.ofSeconds(seconds));
 	}
 
-	/**
+	/*
 	 * 指定缓存失效时间
 	 *
 	 * @param key     键
 	 * @param duration 时间
-	 * @return
+	 * @return 缓存过期设置结果
 	 */
 	public Mono<Boolean> expire(String key, Duration duration) {
 		if (Objects.isNull(duration)) {
@@ -202,6 +202,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+	/*
+	 * 指定缓存失效时间
+	 *
+	 * @param key     键
+	 * @param expireAt 时间
+	 * @return 缓存过期设置结果
+	 */
 	public Mono<Boolean> expireAt(String key, Instant expireAt) {
 		if (Objects.isNull(expireAt)) {
 			return Mono.just(Boolean.FALSE);
@@ -213,7 +220,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 根据key 获取过期时间
 	 * @param key 键 不能为null
 	 * @return 时间(秒) 返回0代表为永久有效
@@ -226,7 +233,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 判断key是否存在
 	 *
 	 * @param key 键
@@ -272,7 +279,7 @@ public class ReactiveRedisOperationTemplate {
 	// ============================String=============================
 
 
-	/**
+	/*
 	 * 普通缓存放入
 	 *
 	 * @param key   键
@@ -287,12 +294,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 普通缓存放入并设置时间
 	 *
 	 * @param key   键
 	 * @param value 值
-	 * @param seconds  时间(秒) time要>=0 如果time小于等于0 将设置无限期
+	 * @param seconds  时间(秒) time要&gt;=0 如果time小于等于0 将设置无限期
 	 * @return true成功 false 失败
 	 */
 	public Mono<Boolean> set(String key, Object value, long seconds) {
@@ -307,7 +314,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 普通缓存放入并设置时间
 	 *
 	 * @param key   键
@@ -335,7 +342,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 1、仅可用于低并发功能，高并发严禁使用此方法
 	 *
 	 * @param key     并发锁
@@ -351,7 +358,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 1、仅可用于低并发功能，高并发严禁使用此方法
 	 *
 	 * @param key     并发锁
@@ -367,7 +374,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 普通缓存获取
 	 * @param key 键
 	 * @return 值
@@ -400,7 +407,7 @@ public class ReactiveRedisOperationTemplate {
 		return getFor(key, member -> clazz.cast(member));
 	}
 
-	/**
+	/*
 	 * 根据key获取值，并按Function函数进行转换
 	 *
 	 * @param key    键
@@ -412,7 +419,7 @@ public class ReactiveRedisOperationTemplate {
 		return obj.map(mapper);
 	}
 
-	/**
+	/*
 	 * 根据key表达式获取缓存
 	 * @param pattern 键表达式
 	 * @return 值
@@ -454,7 +461,7 @@ public class ReactiveRedisOperationTemplate {
 		return this.mGet(keys).map(members -> members.stream().map(mapper).collect(Collectors.toList()));
 	}
 
-	/**
+	/*
 	 * 批量获取缓存值
 	 * @param keys 键集合
 	 * @return 值
@@ -482,12 +489,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递增
 	 *
 	 * @param key   键
-	 * @param delta 要增加几(>=0)
-	 * @return
+	 * @param delta 要增加几(&gt;=0)
+	 * @return 增加指定数值后的结果
 	 */
 	public Mono<Long> incr(String key, long delta) {
 		if (delta < 0) {
@@ -500,13 +507,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递增
 	 *
 	 * @param key   键
-	 * @param delta 要增加几(>=0)
+	 * @param delta 要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 增加指定数值后的结果
 	 */
 	public Mono<Long> incr(String key, long delta, long seconds) {
 		if (delta < 0) {
@@ -540,12 +547,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递增
 	 *
 	 * @param key   键
-	 * @param delta 要增加几(>=0)
-	 * @return
+	 * @param delta 要增加几(&gt;=0)
+	 * @return 增加指定数值后的结果
 	 */
 	public Mono<Double> incr(String key, double delta) {
 		if (delta < 0) {
@@ -558,13 +565,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递增
 	 *
 	 * @param key   键
-	 * @param delta 要增加几(>=0)
+	 * @param delta 要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 增加指定数值后的结果
 	 */
 	public Mono<Double> incr(String key, double delta, long seconds) {
 		if (delta < 0) {
@@ -598,12 +605,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递减
 	 *
 	 * @param key   键
-	 * @param delta 要减少几(>=0)
-	 * @return
+	 * @param delta 要减少几(&gt;=0)
+	 * @return 减少指定数值后的结果
 	 */
 	public Mono<Long> decr(String key, long delta) {
 		if (delta < 0) {
@@ -616,13 +623,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递减
 	 *
 	 * @param key   键
-	 * @param delta 要减少几(>=0)
+	 * @param delta 要减少几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 减少指定数值后的结果
 	 */
 	public Mono<Long> decr(String key, long delta, long seconds) {
 		if (delta < 0) {
@@ -656,12 +663,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递减
 	 *
 	 * @param key   键
-	 * @param delta 要减少几(>=0)
-	 * @return
+	 * @param delta 要减少几(&gt;=0)
+	 * @return 减少指定数值后的结果
 	 */
 	public Mono<Double> decr(String key, double delta) {
 		if (delta < 0) {
@@ -674,13 +681,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 递减
 	 *
 	 * @param key   键
-	 * @param delta 要减少几(>=0)
+	 * @param delta 要减少几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 减少指定数值后的结果
 	 */
 	public Mono<Double> decr(String key, double delta, long seconds) {
 		if (delta < 0) {
@@ -715,9 +722,10 @@ public class ReactiveRedisOperationTemplate {
 	}
 
 
-	/**
+	/*
 	 * 删除缓存
 	 * @param keys 可以传一个值 或多个
+	 * @return 成功删除key的数量
 	 */
 	public Mono<Long> del(String... keys) {
 		try {
@@ -736,13 +744,13 @@ public class ReactiveRedisOperationTemplate {
 
 	// ===============================List=================================
 
-	/**
+	/*
 	 * 获取list缓存的内容
 	 *
 	 * @param key   键
 	 * @param start 开始
 	 * @param end   结束 0 到 -1代表所有值
-	 * @return
+	 * @return Flux 集合
 	 */
 	public Flux<Object> lRange(String key, long start, long end) {
 		try {
@@ -768,36 +776,36 @@ public class ReactiveRedisOperationTemplate {
 		return lRangeFor(key, start, end, TO_INTEGER);
 	}
 
-	/**
+	/*
 	 * 获取list缓存的内容
 	 *
 	 * @param key   键
 	 * @param start 开始
 	 * @param end   结束 0 到 -1代表所有值
-	 * @return
+	 * @return Flux 对象
 	 */
 	public <T> Flux<T> lRangeFor(String key, long start, long end, Class<T> clazz) {
 		return lRangeFor(key, start, end, member -> clazz.cast(member));
 	}
 
-	/**
+	/*
 	 * @param key    :
 	 * @param start  :
 	 * @param end    :0 到-1表示查全部
 	 * @param mapper 对象转换函数
-	 * @return {@link Set< Long>}
+	 * @return Flux 对象
 	 */
 	public <T> Flux<T> lRangeFor(String key, long start, long end, Function<Object, T> mapper) {
 		Flux<T> members = this.lRange(key, start, end).map(mapper);
 		return members;
 	}
 
-	/**
+	/*
 	 * 通过索引 获取list中的值
 	 *
 	 * @param key   键
-	 * @param index 索引 index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
-	 * @return
+	 * @param index 索引 index&gt;=0时， 0 表头，1 第二个元素，依次类推；index&lt;0时，-1，表尾，-2倒数第二个元素，依次类推
+	 * @return Mono 对象
 	 */
 	public Mono<Object> lIndex(String key, long index) {
 		try {
@@ -977,7 +985,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 从list左侧取count个元素并移除已经取出的元素
 	 *
 	 * @param key
@@ -1022,7 +1030,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 将对象放入缓存
 	 *
 	 * @param key   键
@@ -1033,7 +1041,7 @@ public class ReactiveRedisOperationTemplate {
 		return this.lRightPush(key, value, 0);
 	}
 
-	/**
+	/*
 	 * 将对象放入缓存
 	 *
 	 * @param key     键
@@ -1107,7 +1115,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 将对象放入缓存
 	 *
 	 * @param key   键
@@ -1118,7 +1126,7 @@ public class ReactiveRedisOperationTemplate {
 		return this.lRightPushx(key, value, 0);
 	}
 
-	/**
+	/*
 	 * 将对象放入缓存
 	 *
 	 * @param key     键
@@ -1215,7 +1223,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 从list右侧取count个元素并移除已经去除的元素
 	 *	1、Redis Ltrim 对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除。
 	 *  2、下标 0 表示列表的第一个元素，以 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
@@ -1253,7 +1261,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 根据索引修改list中的某条数据
 	 *
 	 * @param key   键
@@ -1269,7 +1277,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取list缓存的长度
 	 *
 	 * @param key 键
@@ -1283,7 +1291,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 移除N个值为value
 	 *
 	 * @param key   键
@@ -1299,7 +1307,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * List删除: ltrim
 	 *
 	 * @param key
@@ -1318,7 +1326,7 @@ public class ReactiveRedisOperationTemplate {
 	// ================================Hash=================================
 
 
-	/**
+	/*
 	 * hash递减
 	 *
 	 * @param key     键
@@ -1337,12 +1345,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递减
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要减少记(>=0)
+	 * @param delta   要减少记(&gt;=0)
 	 * @return
 	 */
 	public Mono<Long> hDecr(String key, String hashKey, long delta) {
@@ -1356,12 +1364,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递减
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要减少记(>=0)
+	 * @param delta   要减少记(&gt;=0)
 	 * @return
 	 */
 	public Mono<Double> hDecr(String key, String hashKey, double delta) {
@@ -1375,7 +1383,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 删除hash表中的值
 	 *
 	 * @param key      键 不能为null
@@ -1390,7 +1398,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * Hash删除: hscan + hdel
 	 *
 	 * @param bigHashKey
@@ -1407,7 +1415,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取hashKey对应的指定键值
 	 *
 	 * @param key     键
@@ -1522,7 +1530,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 判断hash表中是否有该项的值
 	 *
 	 * @param key     键 不能为null
@@ -1537,7 +1545,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取hashKey对应的所有键值
 	 *
 	 * @param key 键
@@ -1654,7 +1662,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * HashSet
 	 *
 	 * @param key 键
@@ -1669,7 +1677,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * HashSet 并设置时间
 	 *
 	 * @param key     键
@@ -1713,7 +1721,7 @@ public class ReactiveRedisOperationTemplate {
 			.doOnEach(consumer);
 	}
 
-	/**
+	/*
 	 * 向一张hash表中放入数据,如果不存在将创建
 	 *
 	 * @param key     键
@@ -1729,7 +1737,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 向一张hash表中放入数据,如果不存在将创建
 	 *
 	 * @param key     键
@@ -1772,7 +1780,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash的大小
 	 *
 	 * @param key
@@ -1786,12 +1794,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递增 如果不存在,就会创建一个 并把新增后的值返回
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @return
 	 */
 	public Mono<Long> hIncr(String key, String hashKey, int delta) {
@@ -1805,12 +1813,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递增 如果不存在,就会创建一个 并把新增后的值返回
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
 	 * @return
 	 */
@@ -1846,12 +1854,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递增 如果不存在,就会创建一个 并把新增后的值返回
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @return
 	 */
 	public Mono<Long> hIncr(String key, String hashKey, long delta) {
@@ -1865,12 +1873,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递增 如果不存在,就会创建一个 并把新增后的值返回
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
 	 * @return
 	 */
@@ -1906,12 +1914,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * hash递增 如果不存在,就会创建一个 并把新增后的值返回
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @return
 	 */
 	public Mono<Double> hIncr(String key, String hashKey, double delta) {
@@ -1967,7 +1975,7 @@ public class ReactiveRedisOperationTemplate {
 
 	// ============================Set=============================
 
-	/**
+	/*
 	 * 将数据放入set缓存
 	 *
 	 * @param key    键
@@ -2008,7 +2016,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * Set删除: sscan + srem
 	 *
 	 * @param bigSetKey 键
@@ -2026,7 +2034,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 根据key获取Set中的所有值
 	 *
 	 * @param key 键
@@ -2056,7 +2064,7 @@ public class ReactiveRedisOperationTemplate {
 		return sGetFor(key, TO_INTEGER);
 	}
 
-	/**
+	/*
 	 * 根据key获取Set中的所有值
 	 *
 	 * @param key   键
@@ -2067,7 +2075,7 @@ public class ReactiveRedisOperationTemplate {
 		return sGetFor(key, member -> clazz.cast(member));
 	}
 
-	/**
+	/*
 	 * 根据key获取Set中的所有值，并按Function函数进行转换
 	 *
 	 * @param key    键
@@ -2079,7 +2087,7 @@ public class ReactiveRedisOperationTemplate {
 		return members.map(mapper);
 	}
 
-	/**
+	/*
 	 * 获取两个key的不同value
 	 *
 	 * @param key      键
@@ -2094,7 +2102,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取两个key的不同数据，存储到destKey中
 	 *
 	 * @param key      键
@@ -2110,7 +2118,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取key和keys的不同数据，存储到destKey中
 	 *
 	 * @param key     键
@@ -2126,7 +2134,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取多个keys的不同数据，存储到destKey中
 	 *
 	 * @param keys    键集合
@@ -2141,7 +2149,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 根据value从一个set中查询,是否存在
 	 *
 	 * @param key   键
@@ -2204,7 +2212,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 随机获取指定数量的元素,同一个元素可能会选中两次
 	 *
 	 * @param key
@@ -2219,7 +2227,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 随机获取指定数量的元素,去重(同一个元素只能选择一次)
 	 *
 	 * @param key
@@ -2234,7 +2242,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 移除值为value的
 	 *
 	 * @param key    键
@@ -2265,7 +2273,7 @@ public class ReactiveRedisOperationTemplate {
 		});
 	}
 
-	/**
+	/*
 	 * 将set数据放入缓存
 	 *
 	 * @param key     键
@@ -2286,7 +2294,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取set缓存的长度
 	 *
 	 * @param key 键
@@ -2316,7 +2324,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 合并所有指定keys的数据
 	 *
 	 * @param keys 键集合
@@ -2346,7 +2354,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 合并所有指定keys的数据，存储到destKey中
 	 *
 	 * @param keys    键集合
@@ -2395,7 +2403,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 通过分数返回有序集合指定区间内的成员个数
 	 *
 	 * @param key
@@ -2409,7 +2417,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * Set删除: sscan + srem
 	 *
 	 * @param bigZsetKey 键
@@ -2493,7 +2501,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 移除zset中的元素
 	 *
 	 * @param key
@@ -2507,7 +2515,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 移除分数区间内的元素
 	 *
 	 * @param key
@@ -2549,7 +2557,7 @@ public class ReactiveRedisOperationTemplate {
 		return zRangeFor(key, range, member -> clazz.cast(member));
 	}
 
-	/**
+	/*
 	 * @param key   :
 	 * @param range
 	 * @param mapper 对象转换函数
@@ -2601,7 +2609,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 在min到max范围内倒序获取zset及对应的score
 	 */
 	public Flux<TypedTuple<Object>> zRangeByScoreWithScores(String key, Range<Double> range) {
@@ -2628,7 +2636,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * @param key   :
 	 * @param range :0 到-1表示查全部
 	 * @return {@link Set< Object>}
@@ -2666,7 +2674,7 @@ public class ReactiveRedisOperationTemplate {
 		return members.map(mapper);
 	}
 
-	/**
+	/*
 	 * 获取指定key的scores正序，指定start-end位置的元素
 	 *
 	 * @param key
@@ -2681,7 +2689,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 获取指定key的scores正序，指定start-end位置的元素
 	 *
 	 * @param key
@@ -2721,7 +2729,7 @@ public class ReactiveRedisOperationTemplate {
 		return members.map(mapper);
 	}
 
-	/**
+	/*
 	 * 获取指定key的scores正序，指定start-end位置的元素
 	 *
 	 * @param key
@@ -2851,7 +2859,7 @@ public class ReactiveRedisOperationTemplate {
 
 	// ===============================Message=================================
 
-	/**
+	/*
 	 * 发送消息
 	 *
 	 * @param channel
@@ -2876,7 +2884,7 @@ public class ReactiveRedisOperationTemplate {
 
 	// ===============================Lock=================================
 
-	/**
+	/*
 	 * 1、对指定key来进行加锁逻辑（此锁是分布式阻塞锁）
 	 * https://www.jianshu.com/p/6dbc44defd94
 	 * @param lockKey  锁 key
@@ -2904,7 +2912,7 @@ public class ReactiveRedisOperationTemplate {
 		}
     }
 
-	/**
+	/*
 	 * 2、删除指定key来进行完成解锁逻辑
 	 * @param lockKey  锁key
 	 * @param requestId  锁值
@@ -2923,7 +2931,7 @@ public class ReactiveRedisOperationTemplate {
 		return tryLock( lockKey, timeout.toMillis());
 	}
 
-	/**
+	/*
 	 * 1、对指定key来进行加锁逻辑（此锁是全局性的）
 	 * @param lockKey  锁key
 	 * @return
@@ -2959,7 +2967,7 @@ public class ReactiveRedisOperationTemplate {
         return Mono.just(false);
     }
 
-	/**
+	/*
 	 * 2、删除指定key来进行完成解锁逻辑
 	 * @param lockKey  锁key
 	 * @return
@@ -2977,7 +2985,7 @@ public class ReactiveRedisOperationTemplate {
     	return tryLock(lockKey, requestId, timeout.toMillis(), retryTimes, retryInterval);
     }
 
-    /**
+    /*
 	 * 1、lua脚本加锁
 	 * @param lockKey       锁的 key
 	 * @param requestId     锁的 value
@@ -3021,7 +3029,7 @@ public class ReactiveRedisOperationTemplate {
        	return Mono.just(false);
 	}
 
-	/**
+	/*
 	 * 2、lua脚本释放KEY
 	 * @param lockKey 释放本请求对应的锁的key
 	 * @param requestId   释放本请求对应的锁的value
@@ -3051,7 +3059,7 @@ public class ReactiveRedisOperationTemplate {
 
 	// ===============================RedisScript=================================
 
-	/**
+	/*
      * 库存增加
      * @param key   库存key
 	 * @param delta 增加数量
@@ -3069,7 +3077,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存增加
      * @param key   库存key
 	 * @param delta 增加数量
@@ -3088,7 +3096,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存扣减
 	 * @param key   库存key
 	 * @param delta 扣减数量
@@ -3108,7 +3116,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存扣减
 	 * @param key   库存key
 	 * @param delta 扣减数量
@@ -3129,7 +3137,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存增加
      * @param key   库存key
 	 * @param hashKey Hash键
@@ -3155,7 +3163,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存增加
      * @param key   库存key
 	 * @param hashKey Hash键
@@ -3182,7 +3190,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存扣减
 	 * @param key   库存key
 	 * @param hashKey Hash键
@@ -3209,7 +3217,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
      * 库存扣减
 	 * @param key   库存key
 	 * @param hashKey Hash键
@@ -3238,7 +3246,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 执行lua脚本
 	 *
 	 * @param luaScript  脚本内容
@@ -3256,7 +3264,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 执行lua脚本
 	 *
 	 * @param luaScript 脚本内容
@@ -3272,7 +3280,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	/**
+	/*
 	 * 执行lua脚本
 	 *
 	 * @param luaScript  脚本内容
@@ -3292,7 +3300,7 @@ public class ReactiveRedisOperationTemplate {
 
 	// ===============================RedisCommand=================================
 
-	/**
+	/*
 	 * 获取redis服务器时间 保证集群环境下时间一致
 	 * @return
 	 */
@@ -3302,7 +3310,7 @@ public class ReactiveRedisOperationTemplate {
 		});
 	}
 
-	/**
+	/*
 	 * 获取redis服务器时间 保证集群环境下时间一致
 	 * @return Redis服务器时间戳
 	 */

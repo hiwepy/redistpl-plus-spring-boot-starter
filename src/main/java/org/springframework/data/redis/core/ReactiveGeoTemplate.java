@@ -84,6 +84,7 @@ public class ReactiveGeoTemplate {
 
 	/**
 	 * 2、计算指定模式下两个坐标点的距离（单位：米）
+	 * @param ellipsoid	：计算坐标的模式
 	 * @param longitude1	：坐标1经度
 	 * @param latitude1		：坐标1维度
 	 * @param longitude2	：坐标2经度

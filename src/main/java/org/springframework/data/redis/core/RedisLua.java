@@ -3,8 +3,7 @@ package org.springframework.data.redis.core;
 
 
 /**
- *
- *https://www.233tw.com/lua/7033
+ * https://www.233tw.com/lua/7033
  */
 public class RedisLua {
 
@@ -13,8 +12,7 @@ public class RedisLua {
 	public static final String UNLOCK_LUA_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return -1 end";
 
     /**
-     * 库存增加
-     * @return
+     * 库存增加，返回
      *      -4:代表库存传进来的值是负数（非法值）
      *      -3:库存未初始化
      *      大于等于0:剩余库存（新增之后剩余的库存）
@@ -40,8 +38,7 @@ public class RedisLua {
 	   + "return -3;";
 
     /**
-     * 库存扣减
-     * @return
+     * 库存扣减，返回
      *      -4:代表库存传进来的值是负数（非法值）
      *      -3:库存未初始化
      *      -2:库存不足

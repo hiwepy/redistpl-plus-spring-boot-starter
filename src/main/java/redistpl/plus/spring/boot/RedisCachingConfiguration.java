@@ -67,12 +67,6 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		return jackson2JsonRedisSerializer;
 	}
 
-	/**
-	 * redisTemplate 序列化使用的jdkSerializeable, 存储二进制字节码, 所以自定义序列化类
-	 *
-	 * @param redisConnectionFactory
-	 * @return
-	 */
 	@Bean(name = "redisTemplate")
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory,
 			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) throws UnknownHostException {
@@ -113,14 +107,6 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		return new GeoTemplate(redisTemplate);
 	}
 
-	/**
-	 * redis消息监听器容器 可以添加多个监听不同话题的redis监听器，只需要把消息监听器和相应的消息订阅处理器绑定，该消息监听器
-	 * 通过反射技术调用消息订阅处理器的相关方法进行一些业务处理
-	 *
-	 * @param connectionFactory
-	 * @param messageListenerProvider
-	 * @return
-	 */
 	@Bean
 	public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
 																	   ObjectProvider<MessageListenerAdapter> messageListenerProvider,

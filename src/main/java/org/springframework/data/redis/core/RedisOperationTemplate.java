@@ -216,7 +216,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param seconds 时间(秒)
-	 * @return
+	 * @return 过期是否设置成功
 	 */
 	public Boolean expire(String key, long seconds) {
 		try {
@@ -232,7 +232,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param timeout 时间
-	 * @return
+	 * @return 过期是否设置成功
 	 */
 	public Boolean expire(String key, Duration timeout) {
 		try {
@@ -243,6 +243,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 指定缓存失效时间
+	 *
+	 * @param key    键
+	 * @param date 	 时间
+	 * @return 过期是否设置成功
+	 */
 	public Boolean expireAt(String key, Date date) {
 		try {
 			return getOperations().expireAt(key, date);
@@ -271,6 +278,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 返回 key 的剩余的过期时间
 	 *
 	 * @param key 键 不能为null
+	 * @param unit 缓存过期时间单位
 	 * @return 时间(秒) 返回0代表为永久有效
 	 */
 	public Long getExpire(String key, TimeUnit unit) {
@@ -299,8 +307,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 移除 key 的过期时间，key 将持久保持
 	 *
-	 * @param key
-	 * @return
+	 * @param key 缓存key
+	 * @return 持久化结果
 	 */
 	public Boolean persist(String key) {
 		return redisTemplate.persist(key);
@@ -309,7 +317,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 从当前数据库中随机返回一个 key
 	 *
-	 * @return
+	 * @return 随机key
 	 */
 	public String randomKey() {
 		return redisTemplate.randomKey();
@@ -318,8 +326,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 修改 key 的名称
 	 *
-	 * @param oldKey
-	 * @param newKey
+	 * @param oldKey 旧缓存key
+	 * @param newKey 新缓存key
 	 */
 	public void rename(String oldKey, String newKey) {
 		redisTemplate.rename(oldKey, newKey);
@@ -328,9 +336,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 仅当 newkey 不存在时，将 oldKey 改名为 newkey
 	 *
-	 * @param oldKey
-	 * @param newKey
-	 * @return
+	 * @param oldKey 旧缓存key
+	 * @param newKey 新缓存key
+	 * @return 是否修改成功
 	 */
 	public Boolean renameIfAbsent(String oldKey, String newKey) {
 		return redisTemplate.renameIfAbsent(oldKey, newKey);
@@ -339,8 +347,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回 key 所储存的值的类型
 	 *
-	 * @param key
-	 * @return
+	 * @param key 缓存key
+	 * @return 缓存类型
 	 */
 	public DataType type(String key) {
 		return redisTemplate.type(key);
@@ -368,8 +376,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始
 	 *
-	 * @param key
-	 * @param value
+	 * @param key 缓存key
+	 * @param value 缓存值
 	 * @param offset 从指定位置开始覆写
 	 */
 	public void setRange(String key, Object value, long offset) {
@@ -379,9 +387,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 普通缓存放入并设置时间
 	 *
-	 * @param key     键
-	 * @param value   值
-	 * @param seconds 时间(秒) time要>=0 如果time小于等于0 将设置无限期
+	 * @param key     缓存key
+	 * @param value   缓存值
+	 * @param seconds 时间(秒) time要&gt;=0 如果time小于等于0 将设置无限期
 	 * @return true成功 false 失败
 	 */
 	public boolean set(String key, Object value, long seconds) {
@@ -401,8 +409,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 普通缓存放入并设置时间
 	 *
-	 * @param key     键
-	 * @param value   值
+	 * @param key     缓存key
+	 * @param value   缓存值
 	 * @param timeout 时间
 	 * @return true成功 false 失败
 	 */
@@ -434,7 +442,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     并发锁
 	 * @param value   锁key（务必能区别不同线程的请求）
 	 * @param milliseconds 锁过期时间（单位：毫秒）
-	 * @return
+	 * @return 是否设置成功
 	 */
 	public boolean setNx(String key, Object value, long milliseconds) {
 		try {
@@ -452,7 +460,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param value   锁key（务必能区别不同线程的请求）
 	 * @param timeout 锁过期时间
 	 * @param unit    锁过期时间单位
-	 * @return
+	 * @return 是否设置成功
 	 */
 	public boolean setNx(String key, Object value, long timeout, TimeUnit unit) {
 		try {
@@ -469,7 +477,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     并发锁
 	 * @param value   锁key（务必能区别不同线程的请求）
 	 * @param timeout 锁过期时间
-	 * @return
+	 * @return 是否设置成功
 	 */
 	public boolean setNx(String key, Object value, Duration timeout) {
 		try {
@@ -540,6 +548,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key    键
 	 * @param mapper 对象转换函数
+	 * @param <T>   指定的类型
 	 * @return xx
 	 */
 	public <T> T getFor(String key, Function<Object, T> mapper) {
@@ -550,13 +559,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
-	/**
-	 * 返回 key 中字符串值的子字符
-	 * @param key
-	 * @param start
-	 * @param end
-	 * @return
-	 */
 	public String getRange(String key, long start, long end) {
 		try {
 			return redisTemplate.opsForValue().get(key, start, end);
@@ -593,9 +595,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
 	 *
-	 * @param key
-	 * @param value
-	 * @return
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @return 设置前的值
 	 */
 	public Object getAndSet(String key, Object value) {
 		try {
@@ -688,8 +690,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递增
 	 *
 	 * @param key   键
-	 * @param delta 要增加几(>=0)
-	 * @return
+	 * @param delta 要增加几(&gt;=0)
+	 * @return 增加指定数值后的值
 	 */
 	public Long incr(String key, long delta) {
 		if (delta < 0) {
@@ -707,9 +709,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递增
 	 *
 	 * @param key     键
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 增加指定数值后的值
 	 */
 	public Long incr(String key, long delta, long seconds) {
 		if (delta < 0) {
@@ -747,8 +749,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递增
 	 *
 	 * @param key   键
-	 * @param delta 要增加几(>=0)
-	 * @return
+	 * @param delta 要增加几(&gt;=0)
+	 * @return 增加指定数值后的值
 	 */
 	public Double incr(String key, double delta) {
 		if (delta < 0) {
@@ -766,9 +768,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递增
 	 *
 	 * @param key     键
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 增加指定数值后的值
 	 */
 	public Double incr(String key, double delta, long seconds) {
 		if (delta < 0) {
@@ -806,8 +808,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递减
 	 *
 	 * @param key   键
-	 * @param delta 要减少几(>=0)
-	 * @return
+	 * @param delta 要减少几(&gt;=0)
+	 * @return 减少指定数值后的值
 	 */
 	public Long decr(String key, long delta) {
 		if (delta < 0) {
@@ -825,9 +827,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递减
 	 *
 	 * @param key     键
-	 * @param delta   要减少几(>=0)
+	 * @param delta   要减少几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 减少指定数值后的值
 	 */
 	public Long decr(String key, long delta, long seconds) {
 		if (delta < 0) {
@@ -865,8 +867,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递减
 	 *
 	 * @param key   键
-	 * @param delta 要减少几(>=0)
-	 * @return
+	 * @param delta 要减少几(&gt;=0)
+	 * @return 减少指定数值后的值
 	 */
 	public Double decr(String key, double delta) {
 		if (delta < 0) {
@@ -884,9 +886,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 递减
 	 *
 	 * @param key     键
-	 * @param delta   要减少几(>=0)
+	 * @param delta   要减少几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 减少指定数值后的值
 	 */
 	public Double decr(String key, double delta, long seconds) {
 		if (delta < 0) {
@@ -958,6 +960,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param pattern  表达式
 	 * @param count 数量限制
+	 * @return 扫描结果
 	 */
 	public Set<String> scan(String pattern, long count) {
 		ScanOptions options = ScanOptions.scanOptions().count(count).match(pattern).build();
@@ -984,17 +987,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		});
 	}
 
-	/**
-	 * 追加到末尾
-	 *
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Integer append(String key, String value) {
-		return redisTemplate.opsForValue().append(key, value);
-	}
-
 	// ===============================List=================================
 
 	/**
@@ -1003,7 +995,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key   键
 	 * @param start 开始
 	 * @param end   结束 0 到 -1代表所有值
-	 * @return
+	 * @return list 集合
 	 */
 	public List<Object> lRange(String key, long start, long end) {
 		try {
@@ -1031,23 +1023,27 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
-	 * 获取list缓存的内容
+	 * 获取指定类型的list缓存
 	 *
 	 * @param key   键
-	 * @param start 开始
-	 * @param end   结束 0 到 -1代表所有值
-	 * @return
+	 * @param start 开始下标
+	 * @param end   结束下标, 0 到 -1代表所有值
+	 * @param clazz 指定的类型
+	 * @param <T>   指定的类型
+	 * @return 类型转换后端集合
 	 */
 	public <T> List<T> lRangeFor(String key, long start, long end, Class<T> clazz) {
 		return lRangeFor(key, start, end, member -> clazz.cast(member));
 	}
 
 	/**
-	 * @param key    :
-	 * @param start  :
-	 * @param end    :0 到-1表示查全部
+	 * 获取list缓存的，并指定转换器
+	 * @param key   键
+	 * @param start 开始下标
+	 * @param end   结束下标, 0 到 -1代表所有值
 	 * @param mapper 对象转换函数
-	 * @return {@link Set< Long>}
+	 * @param <T>   指定的类型
+	 * @return 类型转换后端集合
 	 */
 	public <T> List<T> lRangeFor(String key, long start, long end, Function<Object, T> mapper) {
 		List<Object> members = this.lRange(key, start, end);
@@ -1061,8 +1057,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 通过索引 获取list中的值
 	 *
 	 * @param key   键
-	 * @param index 索引 index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
-	 * @return
+	 * @param index 索引 index&gt;=0时， 0 表头，1 第二个元素，依次类推；index&lt;0时，-1，表尾，-2倒数第二个元素，依次类推
+	 * @return 所以所在位置元素
 	 */
 	public Object lIndex(String key, long index) {
 		try {
@@ -1071,6 +1067,50 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
 		}
+	}
+
+	public String lIndexString(String key, long index) {
+		return lIndexFor(key, index, TO_STRING);
+	}
+
+	public String glIndexString(String key, long index, String defaultVal) {
+		String rtVal = lIndexString(key, index);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	public Double lIndexDouble(String key, long index) {
+		return lIndexFor(key, index, TO_DOUBLE);
+	}
+
+	public Double lIndexDouble(String key, long index, double defaultVal) {
+		Double rtVal = lIndexDouble(key, index);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	public Long lIndexLong(String key, long index) {
+		return lIndexFor(key, index, TO_LONG);
+	}
+
+	public Long lIndexLong(String key, long index, long defaultVal) {
+		Long rtVal = lIndexLong(key, index);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	public Integer lIndexInteger(String key, long index) {
+		return lIndexFor(key, index, TO_INTEGER);
+	}
+
+	public Integer lIndexInteger(String key, long index, int defaultVal) {
+		Integer rtVal = lIndexInteger(key, index);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	public <T> T lIndexFor(String key, long index, Function<Object, T> mapper) {
+		Object member = lIndex(key, index);
+		if (Objects.nonNull(member)) {
+			return mapper.apply(member);
+		}
+		return null;
 	}
 
 	public <V> Long lLeftPushDistinct(String key, V value) {
@@ -1267,9 +1307,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 从list左侧取count个元素并移除已经去除的元素
 	 *
-	 * @param key
-	 * @param count
-	 * @return
+	 * @param key 缓存key
+	 * @param count 去除元素的个数
+	 * @return 被移除元素列表
 	 */
 	public List<Object> lLeftPop(String key, Integer count) {
 		try {
@@ -1318,7 +1358,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key   键
 	 * @param value 值
-	 * @return
+	 * @param <V>   值的类型
+	 * @return 成功添加的个数
 	 */
 	public <V> Long lRightPush(String key, V value) {
 		return this.lRightPush(key, value, 0);
@@ -1330,7 +1371,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param value   值
 	 * @param seconds 时间(秒)
-	 * @return
+	 * @param <V>   值的类型
+	 * @return 成功添加的个数
 	 */
 	public <V> Long lRightPush(String key, V value, long seconds) {
 		if (value instanceof Collection) {
@@ -1404,7 +1446,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key   键
 	 * @param value 值
-	 * @return
+	 * @param <V>   值的类型
+	 * @return 成功添加的个数
 	 */
 	public <V> Long lRightPushx(String key, V value) {
 		return this.lRightPushx(key, value, 0);
@@ -1416,7 +1459,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param value   值
 	 * @param seconds 时间(秒)
-	 * @return
+	 * @param <V>   值的类型
+	 * @return 成功添加的个数
 	 */
 	public <V> Long lRightPushx(String key, V value, long seconds) {
 		if (value instanceof Collection) {
@@ -1521,9 +1565,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 从list右侧取count个元素并移除已经去除的元素
 	 *	1、Redis Ltrim 对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除。
 	 *  2、下标 0 表示列表的第一个元素，以 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
-	 * @param key
-	 * @param count
-	 * @return
+	 * @param key 缓存key
+	 * @param count 移除元素个数
+	 * @return 右侧移除的元素集合
 	 */
 	public List<Object> lRightPop(String key, Integer count) {
 		try {
@@ -1573,7 +1617,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key   键
 	 * @param index 索引
 	 * @param value 值
-	 * @return
+	 * @return 元素是否设置成功
 	 */
 	public boolean lSet(String key, long index, Object value) {
 		try {
@@ -1589,7 +1633,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 获取list缓存的长度
 	 *
 	 * @param key 键
-	 * @return
+	 * @return list集合的元素个数
 	 */
 	public long lSize(String key) {
 		try {
@@ -1635,7 +1679,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param hashKey 项
 	 * @param delta   要减少记(小于0)
-	 * @return
+	 * @return 减少指定数值后的结果
 	 */
 	public Long hDecr(String key, String hashKey, int delta) {
 		if (delta < 0) {
@@ -1654,8 +1698,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要减少记(>=0)
-	 * @return
+	 * @param delta   要减少记(&gt;=0)
+	 * @return 减少指定数值后的结果
 	 */
 	public Long hDecr(String key, String hashKey, long delta) {
 		if (delta < 0) {
@@ -1674,8 +1718,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要减少记(>=0)
-	 * @return
+	 * @param delta   要减少记(&gt;=0)
+	 * @return 减少指定数值后的结果
 	 */
 	public Double hDecr(String key, String hashKey, double delta) {
 		if (delta < 0) {
@@ -1707,7 +1751,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * Hash删除: hscan + hdel
 	 *
-	 * @param bigHashKey
+	 * @param bigHashKey hash key
 	 */
 	public void hDel(String bigHashKey) {
 		try {
@@ -2176,8 +2220,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 获取所有哈希表中的字段
 	 *
-	 * @param key
-	 * @return
+	 * @param key 缓存key
+	 * @return  哈希缓存的所有key
 	 */
 	public Set<Object> hKeys(String key) {
 		try {
@@ -2191,8 +2235,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * hash的大小
 	 *
-	 * @param key
-	 * @return
+	 * @param key 缓存key
+	 * @return  hash的大小
 	 */
 	public Long hSize(String key) {
 		try {
@@ -2206,8 +2250,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 获取哈希表中所有值
 	 *
-	 * @param key
-	 * @return
+	 * @param key 缓存key
+	 * @return 哈希表中所有值
 	 */
 	public List<Object> hValues(String key) {
 		try {
@@ -2223,8 +2267,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
-	 * @return
+	 * @param delta   要增加几(&gt;=0)
+	 * @return 增加指定数值后的结果
 	 */
 	public Long hIncr(String key, String hashKey, int delta) {
 		if (delta < 0) {
@@ -2243,9 +2287,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 增加指定数值后的结果
 	 */
 	public Long hIncr(String key, String hashKey, int delta, long seconds) {
 		if (delta < 0) {
@@ -2284,8 +2328,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
-	 * @return
+	 * @param delta   要增加几(&gt;=0)
+	 * @return 增加指定数值后的新数值
 	 */
 	public Long hIncr(String key, String hashKey, long delta) {
 		if (delta < 0) {
@@ -2304,9 +2348,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
+	 * @param delta   要增加几(&gt;=0)
 	 * @param seconds 过期时长（秒）
-	 * @return
+	 * @return 增加指定数值后的新数值
 	 */
 	public Long hIncr(String key, String hashKey, long delta, long seconds) {
 		if (delta < 0) {
@@ -2324,6 +2368,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * hash递增 如果不存在,就会创建一个 并把新增后的值返回
+	 *
+	 * @param key     键
+	 * @param hashKey 项
+	 * @param delta   要增加几(&gt;=0)
+	 * @param timeout 过期时长（秒）
+	 * @return 增加指定数值后的新数值
+	 */
 	public Long hIncr(String key, String hashKey, long delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
@@ -2345,8 +2398,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param delta   要增加几(>=0)
-	 * @return
+	 * @param delta   要增加几(&gt;=0)
+	 * @return 增加指定数值后的新数值
 	 */
 	public Double hIncr(String key, String hashKey, double delta) {
 		if (delta < 0) {
@@ -2440,8 +2493,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * Set删除: sscan + srem
 	 *
 	 * @param bigSetKey 键
-	 * @return
-	 * @return
+	 * @return 批量删除结果
 	 */
 	public Boolean sDel(String bigSetKey) {
 		try {
@@ -2459,7 +2511,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 根据key获取Set中的所有值
 	 *
 	 * @param key 键
-	 * @return
+	 * @return Set 集合的所有元素
 	 */
 	public Set<Object> sGet(String key) {
 		try {
@@ -2637,9 +2689,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 随机获取指定数量的元素,同一个元素可能会选中两次
 	 *
-	 * @param key
-	 * @param count
-	 * @return
+	 * @param key 缓存key
+	 * @param count 随机获取元素数量
+	 * @return 随机获取的元素集合
 	 */
 	public List<String> sRandomString(String key, long count) {
 		return sRandomFor(key, count, TO_STRING);
@@ -2681,9 +2733,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 随机获取指定数量的元素,去重(同一个元素只能选择一次)
 	 *
-	 * @param key
-	 * @param count
-	 * @return
+	 * @param key 缓存key
+	 * @param count 随机获取元素数量
+	 * @return 随机获取的元素集合（不重复）
 	 */
 	public Set<String> sRandomDistinctString(String key, long count) {
 		return sRandomDistinctFor(key, count, TO_STRING);
@@ -2786,7 +2838,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 获取set缓存的长度
 	 *
 	 * @param key 键
-	 * @return
+	 * @return set缓存的长度
 	 */
 	public Long sSize(String key) {
 		try {
@@ -2954,13 +3006,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	/**
-	 * 通过分数返回有序集合指定区间内的成员个数
-	 *
-	 * @param key
-	 * @param min
-	 * @param max
-	 */
 	public Long zCount(String key, double min, double max) {
 		try {
 			return getOperations().opsForZSet().count(key, min, max);
@@ -2974,7 +3019,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * Set删除: sscan + srem
 	 *
 	 * @param bigZsetKey 键
-	 * @return
+	 * @return 是否删除成功
 	 */
 	public Boolean zDel(String bigZsetKey) {
 		try {
@@ -3099,8 +3144,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 移除zset中的元素
 	 *
-	 * @param key
-	 * @param values
+	 * @param key 缓存key
+	 * @param values 要移除的value数组
+	 * @return 移除的元素个数
 	 */
 	public Long zRem(String key, Object... values) {
 		try {
@@ -3114,9 +3160,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 移除分数区间内的元素
 	 *
-	 * @param key
-	 * @param min
-	 * @param max
+	 * @param key redis key
+	 * @param min 最小score
+	 * @param max 最大score
+	 * @return 移除的元素个数
 	 */
 	public Long zRemByScore(String key, double min, double max) {
 		try {
@@ -3147,13 +3194,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return zRangeFor(key, start, end, member -> clazz.cast(member));
 	}
 
-	/**
-	 * @param key   :
-	 * @param start :
-	 * @param end   :0 到-1表示查全部
-	 * @param mapper 对象转换函数
-	 * @return {@link Set<T>}
-	 */
 	public <T> Set<T> zRangeFor(String key, long  start, long end, Function<Object, T> mapper) {
 		Set<Object> members = this.zRange(key, start, end);
 		if(Objects.nonNull(members)) {
@@ -3219,9 +3259,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	/**
-	 * 在min到max范围内倒序获取zset及对应的score
-	 */
 	public Set<TypedTuple<Object>> zRangeByScoreWithScores(String key, double min, double max) {
 		try {
 			return getOperations().opsForZSet().rangeByScoreWithScores(key, min, max);
@@ -3249,12 +3286,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	/**
-	 * @param key   :
-	 * @param start :
-	 * @param end   :0 到-1表示查全部
-	 * @return {@link Set< Object>}
-	 */
 	public Set<Object> zRevrange(String key, long start, long end) {
 		try {
 			return getOperations().opsForZSet().reverseRange(key, start, end);
@@ -3292,14 +3323,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
-	/**
-	 * 获取指定key的scores正序，指定start-end位置的元素
-	 *
-	 * @param key
-	 * @param start
-	 * @param end
-	 * @return
-	 */
 	public Set<TypedTuple<Object>> zRevrangeWithScores(String key, long start, long end) {
 		try {
 			return getOperations().opsForZSet().reverseRangeWithScores(key, start, end);
@@ -3309,14 +3332,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	/**
-	 * 获取指定key的scores正序，指定start-end位置的元素
-	 *
-	 * @param key
-	 * @param min
-	 * @param max
-	 * @return
-	 */
 	public Set<Object> zRevrangeByScore(String key, double min, double max) {
 		try {
 			return getOperations().opsForZSet().reverseRangeByScore(key, min, max);
@@ -3354,14 +3369,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
-	/**
-	 * 获取指定key的scores正序，指定start-end位置的元素
-	 *
-	 * @param key
-	 * @param min
-	 * @param max
-	 * @return
-	 */
 	public Set<TypedTuple<Object>> zRevrangeByScoreWithScores(String key, double min, double max) {
 		try {
 			return getOperations().opsForZSet().reverseRangeByScoreWithScores(key, min, max);
@@ -3496,10 +3503,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 设置ASCII码, 字符串'a'的ASCII码是97, 转为二进制是'01100001', 此方法是将二进制第offset位值变为value
 	 *
-	 * @param key
-	 * @param value
-	 *            值,true为1, false为0
-	 * @return
+	 * @param key 缓存key
+	 * @param offset 偏移量
+	 * @param value 值,true为1, false为0
+	 * @return 是否设置成功
 	 */
 	public Boolean setBit(String key, long offset, boolean value) {
 		try {
@@ -3513,13 +3520,29 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 对 key 所储存的字符串值，获取指定偏移量上的位(bit)
 	 *
-	 * @param key
-	 * @param offset
-	 * @return
+	 * @param key 缓存key
+	 * @param offset 偏移量
+	 * @return 是否有值
 	 */
 	public Boolean getBit(String key, long offset) {
 		try {
 			return getOperations().opsForValue().getBit(key, offset);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 追加到末尾
+	 *
+	 * @param key  缓存key
+	 * @param value 字符串
+	 * @return 追加结果
+	 */
+	public Integer append(String key, String value) {
+		try {
+			return getOperations().opsForValue().append(key, value);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -3531,8 +3554,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 发送消息
 	 *
-	 * @param channel
-	 * @param message
+	 * @param channel 消息channel
+	 * @param message 消息内容
 	 */
 	public void sendMessage(String channel, String message) {
 		try {
@@ -3601,7 +3624,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 1、对指定key来进行加锁逻辑（此锁是全局性的）
 	 * @param lockKey  锁key
-	 * @return
+	 * @param expireMillis 锁有效期
+	 * @return 是否加锁成功
 	 */
 	public boolean tryLock(String lockKey, long expireMillis) {
         try {
@@ -3637,7 +3661,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 2、删除指定key来进行完成解锁逻辑
 	 * @param lockKey  锁key
-	 * @return
+	 * @return 是否解锁成功
 	 */
     public boolean unlock(String lockKey) {
     	try {
@@ -3919,10 +3943,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 执行lua脚本
 	 *
 	 * @param luaScript  脚本内容
+	 * @param returnType 返回值类型
 	 * @param keys       redis键列表
 	 * @param values     值列表
-	 * @param returnType 返回值类型
-	 * @return
+	 * @param <R> 返回类型
+	 * @return lua脚步执行结果
 	 */
 	public <R> R executeLuaScript(String luaScript, Class<R> returnType, List<String> keys, Object... values) {
 		try {
@@ -3940,7 +3965,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param luaScript 脚本内容
 	 * @param keys      redis键列表
 	 * @param values    值列表
-	 * @return
+	 * @param <R> 返回类型
+	 * @return lua脚步执行结果
 	 */
 	public <R> R executeLuaScript(RedisScript<R> luaScript, List<String> keys, Object... values) {
 		try {
@@ -3955,10 +3981,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 执行lua脚本
 	 *
 	 * @param luaScript  脚本内容
+	 * @param returnType 返回值类型
 	 * @param keys       redis键列表
 	 * @param values     值列表
-	 * @param returnType 返回值类型
-	 * @return
+	 * @param <R> 返回类型
+	 * @return lua脚步执行结果
 	 */
 	public <R> R executeLuaScript(Resource luaScript, Class<R> returnType, List<String> keys, Object... values) {
 		try {
@@ -3989,6 +4016,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取redis服务器时间 保证集群环境下时间一致
+	 * @param expiration 过期时间搓
 	 * @return Redis服务器时间戳
 	 */
 	public Long period(long expiration) {

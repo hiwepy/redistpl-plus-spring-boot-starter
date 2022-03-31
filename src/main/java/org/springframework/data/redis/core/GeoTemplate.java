@@ -87,6 +87,7 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
 
 	/**
 	 * 2、计算指定模式下两个坐标点的距离（单位：米）
+	 * @param ellipsoid		：坐标计算模式
 	 * @param longitude1	：坐标1经度
 	 * @param latitude1		：坐标1维度
 	 * @param longitude2	：坐标2经度
@@ -134,9 +135,11 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
  	}
 
     /**
+	 * 添加用户坐标
      * @param member 用户id
      * @param longitude  用户最新位置经度
      * @param latitude  用户最新位置纬度
+	 * @return 添加成功的元素个数
      */
     public Long geoAdd(String member, double longitude, double latitude) {
     	// 例：89 118.803805,32.060168
