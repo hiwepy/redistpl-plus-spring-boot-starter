@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.data.redis.RedisCachingConfiguration,\
+org.springframework.data.redis.RedisReactiveCachingConfiguration
