@@ -1,4 +1,4 @@
-package org.springframework.data.redis;
+package redistpl.plus.spring.boot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

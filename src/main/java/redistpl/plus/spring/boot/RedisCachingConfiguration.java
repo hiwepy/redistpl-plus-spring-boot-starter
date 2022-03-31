@@ -1,4 +1,4 @@
-package org.springframework.data.redis;
+package redistpl.plus.spring.boot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
