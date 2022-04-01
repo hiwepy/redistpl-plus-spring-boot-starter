@@ -63,6 +63,26 @@ public class RedisLua {
 	    + "end;"
 	    + "return -3;";
 
+	/**
+	 * 库存除以，返回
+	 *      -3:代表传进来的被除数值是非正数（非法值）
+	 *      -2:库存未初始化
+	 *      -1:库存不足
+	 *      大于等于0: 除法运算后的结果
+	 */
+	public static final String DIV_SCRIPT =
+		"if (redis.call('EXISTS', KEYS[1]) == 1) then"
+		+ "    local total = tonumber(redis.call('GET', KEYS[1]));"
+		+ "    local divided = tonumber(ARGV[1]);"
+		+ "    if (divided <= 0) then"
+		+ "        return -3;"
+		+ "    end;"
+		+ "    if (total <= 0) then"
+		+ "        return -1;"
+		+ "    end;"
+		+ "    return tonumber(total/divided);"
+		+ "end;"
+		+ "return -2;";
 
     public static final String DECR_BYFLOAT_SCRIPT =
     	  "if (redis.call('EXISTS', KEYS[1]) == 1) then"
@@ -107,6 +127,27 @@ public class RedisLua {
 	    + "    return -2;"
 	    + "end;"
 	    + "return -3;";
+
+	/**
+	 * 库存除以，返回
+	 *      -3:代表传进来的被除数值是非正数（非法值）
+	 *      -2:库存未初始化
+	 *      -1:库存不足
+	 *      大于等于0: 除法运算后的结果
+	 */
+	public static final String HDIV_SCRIPT =
+			"if (redis.call('HEXISTS', KEYS[1], KEYS[2]) == 1) then"
+					+ "    local total = tonumber(redis.call('HGET', KEYS[1], KEYS[2]));"
+					+ "    local divided = tonumber(ARGV[1]);"
+					+ "    if (divided <= 0) then"
+					+ "        return -3;"
+					+ "    end;"
+					+ "    if (total <= 0) then"
+					+ "        return -1;"
+					+ "    end;"
+					+ "    return tonumber(total/divided);"
+					+ "end;"
+					+ "return -2;";
 
     public static final String HINCR_BYFLOAT_SCRIPT =
   		  "if (redis.call('HEXISTS', KEYS[1], KEYS[2]) == 1) then"

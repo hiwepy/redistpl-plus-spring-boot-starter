@@ -46,12 +46,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
     public static final RedisScript<Long> INCR_SCRIPT = RedisScript.of(RedisLua.INCR_SCRIPT, Long.class);
     public static final RedisScript<Long> DECR_SCRIPT = RedisScript.of(RedisLua.DECR_SCRIPT, Long.class);
+	public static final RedisScript<Long> DIV_SCRIPT = RedisScript.of(RedisLua.DIV_SCRIPT, Long.class);
 
     public static final RedisScript<Double> INCR_BYFLOAT_SCRIPT = RedisScript.of(RedisLua.INCR_BYFLOAT_SCRIPT, Double.class);
     public static final RedisScript<Double> DECR_BYFLOAT_SCRIPT = RedisScript.of(RedisLua.DECR_BYFLOAT_SCRIPT, Double.class);
 
     public static final RedisScript<Long> HINCR_SCRIPT = RedisScript.of(RedisLua.HINCR_SCRIPT, Long.class);
     public static final RedisScript<Long> HDECR_SCRIPT = RedisScript.of(RedisLua.HDECR_SCRIPT, Long.class);
+	public static final RedisScript<Long> HDIV_SCRIPT = RedisScript.of(RedisLua.HDIV_SCRIPT, Long.class);
 
     public static final RedisScript<Double> HINCR_BYFLOAT_SCRIPT = RedisScript.of(RedisLua.HINCR_BYFLOAT_SCRIPT, Double.class);
     public static final RedisScript<Double> HDECR_BYFLOAT_SCRIPT = RedisScript.of(RedisLua.HDECR_BYFLOAT_SCRIPT, Double.class);
@@ -3830,6 +3832,26 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
+	 * 库存除以指定数值
+	 * @param key   库存key
+	 * @param delta 被除数
+	 * @return
+	 *      -3:代表传进来的被除数值是非正数（非法值）
+	 *      -2:库存未初始化
+	 *      -1:库存不足
+	 *      大于等于0: 除法运算后的结果
+	 */
+	public Long luaDiv(String key, long delta) {
+		Assert.hasLength(key, "key must not be empty");
+		try {
+			return this.executeLuaScript(DIV_SCRIPT, Lists.newArrayList(key), delta);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	/**
      * 库存扣减
 	 * @param key   库存key
 	 * @param delta 扣减数量
@@ -3932,6 +3954,28 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		Assert.hasLength(key, "key must not be empty");
 		try {
 			return getOperations().execute(HDECR_BYFLOAT_SCRIPT, this.hashValueSerializer(),
+					this.hashValueSerializer(), Lists.newArrayList(key, hashKey), delta);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 库存除以指定值
+	 * @param key   库存key
+	 * @param hashKey Hash键
+	 * @param delta 被除数
+	 * @return
+	 *      -3:代表传进来的被除数值是非正数（非法值）
+	 *      -2:库存未初始化
+	 *      -1:库存不足
+	 *      大于等于0: 除法运算后的结果
+	 */
+	public Long luaHdiv(String key, String hashKey, long delta) {
+		Assert.hasLength(key, "key must not be empty");
+		try {
+			return getOperations().execute(HDIV_SCRIPT, this.hashValueSerializer(),
 					this.hashValueSerializer(), Lists.newArrayList(key, hashKey), delta);
 		} catch (Exception e) {
 			log.error(e.getMessage());
