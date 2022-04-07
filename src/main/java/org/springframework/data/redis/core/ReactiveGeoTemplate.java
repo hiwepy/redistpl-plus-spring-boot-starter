@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public class ReactiveGeoTemplate {
 
-	private final static String USER_GEO_KEY = RedisKey.USER_GEO_LOCATION.getKey();
+	private final static String USER_GEO_KEY = RedisKey.GEO_LOCATION_KEY.getKey();
 	private ReactiveRedisTemplate<Object, Object> reactiveRedisTemplate;
 
 	public ReactiveGeoTemplate() {
