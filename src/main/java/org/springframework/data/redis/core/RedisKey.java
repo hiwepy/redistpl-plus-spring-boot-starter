@@ -11,8 +11,32 @@ public enum RedisKey {
 	/**
 	 * 用户坐标缓存
 	 */
-	USER_GEO_LOCATION("用户坐标", (userId)->{
-		return getKeyStr(RedisKeyConstant.USER_GEO_LOCATION_KEY);
+    GEO_LOCATION_KEY("用户坐标", (userId)->{
+		return getKeyStr(RedisKeyConstant.GEO_LOCATION_KEY);
+    }),
+    /**
+     * IP地区编码缓存
+     */
+    IP_REGION_INFO("用户坐标对应的地区编码缓存", (ip)->{
+        return getKeyStr(RedisKeyConstant.IP_REGION_KEY, ip);
+    }),
+    /**
+     * IP坐标缓存
+     */
+    IP_LOCATION_INFO("用户坐标对应的地理位置缓存", (ip)->{
+        return getKeyStr(RedisKeyConstant.IP_LOCATION_KEY, ip);
+    }),
+    /**
+     * IP坐标缓存（百度服务缓存）
+     */
+    IP_LOCATION_BAIDU_INFO("IP坐标缓存（百度服务缓存）", (ip)->{
+        return getKeyStr(RedisKeyConstant.IP_BAIDU_LOCATION_KEY, ip);
+    }),
+    /**
+     * IP坐标缓存（太平洋网络）
+     */
+    IP_LOCATION_PCONLINE_INFO("IP坐标缓存（太平洋网络）", (ip)->{
+        return getKeyStr(RedisKeyConstant.IP_PCONLINE_LOCATION_KEY, ip);
     })
 
 	;

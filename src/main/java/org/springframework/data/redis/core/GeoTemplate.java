@@ -27,7 +27,7 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
 
 	public GeoTemplate(RedisTemplate<String, Object> redisTemplate) {
 		super(redisTemplate);
-		this.boundGeoOperations = redisTemplate.boundGeoOps(RedisKey.USER_GEO_LOCATION.getKey());
+		this.boundGeoOperations = redisTemplate.boundGeoOps(RedisKey.GEO_LOCATION_KEY.getKey());
 	}
 
 	/**
