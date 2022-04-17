@@ -1,9 +1,14 @@
 package redistpl.plus.spring.boot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -31,7 +36,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -42,7 +46,6 @@ import java.util.stream.Collectors;
  * https://www.cnblogs.com/liuyp-ken/p/10538658.html
  * https://www.cnblogs.com/aoeiuv/p/6760798.html
  */
-
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisOperations.class)
 @EnableCaching(proxyTargetClass = true)
@@ -50,28 +53,33 @@ import java.util.stream.Collectors;
 public class RedisCachingConfiguration extends CachingConfigurerSupport {
 
 	@Bean
-	public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer() {
+	public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer(ObjectProvider<ObjectMapper> objectMapperProvider) {
+
 		// 使用Jackson2JsonRedisSerialize 替换默认序列化
-		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(
-				Object.class);
+		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		// 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
-		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-		// 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
-		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		ObjectMapper objectMapper = objectMapperProvider.getIfAvailable(() -> {
+			return JsonMapper.builder()
+					// 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
+					.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL)
+					.enable(MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS)
+					.enable(MapperFeature.USE_GETTERS_AS_SETTERS)
+					.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+					.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+					// 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
+					.visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
+					.serializationInclusion(JsonInclude.Include.NON_NULL)
+					.build();
+		});
 		jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-
-
 		return jackson2JsonRedisSerializer;
 	}
 
 	@Bean(name = "redisTemplate")
-	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory,
-			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) throws UnknownHostException {
+	public RedisTemplate<String, Object> redisTemplate(ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider,
+			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-		redisTemplate.setConnectionFactory(redisConnectionFactory);
+		redisTemplate.setConnectionFactory(redisConnectionFactoryProvider.getIfAvailable());
 
 		// 设置value的序列化规则和 key的序列化规则
 
@@ -89,9 +97,9 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 	}
 
 	@Bean
-	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+	public StringRedisTemplate stringRedisTemplate(ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider) {
 		StringRedisTemplate redisTemplate = new StringRedisTemplate();
-		redisTemplate.setConnectionFactory(redisConnectionFactory);
+		redisTemplate.setConnectionFactory(redisConnectionFactoryProvider.getIfAvailable());
 		redisTemplate.setEnableTransactionSupport(true);
 		return redisTemplate;
 	}
@@ -108,11 +116,11 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 	}
 
 	@Bean
-	public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
+	public RedisMessageListenerContainer redisMessageListenerContainer(ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider,
 																	   ObjectProvider<MessageListenerAdapter> messageListenerProvider,
 																	   RedisExecutionProperties redisExecutionProperties) {
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
+		container.setConnectionFactory(redisConnectionFactoryProvider.getIfAvailable());
 		// 订阅多个频道
 		List<MessageListenerAdapter> messageListenerAdapters = messageListenerProvider.orderedStream().collect(Collectors.toList());
 		if (!CollectionUtils.isEmpty(messageListenerAdapters)) {
