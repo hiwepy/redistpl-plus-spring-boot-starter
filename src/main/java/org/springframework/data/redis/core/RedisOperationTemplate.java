@@ -140,7 +140,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return deserializeValues(rawValues);
 	}
 
-	public Set<TypedTuple<Object>> getDeserializeTupleValues(Collection<Tuple> rawValues) {
+	public Set<TypedTuple<Object>> getDeserializeTupleValues(Set<Tuple> rawValues) {
+		return deserializeTupleValues(rawValues);
+	}
+
+	public List<TypedTuple<Object>> getDeserializeTupleValues(List<Tuple> rawValues) {
 		return deserializeTupleValues(rawValues);
 	}
 
@@ -3075,13 +3079,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		try {
 			byte[] rawKey = rawKey(key);
 			byte[] rawValue = rawValue(value);
-			return this.execute(connection -> {
+			return template.execute(redisConnection -> {
 				// 1、增加score之前查询指定区域的元素对象
-				Set<TypedTuple<Object>> zset1 = deserializeTupleValues(connection.zRevRangeWithScores(rawKey, start, end));
+				Set<TypedTuple<Object>> zset1 = deserializeTupleValues(redisConnection.zRevRangeWithScores(rawKey, start, end));
 				// 2、增加score
-				connection.zIncrBy(rawKey, delta, rawValue);
+				redisConnection.zIncrBy(rawKey, delta, rawValue);
 				// 3、增加score之后查询指定区域的元素对象
-				Set<TypedTuple<Object>> zset2 = deserializeTupleValues(connection.zRevRangeWithScores(rawKey, start, end));
+				Set<TypedTuple<Object>> zset2 = deserializeTupleValues(redisConnection.zRevRangeWithScores(rawKey, start, end));
 				// 4、如果同一key两次取值有一个为空，表示元素发生了新增或移除，那两个元素一定有变化了
 				if(CollectionUtils.isEmpty(zset1) && !CollectionUtils.isEmpty(zset2) || !CollectionUtils.isEmpty(zset1) && CollectionUtils.isEmpty(zset2)) {
 					return Boolean.TRUE;
