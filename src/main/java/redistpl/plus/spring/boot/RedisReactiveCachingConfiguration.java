@@ -25,7 +25,7 @@ public class RedisReactiveCachingConfiguration {
 			ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
 			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) {
 
-		SerializationPair<String> keySerializationPair = SerializationPair.fromSerializer(new RedisSerializer<String>(){
+		SerializationPair<String> stringSerializationPair = SerializationPair.fromSerializer(new RedisSerializer<String>(){
 
 			@Override
 			public byte[] serialize(String t) throws SerializationException {
@@ -41,11 +41,12 @@ public class RedisReactiveCachingConfiguration {
 		RedisSerializationContext<String, Object> serializationContext = RedisSerializationContext
 				.<String, Object>newSerializationContext()
 				 // 设置value的序列化规则和 key的序列化规则
-				.key(keySerializationPair)
+				.key(stringSerializationPair)
 				.value(jackson2JsonRedisSerializer)
 				 // 设置hash key 和 hash value序列化模式
-				.hashKey(keySerializationPair)
-				.hashValue(jackson2JsonRedisSerializer)
+				.hashKey(stringSerializationPair)
+				// 这个地方不可使用 json 序列化，如果使用的是ObjectRecord传输对象时，可能会有问题，会出现一个 java.lang.IllegalArgumentException: Value must not be null! 错误
+				.hashValue(RedisSerializer.string())
 				.build();
 
 		return new ReactiveRedisTemplate<String, Object>(reactiveRedisConnectionFactory, serializationContext);

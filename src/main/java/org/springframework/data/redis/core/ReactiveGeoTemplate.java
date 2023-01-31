@@ -7,12 +7,14 @@ import org.gavaghan.geodesy.GlobalCoordinates;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.Point;
+import org.springframework.data.redis.annotation.RedisStreamConsumer;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Function;
 
+@RedisStreamConsumer(streamKey = "", groupName = "", hostName = "", value = "")
 public class ReactiveGeoTemplate {
 
 	private final static String USER_GEO_KEY = RedisKey.GEO_LOCATION_KEY.getKey();

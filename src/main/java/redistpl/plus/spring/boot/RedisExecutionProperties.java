@@ -3,6 +3,10 @@ package redistpl.plus.spring.boot;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @ConfigurationProperties(prefix = "spring.redis.executor")
 public class RedisExecutionProperties {
@@ -10,19 +14,40 @@ public class RedisExecutionProperties {
     /**
      * listener pool configuration.
      */
-    private final Pool listener = new Pool();
+    private Pool listener = new Pool();
 
     /**
      * subscription pool configuration.
      */
-    private final Pool subscription = new Pool();
+    private Pool subscription = new Pool();
+
+    /**
+     * stream pool configuration.
+     */
+    private Pool stream = new Pool();
+
+    public void setListener(Pool listener) {
+        this.listener = listener;
+    }
 
     public Pool getListener() {
         return listener;
     }
 
+    public void setSubscription(Pool subscription) {
+        this.subscription = subscription;
+    }
+
     public Pool getSubscription() {
         return subscription;
+    }
+
+    public void setStream(Pool stream) {
+        this.stream = stream;
+    }
+
+    public Pool getStream() {
+        return stream;
     }
 
     /**
@@ -62,6 +87,9 @@ public class RedisExecutionProperties {
 
         private String threadNamePrefix = "redis-execution-";
 
+        private boolean daemon = false;
+
+        private RejectedPolicy rejectedPolicy = RejectedPolicy.AbortPolicy;
 
         public void setCoreSize(int coreSize) {
             this.coreSize = coreSize;
@@ -110,5 +138,56 @@ public class RedisExecutionProperties {
         public String getThreadNamePrefix() {
             return threadNamePrefix;
         }
+
+        public void setDaemon(boolean daemon) {
+            this.daemon = daemon;
+        }
+
+        public boolean isDaemon() {
+            return daemon;
+        }
+
+        public RejectedPolicy getRejectedPolicy() {
+            return rejectedPolicy;
+        }
+
+        public void setRejectedPolicy(RejectedPolicy rejectedPolicy) {
+            this.rejectedPolicy = rejectedPolicy;
+        }
+
+    }
+
+    /**
+     * 拒绝处理策略
+     * CallerRunsPolicy()：交由调用方线程运行，比如 main 线程。
+     * AbortPolicy()：直接抛出异常。
+     * DiscardPolicy()：直接丢弃。
+     * DiscardOldestPolicy()：丢弃队列中最老的任务。
+     */
+    public enum RejectedPolicy {
+
+        AbortPolicy((e) -> {
+            return new ThreadPoolExecutor.AbortPolicy();
+        }),
+        CallerRunsPolicy((e) -> {
+            return new ThreadPoolExecutor.CallerRunsPolicy();
+        }),
+        DiscardPolicy((e) -> {
+            return new ThreadPoolExecutor.DiscardPolicy();
+        }),
+        DiscardOldestPolicy((e) -> {
+            return new ThreadPoolExecutor.DiscardOldestPolicy();
+        });
+
+        private Function<Object, RejectedExecutionHandler> function;
+
+        private RejectedPolicy(Function<Object, RejectedExecutionHandler> function) {
+            this.function = function;
+        }
+
+        public RejectedExecutionHandler getRejectedExecutionHandler(){
+            return this.function.apply(null);
+        }
+
     }
 }

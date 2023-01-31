@@ -19,12 +19,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.annotation.RedisStreamConsumer;
 import org.springframework.data.redis.connection.MessageListenerAdapter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisOperationTemplate;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.connection.stream.*;
+import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.hash.ObjectHashMapper;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -32,14 +32,22 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.annotation.RedisChannelTopic;
 import org.springframework.data.redis.annotation.RedisPatternTopic;
-import org.springframework.data.redis.core.GeoTemplate;
+import org.springframework.data.redis.stream.StreamListenerAdapter;
+import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ErrorHandler;
 import org.springframework.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -91,7 +99,9 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 
 		// 设置hash key 和value序列化模式
 		redisTemplate.setHashKeySerializer(RedisSerializer.string());
-		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+		// 这个地方不可使用 json 序列化，如果使用的是ObjectRecord传输对象时，可能会有问题，会出现一个 java.lang.IllegalArgumentException: Value must not be null! 错误
+		redisTemplate.setHashValueSerializer(RedisSerializer.string());
+
 		redisTemplate.afterPropertiesSet();
 
 		return redisTemplate;
@@ -116,7 +126,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		return new GeoTemplate(redisTemplate);
 	}
 
-	@Bean
+	@Bean(initMethod = "start", destroyMethod = "stop")
 	public RedisMessageListenerContainer redisMessageListenerContainer(ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider,
 																	   ObjectProvider<MessageListenerAdapter> messageListenerProvider,
 																	   RedisExecutionProperties redisExecutionProperties) {
@@ -147,18 +157,93 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		return container;
 	}
 
+	/**
+	 * 可以同时支持 独立消费 和 消费者组 消费
+	 * <p>
+	 * 可以支持动态的 增加和删除 消费者
+	 * <p>
+	 * 消费组需要预先创建出来
+	 *
+	 * @return StreamMessageListenerContainer
+	 */
+	@Bean(initMethod = "start", destroyMethod = "stop")
+	public StreamMessageListenerContainer<String, ObjectRecord<String, Object>> streamMessageListenerContainer(
+			ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
+			ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider,
+			ObjectProvider<StreamListenerAdapter> streamMessageListenerProvider,
+			ObjectProvider<StreamMessageErrorHandler> streamMessageErrorHandlerProvider,
+			RedisExecutionProperties redisExecutionProperties) throws UnknownHostException {
+
+		ThreadPoolTaskExecutor executor = redisThreadPoolTaskExecutor(redisExecutionProperties.getStream());
+
+		StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, ObjectRecord<String, Object>> options =
+				StreamMessageListenerContainer.StreamMessageListenerContainerOptions
+						.builder()
+						// 一次最多获取多少条消息
+						.batchSize(10)
+						// 运行 Stream 的 poll task
+						.executor(executor)
+						// 可以理解为 Stream Key 的序列化方式
+						.keySerializer(RedisSerializer.string())
+						// 可以理解为 Stream 后方的字段的 key 的序列化方式
+						.hashKeySerializer(RedisSerializer.string())
+						// 可以理解为 Stream 后方的字段的 value 的序列化方式
+						.hashValueSerializer(RedisSerializer.string())
+						// Stream 中没有消息时，阻塞多长时间，需要比 `spring.redis.timeout` 的时间小
+						.pollTimeout(Duration.ofSeconds(1))
+						// ObjectRecord 时，将 对象的 filed 和 value 转换成一个 Map 比如：将Book对象转换成map
+						.objectMapper(new ObjectHashMapper())
+						// 获取消息的过程或获取到消息给具体的消息者处理的过程中，发生了异常的处理
+						.errorHandler(new NestedErrorHandler(streamMessageErrorHandlerProvider.orderedStream().collect(Collectors.toList())))
+						// 将发送到Stream中的Record转换成ObjectRecord，转换成具体的类型是这个地方指定的类型
+						.targetType(Object.class)
+						.build();
+
+		StreamMessageListenerContainer<String, ObjectRecord<String, Object>> streamMessageListenerContainer =
+				StreamMessageListenerContainer.create(redisConnectionFactoryProvider.getIfAvailable(), options);
+
+		// 多个消费者
+		List<StreamListenerAdapter> messageListenerAdapters = streamMessageListenerProvider.orderedStream().collect(Collectors.toList());
+		if (!CollectionUtils.isEmpty(messageListenerAdapters)) {
+			for (StreamListenerAdapter messageListener : messageListenerAdapters) {
+				// 查找注解
+				RedisStreamConsumer consumer = AnnotationUtils.findAnnotation(messageListener.getClass(), RedisStreamConsumer.class);
+				if (Objects.nonNull(consumer) && StringUtils.hasText(consumer.value())){
+
+					String streamKey = consumer.streamKey();
+					String groupName = consumer.groupName();
+
+					StreamOffset<String> streamOffset = StreamOffset.create(streamKey, ReadOffset.lastConsumed());
+
+					stringRedisTemplateProvider.getIfAvailable().opsForStream().createGroup(streamKey, groupName);
+
+					if(consumer.autoAck() && StringUtils.hasText(groupName)){
+						String consumerName = StringUtils.hasText(consumer.consumerName()) ? consumer.consumerName() : InetAddress.getLocalHost().getHostName();
+						streamMessageListenerContainer.receiveAutoAck(Consumer.from(groupName, consumerName),
+								streamOffset, messageListener);
+					} else if(!consumer.autoAck() && StringUtils.hasText(groupName)){
+						String consumerName = StringUtils.hasText(consumer.consumerName()) ? consumer.consumerName() : InetAddress.getLocalHost().getHostName();
+						streamMessageListenerContainer.receive(Consumer.from(groupName, consumerName),
+								streamOffset, messageListener);
+					} else {
+						streamMessageListenerContainer.receive(streamOffset, messageListener);
+					}
+				}
+			}
+		}
+		return streamMessageListenerContainer;
+	}
+
+
 	protected ThreadPoolTaskExecutor redisThreadPoolTaskExecutor(RedisExecutionProperties.Pool pool){
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		// 核心线程数
+
+  		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(pool.getCoreSize());
-		// 最大线程数
 		executor.setMaxPoolSize(pool.getMaxSize());
-		// 任务队列的大小
 		executor.setQueueCapacity(pool.getQueueCapacity());
-		// 线程存活时间
 		executor.setKeepAliveSeconds(Long.valueOf(pool.getKeepAlive().getSeconds()).intValue());
-		// 线程前缀名
 		executor.setThreadNamePrefix(pool.getThreadNamePrefix());
+		executor.setDaemon(pool.isDaemon());
 		/**
 		 * 拒绝处理策略
 		 * CallerRunsPolicy()：交由调用方线程运行，比如 main 线程。
@@ -166,7 +251,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		 * DiscardPolicy()：直接丢弃。
 		 * DiscardOldestPolicy()：丢弃队列中最老的任务。
 		 */
-		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+		executor.setRejectedExecutionHandler(pool.getRejectedPolicy().getRejectedExecutionHandler());
 		// 线程初始化
 		executor.initialize();
 		return executor;
