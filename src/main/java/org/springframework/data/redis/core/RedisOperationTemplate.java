@@ -9,6 +9,7 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
 import org.springframework.data.redis.connection.RedisZSetCommands.*;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -3459,6 +3460,67 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public Long zUnionAndStore(String key, Collection<String> keys, String destKey, Aggregate aggregate, Weights weights) {
 		try {
 			return getOperations().opsForZSet().unionAndStore(key, keys, destKey, aggregate, weights);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	// ===============================Stream=================================
+
+	public RecordId xAdd(String key, Map<String,Object> message){
+		try {
+			RecordId add = redisTemplate.opsForStream().add(key, message);
+			return add;	//返回增加后的id
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public Long xTrim(String key, long count){
+		try {
+			Long ct = redisTemplate.opsForStream().trim(key, count);
+			return ct;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public Long xTrim(String key, long count, boolean approximateTrimming){
+		try {
+			Long ct = redisTemplate.opsForStream().trim(key, count, approximateTrimming);
+			return ct;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public Long xDel(String key, String... recordIds){
+		try {
+			Long ct = redisTemplate.opsForStream().delete(key, recordIds);
+			return ct;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public Long xDel(String key, RecordId... recordIds){
+		try {
+			Long ct = redisTemplate.opsForStream().delete(key, recordIds);
+			return ct;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public String addGroup(String key, String groupName){
+		try {
+			return redisTemplate.opsForStream().createGroup(key, groupName);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
