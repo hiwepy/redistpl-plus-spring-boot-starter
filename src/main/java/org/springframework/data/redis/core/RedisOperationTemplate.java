@@ -9,6 +9,8 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
 import org.springframework.data.redis.connection.RedisZSetCommands.*;
+import org.springframework.data.redis.connection.stream.MapRecord;
+import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -3512,6 +3514,52 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		try {
 			Long ct = redisTemplate.opsForStream().delete(key, recordIds);
 			return ct;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public Long xLen(String key){
+		try {
+			Long ct = redisTemplate.opsForStream().size(key);
+			return ct;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public List<MapRecord<String, Object, Object>> xRange(String key, org.springframework.data.domain.Range<String> range){
+		try {
+			return redisTemplate.opsForStream().range(key, range);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public List<MapRecord<String, Object, Object>> xRange(String key, org.springframework.data.domain.Range<String> range, Limit limit){
+		try {
+			return redisTemplate.opsForStream().range(key, range, limit);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public <V> List<ObjectRecord<String, V>> xRangeFor(Class<V> targetType, String key, org.springframework.data.domain.Range<String> range){
+		try {
+			return redisTemplate.opsForStream().range(targetType, key, range);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public <V> List<ObjectRecord<String, V>> xRangeFor(Class<V> targetType, String key, org.springframework.data.domain.Range<String> range, Limit limit){
+		try {
+			return redisTemplate.opsForStream().range(targetType, key, range, limit);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
