@@ -144,63 +144,63 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public List<TypedTuple<Object>> getDeserializeTupleValues(List<Tuple> rawValues) {
-		return deserializeTupleValues(rawValues);
+		return super.deserializeTupleValues(rawValues);
 	}
 
 	public Set<TypedTuple<Object>> getDeserializeTupleValues(Set<Tuple> rawValues) {
-		return deserializeTupleValues(rawValues);
+		return super.deserializeTupleValues(rawValues);
 	}
 
 	public TypedTuple<Object> getDeserializeTuple(Tuple tuple) {
-		return deserializeTuple(tuple);
+		return super.deserializeTuple(tuple);
 	}
 
 	public Set<Tuple> getRawTupleValues(Set<TypedTuple<Object>> values) {
-		return rawTupleValues(values);
+		return super.rawTupleValues(values);
 	}
 
 	public List<Object> getDeserializeValues(List<byte[]> rawValues) {
-		return deserializeValues(rawValues);
+		return super.deserializeValues(rawValues);
 	}
 
 	public <T> Set<T> getDeserializeHashKeys(Set<byte[]> rawKeys) {
-		return deserializeHashKeys(rawKeys);
+		return super.deserializeHashKeys(rawKeys);
 	}
 
 	public <T> List<T> getDeserializeHashValues(List<byte[]> rawValues) {
-		return deserializeHashValues(rawValues);
+		return super.deserializeHashValues(rawValues);
 	}
 
 	public <HK, HV> Map<HK, HV> getDeserializeHashMap(@Nullable Map<byte[], byte[]> entries) {
-		return deserializeHashMap(entries);
+		return super.deserializeHashMap(entries);
 	}
 
 	public String getDeserializeKey(byte[] value) {
-		return deserializeKey(value);
+		return super.deserializeKey(value);
 	}
 
 	public Set<String> getDeserializeKeys(Set<byte[]> keys) {
-		return deserializeKeys(keys);
+		return super.deserializeKeys(keys);
 	}
 
 	public Object getDeserializeValue(byte[] value) {
-		return deserializeValue(value);
+		return super.deserializeValue(value);
 	}
 
 	public String getDeserializeString(byte[] value) {
-		return deserializeString(value);
+		return super.deserializeString(value);
 	}
 
 	public <HK> HK getDeserializeHashKey(byte[] value) {
-		return deserializeHashKey(value);
+		return super.deserializeHashKey(value);
 	}
 
 	public <HV> HV getDeserializeHashValue(byte[] value) {
-		return deserializeHashValue(value);
+		return super.deserializeHashValue(value);
 	}
 
 	public GeoResults<GeoLocation<Object>> getDeserializeGeoResults(GeoResults<GeoLocation<byte[]>> source) {
-		return deserializeGeoResults(source);
+		return super.deserializeGeoResults(source);
 	}
 
 	// =============================Keys============================
