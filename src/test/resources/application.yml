@@ -21,10 +21,10 @@ spring:
     # 连接超时时间（毫秒）
     timeout: 5000
     # 设置消息监听容器线程池
-    executor:
+    thread-pool:
       subscription:
-        pool:
-          max-idle: 8
+        thread-name-prefix:
+        max-size: 5
       listener:
         pool:
           max-idle: 8
