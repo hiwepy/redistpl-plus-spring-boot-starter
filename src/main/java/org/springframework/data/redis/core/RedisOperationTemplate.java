@@ -3490,16 +3490,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Long xTrim(String key, long count, boolean approximateTrimming){
-		try {
-			Long ct = redisTemplate.opsForStream().trim(key, count, approximateTrimming);
-			return ct;
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			throw new RedisOperationException(e.getMessage());
-		}
-	}
-
 	public Long xDel(String key, String... recordIds){
 		try {
 			Long ct = redisTemplate.opsForStream().delete(key, recordIds);
