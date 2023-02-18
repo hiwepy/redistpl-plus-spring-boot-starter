@@ -14,7 +14,7 @@ Extension of Spring Data Redis
 <dependency>
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>redistpl-plus-spring-boot-starter</artifactId>
-	<version>${project.version}</version>
+	<version>1.0.3.RELEASE</version>
 </dependency>
 ```
 
@@ -44,14 +44,13 @@ spring:
     # 连接超时时间（毫秒）
     timeout: 5000
     # 设置消息监听容器线程池
-    executor:
-      subscription:
-        pool:
-          max-idle: 8
+    thread-pool:
       listener:
-        pool:
-          max-idle: 8
-
+        max-idle: 8
+      subscription:
+        max-idle: 8
+      stream:
+        batch-size: 100
 ```
 
 ##### 3、使用示例
