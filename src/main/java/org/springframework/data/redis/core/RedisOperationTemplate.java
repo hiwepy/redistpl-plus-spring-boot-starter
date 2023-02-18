@@ -143,7 +143,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return deserializeValues(rawValues);
 	}
 
-	public List<TypedTuple<Object>> getDeserializeTupleValues(List<Tuple> rawValues) {
+	public Set<TypedTuple<Object>> getDeserializeTupleValues(Collection<Tuple> rawValues) {
 		return super.deserializeTupleValues(rawValues);
 	}
 
