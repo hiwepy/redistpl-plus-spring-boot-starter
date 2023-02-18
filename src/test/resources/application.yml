@@ -23,8 +23,7 @@ spring:
     # 设置消息监听容器线程池
     thread-pool:
       subscription:
-        thread-name-prefix:
+        thread-name-prefix: RedisAsyncTaskExecutor-
         max-size: 5
       listener:
-        pool:
-          max-idle: 8
+        max-idle: 8
