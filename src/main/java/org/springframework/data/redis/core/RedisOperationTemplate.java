@@ -143,7 +143,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return deserializeValues(rawValues);
 	}
 
-	public List<TypedTuple<Object>> getDeserializeTupleValues(List<Tuple> rawValues) {
+	public Set<TypedTuple<Object>> getDeserializeTupleValues(Collection<Tuple> rawValues) {
 		return super.deserializeTupleValues(rawValues);
 	}
 
@@ -3483,16 +3483,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public Long xTrim(String key, long count){
 		try {
 			Long ct = redisTemplate.opsForStream().trim(key, count);
-			return ct;
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			throw new RedisOperationException(e.getMessage());
-		}
-	}
-
-	public Long xTrim(String key, long count, boolean approximateTrimming){
-		try {
-			Long ct = redisTemplate.opsForStream().trim(key, count, approximateTrimming);
 			return ct;
 		} catch (Exception e) {
 			log.error(e.getMessage());
