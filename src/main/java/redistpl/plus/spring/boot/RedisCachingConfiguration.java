@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -53,6 +55,7 @@ import java.util.stream.Collectors;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisOperations.class)
 @EnableCaching(proxyTargetClass = true)
+@AutoConfigureBefore(CacheAutoConfiguration.class)
 @EnableConfigurationProperties(RedisThreadPoolProperties.class)
 public class RedisCachingConfiguration extends CachingConfigurerSupport {
 

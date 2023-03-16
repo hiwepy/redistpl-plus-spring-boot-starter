@@ -18,11 +18,11 @@ import reactor.core.publisher.Flux;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
 @AutoConfigureAfter({RedisAutoConfiguration.class, RedisCachingConfiguration.class})
+@ConditionalOnBean({ ReactiveRedisConnectionFactory.class })
 @AutoConfigureBefore(RedisReactiveAutoConfiguration.class)
 public class RedisReactiveCachingConfiguration {
 
 	@Bean(name = "reactiveRedisTemplate")
-	@ConditionalOnBean({ ReactiveRedisConnectionFactory.class })
 	public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(
 			ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
 			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) {
@@ -56,6 +56,7 @@ public class RedisReactiveCachingConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnBean({ ReactiveRedisTemplate.class })
 	public ReactiveRedisOperationTemplate reactiveRedisOperationTemplate(ReactiveRedisTemplate<String, Object> reactiveRedisTemplate) {
 		return new ReactiveRedisOperationTemplate(reactiveRedisTemplate);
 	}
