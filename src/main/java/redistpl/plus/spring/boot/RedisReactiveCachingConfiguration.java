@@ -2,6 +2,7 @@ package redistpl.plus.spring.boot;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
@@ -15,12 +16,13 @@ import org.springframework.data.redis.core.ReactiveRedisOperationTemplate;
 import reactor.core.publisher.Flux;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
-@AutoConfigureAfter(RedisAutoConfiguration.class)
+@ConditionalOnClass({ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
+@AutoConfigureAfter({RedisAutoConfiguration.class, RedisCachingConfiguration.class})
 @AutoConfigureBefore(RedisReactiveAutoConfiguration.class)
 public class RedisReactiveCachingConfiguration {
 
 	@Bean(name = "reactiveRedisTemplate")
+	@ConditionalOnBean({ ReactiveRedisConnectionFactory.class })
 	public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(
 			ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
 			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) {
