@@ -103,7 +103,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		// 设置hash key 和value序列化模式
 		redisTemplate.setHashKeySerializer(RedisSerializer.string());
 		// 这个地方不可使用 json 序列化，如果使用的是ObjectRecord传输对象时，可能会有问题，会出现一个 java.lang.IllegalArgumentException: Value must not be null! 错误
-		redisTemplate.setHashValueSerializer(RedisSerializer.string());
+		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
 		redisTemplate.afterPropertiesSet();
 
