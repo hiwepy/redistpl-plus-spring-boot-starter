@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -133,6 +135,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public RedisMessageListenerContainer redisMessageListenerContainer(ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider,
 																	   ObjectProvider<MessageListenerAdapter> messageListenerProvider,
+																	   ObjectProvider<MeterRegistry> registryProvider,
 																	   RedisThreadPoolProperties redisThreadPoolProperties) {
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(redisConnectionFactoryProvider.getIfAvailable());
@@ -155,9 +158,9 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		// 序列化对象（特别注意：发布的时候需要设置序列化；订阅方也需要设置序列化）
 		container.setTopicSerializer(RedisSerializer.string());
 		// 设置接收消息时用于运行消息侦听器的任务执行器
-		container.setTaskExecutor(redisThreadPoolTaskExecutor(redisThreadPoolProperties.getListener()));
+		container.setTaskExecutor(redisThreadPoolTaskExecutor(redisThreadPoolProperties.getListener(), registryProvider.getIfAvailable(), "redis.listener.thread-pool"));
 		// 设置Redis频道订阅的任务执行器
-		container.setSubscriptionExecutor(redisThreadPoolTaskExecutor(redisThreadPoolProperties.getSubscription()));
+		container.setSubscriptionExecutor(redisThreadPoolTaskExecutor(redisThreadPoolProperties.getSubscription(), registryProvider.getIfAvailable(), "redis.subscription.thread-pool"));
 		return container;
 	}
 
@@ -177,10 +180,11 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 			ObjectProvider<RedisConnectionFactory> redisConnectionFactoryProvider,
 			ObjectProvider<StreamListenerAdapter> streamMessageListenerProvider,
 			ObjectProvider<StreamMessageErrorHandler> streamMessageErrorHandlerProvider,
+			ObjectProvider<MeterRegistry> registryProvider,
 			RedisThreadPoolProperties redisThreadPoolProperties) throws UnknownHostException {
 
 		RedisThreadPoolProperties.StreamPool streamPool = redisThreadPoolProperties.getStream();
-		ThreadPoolTaskExecutor executor = redisThreadPoolTaskExecutor(streamPool);
+		ThreadPoolTaskExecutor executor = redisThreadPoolTaskExecutor(streamPool, registryProvider.getIfAvailable(), "redis.stream.thread-pool");
 
 		StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, ObjectRecord<String, Object>> options =
 				StreamMessageListenerContainer.StreamMessageListenerContainerOptions
@@ -246,7 +250,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 	 * @param pool
 	 * @return
 	 */
-	protected ThreadPoolTaskExecutor redisThreadPoolTaskExecutor(RedisThreadPoolProperties.Pool pool){
+	protected ThreadPoolTaskExecutor redisThreadPoolTaskExecutor(RedisThreadPoolProperties.Pool pool, MeterRegistry registry, String metricPrefix){
 
   		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(pool.getCoreSize());
@@ -265,6 +269,13 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		executor.setRejectedExecutionHandler(pool.getRejectedPolicy().getRejectedExecutionHandler());
 		// 线程初始化
 		executor.initialize();
+		/**
+		 * 监控线程池
+		 * 1.线程池的状态
+		 * 2.线程池的队列
+		 * 3.线程池的拒绝策略
+		 */
+		ExecutorServiceMetrics.monitor(registry, executor, pool.getThreadNamePrefix(),  metricPrefix);
 		return executor;
 	}
 
