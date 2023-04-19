@@ -369,6 +369,7 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
+		<micrometer.version>1.10.4</micrometer.version>
 	</properties>
 
 	<dependencyManagement>
@@ -508,7 +509,19 @@
 			<groupId>com.github.hiwepy</groupId>
 			<artifactId>spring-biz</artifactId>
 		</dependency>
-	</dependencies>
+		<!-- For Spring Boot Actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
+	</dependencies>
 
 </project>
