@@ -936,15 +936,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param keys 可以传一个值 或多个
 	 */
-	public void del(String... keys) {
+	public Long del(String... keys) {
 		try {
 			if (keys != null && keys.length > 0) {
 				if (keys.length == 1) {
 					getOperations().delete(keys[0]);
+					return 1L;
 				} else {
-					getOperations().delete(Stream.of(keys).collect(Collectors.toList()));
+					return getOperations().delete(Stream.of(keys).collect(Collectors.toList()));
 				}
 			}
+			return 0L;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
