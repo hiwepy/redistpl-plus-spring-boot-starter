@@ -4153,9 +4153,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public Long timeNow() {
 		try {
-			return getOperations().execute((RedisCallback<Long>) redisConnection -> {
-				return redisConnection.time();
-			});
+			return getOperations().execute((RedisCallback<Long>) redisConnection -> redisConnection.time());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
