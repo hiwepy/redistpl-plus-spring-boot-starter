@@ -3305,9 +3305,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @return
 	 */
 	public Mono<Long> timeNow() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<Long>) redisConnection -> {
-			return redisConnection.serverCommands().time();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection ->  redisConnection.serverCommands().time());
 	}
 
 	/*
@@ -3315,51 +3313,35 @@ public class ReactiveRedisOperationTemplate {
 	 * @return Redis服务器时间戳
 	 */
 	public Mono<Long> period(long expiration) {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<Long>) redisConnection -> {
-			return redisConnection.serverCommands().time().map(time -> expiration - time);
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().time().map(time -> expiration - time));
 	}
 
 	public Mono<Long> dbSize() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<Long>) redisConnection -> {
-			return redisConnection.serverCommands().dbSize();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().dbSize());
 	}
 
 	public Mono<Long> lastSave() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<Long>) redisConnection -> {
-			return redisConnection.serverCommands().lastSave();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().lastSave());
 	}
 
 	public Mono<String> bgReWriteAof() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<String>) redisConnection -> {
-			return redisConnection.serverCommands().bgReWriteAof();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().bgReWriteAof());
 	}
 
 	public Mono<String> bgSave() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<String>) redisConnection -> {
-			return redisConnection.serverCommands().bgSave();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().bgSave());
 	}
 
 	public Mono<String> save() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<String>) redisConnection -> {
-			return redisConnection.serverCommands().save();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().save());
 	}
 
 	public Mono<String> flushDb() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<String>) redisConnection -> {
-			return redisConnection.serverCommands().flushDb();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().flushDb());
 	}
 
 	public Mono<String> flushAll() {
-		return reactiveRedisTemplate.createMono((ReactiveRedisCallback<String>) redisConnection -> {
-			return redisConnection.serverCommands().flushAll();
-		});
+		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().flushAll());
 	}
 
 }
