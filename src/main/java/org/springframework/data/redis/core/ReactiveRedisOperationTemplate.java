@@ -1669,7 +1669,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param map 对应多个键值
 	 * @return true 成功 false 失败
 	 */
-	public Mono<Boolean> hmSet(String key, Map<String, Object> map) {
+	public Mono<Boolean> hmSet(String key, Map<Object, Object> map) {
 		try {
 			return reactiveRedisTemplate.opsForHash().putAll(key, map);
 		} catch (Exception e) {
@@ -1685,7 +1685,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param seconds 时间(秒)
 	 * @return true成功 false失败
 	 */
-	public Mono<Boolean> hmSet(String key, Map<String, Object> map, long seconds) {
+	public Mono<Boolean> hmSet(String key, Map<Object, Object> map, long seconds) {
 		try {
 			return reactiveRedisTemplate.opsForHash().putAll(key, map).doOnSuccess(nvalue -> {
 				if (seconds > 0) {
@@ -1697,7 +1697,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Boolean> hmSet(String key, Map<String, Object> map, Duration timeout) {
+	public Mono<Boolean> hmSet(String key, Map<Object, Object> map, Duration timeout) {
 		try {
 			return reactiveRedisTemplate.opsForHash().putAll(key, map).doOnSuccess(nvalue -> {
 				if (!timeout.isNegative()) {
@@ -1729,7 +1729,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param value   值
 	 * @return true 成功 false失败
 	 */
-	public Mono<Boolean> hSet(String key, String hashKey, Object value) {
+	public Mono<Boolean> hSet(String key, Object hashKey, Object value) {
 		try {
 			return reactiveRedisTemplate.opsForHash().put(key, hashKey, value);
 		} catch (Exception e) {
@@ -1746,7 +1746,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param seconds    时间(秒) 注意:如果已存在的hash表有时间,这里将会替换原有的时间
 	 * @return true 成功 false失败
 	 */
-	public Mono<Boolean> hSet(String key, String hashKey, Object value, long seconds) {
+	public Mono<Boolean> hSet(String key, Object hashKey, Object value, long seconds) {
 		try {
 			Mono<Boolean> rt = reactiveRedisTemplate.opsForHash().put(key, hashKey, value);
 			return rt.doOnSuccess(nvalue -> {
@@ -1759,7 +1759,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Boolean> hSet(String key, String hashKey, Object value, Duration timeout) {
+	public Mono<Boolean> hSet(String key, Object hashKey, Object value, Duration timeout) {
 		try {
 			Mono<Boolean> rt = reactiveRedisTemplate.opsForHash().put(key, hashKey, value);
 			return rt.doOnSuccess(nvalue -> {
@@ -1772,7 +1772,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Boolean> hSetNX(String key, String hashKey, Object value) {
+	public Mono<Boolean> hSetNX(String key, Object hashKey, Object value) {
 		try {
 			return reactiveRedisTemplate.opsForHash().putIfAbsent(key, hashKey, value);
 		} catch (Exception e) {
@@ -1802,7 +1802,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param delta   要增加几(&gt;=0)
 	 * @return
 	 */
-	public Mono<Long> hIncr(String key, String hashKey, int delta) {
+	public Mono<Long> hIncr(String key, Object hashKey, int delta) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1822,7 +1822,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param seconds 过期时长（秒）
 	 * @return
 	 */
-	public Mono<Long> hIncr(String key, String hashKey, int delta, long seconds) {
+	public Mono<Long> hIncr(String key, Object hashKey, int delta, long seconds) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1838,7 +1838,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Long> hIncr(String key, String hashKey, int delta, Duration timeout) {
+	public Mono<Long> hIncr(String key, Object hashKey, int delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1862,7 +1862,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param delta   要增加几(&gt;=0)
 	 * @return
 	 */
-	public Mono<Long> hIncr(String key, String hashKey, long delta) {
+	public Mono<Long> hIncr(String key, Object hashKey, long delta) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1882,7 +1882,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param seconds 过期时长（秒）
 	 * @return
 	 */
-	public Mono<Long> hIncr(String key, String hashKey, long delta, long seconds) {
+	public Mono<Long> hIncr(String key, Object hashKey, long delta, long seconds) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1898,7 +1898,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Long> hIncr(String key, String hashKey, long delta, Duration timeout) {
+	public Mono<Long> hIncr(String key, Object hashKey, long delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1922,7 +1922,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param delta   要增加几(&gt;=0)
 	 * @return
 	 */
-	public Mono<Double> hIncr(String key, String hashKey, double delta) {
+	public Mono<Double> hIncr(String key, Object hashKey, double delta) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1933,7 +1933,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Double> hIncr(String key, String hashKey, double delta, long seconds) {
+	public Mono<Double> hIncr(String key, Object hashKey, double delta, long seconds) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}
@@ -1949,7 +1949,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Double> hIncr(String key, String hashKey, double delta, Duration timeout) {
+	public Mono<Double> hIncr(String key, Object hashKey, double delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
 		}

@@ -2102,7 +2102,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param map 对应多个键值
 	 * @return true 成功 false 失败
 	 */
-	public boolean hmSet(String key, Map<String, Object> map) {
+	public boolean hmSet(String key, Map<Object, Object> map) {
 		try {
 			getOperations().opsForHash().putAll(key, map);
 			return true;
@@ -2120,7 +2120,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param seconds 时间(秒)
 	 * @return true成功 false失败
 	 */
-	public boolean hmSet(String key, Map<String, Object> map, long seconds) {
+	public boolean hmSet(String key, Map<Object, Object> map, long seconds) {
 		try {
 			getOperations().opsForHash().putAll(key, map);
 			if (seconds > 0) {
@@ -2133,7 +2133,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public boolean hmSet(String key, Map<String, Object> map, Duration timeout) {
+	public boolean hmSet(String key, Map<Object, Object> map, Duration timeout) {
 		try {
 			getOperations().opsForHash().putAll(key, map);
 			if (!timeout.isNegative()) {
@@ -2172,7 +2172,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param value   值
 	 * @return true 成功 false失败
 	 */
-	public boolean hSet(String key, String hashKey, Object value) {
+	public boolean hSet(String key, Object hashKey, Object value) {
 		try {
 			getOperations().opsForHash().put(key, hashKey, value);
 			return true;
@@ -2191,7 +2191,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param seconds    时间(秒) 注意:如果已存在的hash表有时间,这里将会替换原有的时间
 	 * @return true 成功 false失败
 	 */
-	public boolean hSet(String key, String hashKey, Object value, long seconds) {
+	public boolean hSet(String key, Object hashKey, Object value, long seconds) {
 		try {
 			getOperations().opsForHash().put(key, hashKey, value);
 			if (seconds > 0) {
@@ -2204,7 +2204,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public boolean hSet(String key, String hashKey, Object value, Duration timeout) {
+	public boolean hSet(String key, Object hashKey, Object value, Duration timeout) {
 		try {
 			getOperations().opsForHash().put(key, hashKey, value);
 			if (!timeout.isNegative()) {
@@ -2217,7 +2217,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public boolean hSetNX(String key, String hashKey, Object value) {
+	public boolean hSetNX(String key, Object hashKey, Object value) {
 		try {
 			return getOperations().opsForHash().putIfAbsent(key, hashKey, value);
 		} catch (Exception e) {
@@ -2279,7 +2279,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param delta   要增加几(&gt;=0)
 	 * @return 增加指定数值后的结果
 	 */
-	public Long hIncr(String key, String hashKey, int delta) {
+	public Long hIncr(String key, Object hashKey, int delta) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2300,7 +2300,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param seconds 过期时长（秒）
 	 * @return 增加指定数值后的结果
 	 */
-	public Long hIncr(String key, String hashKey, int delta, long seconds) {
+	public Long hIncr(String key, Object hashKey, int delta, long seconds) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2316,7 +2316,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Long hIncr(String key, String hashKey, int delta, Duration timeout) {
+	public Long hIncr(String key, Object hashKey, int delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2340,7 +2340,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param delta   要增加几(&gt;=0)
 	 * @return 增加指定数值后的新数值
 	 */
-	public Long hIncr(String key, String hashKey, long delta) {
+	public Long hIncr(String key, Object hashKey, long delta) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2361,7 +2361,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param seconds 过期时长（秒）
 	 * @return 增加指定数值后的新数值
 	 */
-	public Long hIncr(String key, String hashKey, long delta, long seconds) {
+	public Long hIncr(String key, Object hashKey, long delta, long seconds) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2386,7 +2386,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param timeout 过期时长（秒）
 	 * @return 增加指定数值后的新数值
 	 */
-	public Long hIncr(String key, String hashKey, long delta, Duration timeout) {
+	public Long hIncr(String key, Object hashKey, long delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2410,7 +2410,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param delta   要增加几(&gt;=0)
 	 * @return 增加指定数值后的新数值
 	 */
-	public Double hIncr(String key, String hashKey, double delta) {
+	public Double hIncr(String key, Object hashKey, double delta) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2422,7 +2422,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Double hIncr(String key, String hashKey, double delta, long seconds) {
+	public Double hIncr(String key, Object hashKey, double delta, long seconds) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
@@ -2438,7 +2438,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Double hIncr(String key, String hashKey, double delta, Duration timeout) {
+	public Double hIncr(String key, Object hashKey, double delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
 		}
