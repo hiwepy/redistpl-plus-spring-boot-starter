@@ -1692,7 +1692,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param delta   要减少记(小于0)
 	 * @return 减少指定数值后的结果
 	 */
-	public Long hDecr(String key, String hashKey, int delta) {
+	public Long hDecr(String key, Object hashKey, int delta) {
 		if (delta < 0) {
 			throw new RedisOperationException("递减因子必须>=0");
 		}
@@ -1712,7 +1712,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param delta   要减少记(&gt;=0)
 	 * @return 减少指定数值后的结果
 	 */
-	public Long hDecr(String key, String hashKey, long delta) {
+	public Long hDecr(String key, Object hashKey, long delta) {
 		if (delta < 0) {
 			throw new RedisOperationException("递减因子必须>=0");
 		}
@@ -1732,7 +1732,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param delta   要减少记(&gt;=0)
 	 * @return 减少指定数值后的结果
 	 */
-	public Double hDecr(String key, String hashKey, double delta) {
+	public Double hDecr(String key, Object hashKey, double delta) {
 		if (delta < 0) {
 			throw new RedisOperationException("递减因子必须>=0");
 		}
@@ -1783,7 +1783,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param hashKey hash键
 	 * @return 对应的键值
 	 */
-	public Object hGet(String key, String hashKey) {
+	public Object hGet(String key, Object hashKey) {
 		try {
 			return getOperations().opsForHash().get(key, hashKey);
 		} catch (Exception e) {
@@ -1792,7 +1792,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public <V> V hGet(String key, String hashKey, V defaultVal) {
+	public <V> V hGet(String key, Object hashKey, V defaultVal) {
 		try {
 			Object rtVal = getOperations().opsForHash().get(key, hashKey);
 			return Objects.nonNull(rtVal) ? (V) rtVal : defaultVal;
@@ -1802,72 +1802,72 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public String hGetString(String key, String hashKey) {
+	public String hGetString(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_STRING);
 	}
 
-	public String hGetString(String key, String hashKey, String defaultVal) {
+	public String hGetString(String key, Object hashKey, String defaultVal) {
 		String rtVal = hGetString(key, hashKey);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
-	public Double hGetDouble(String key, String hashKey) {
+	public Double hGetDouble(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_DOUBLE);
 	}
 
-	public Double hGetDouble(String key, String hashKey, double defaultVal) {
+	public Double hGetDouble(String key, Object hashKey, double defaultVal) {
 		Double rtVal = hGetDouble(key, hashKey);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
-	public Long hGetLong(String key, String hashKey) {
+	public Long hGetLong(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_LONG);
 	}
 
-	public Long hGetLong(String key, String hashKey, long defaultVal) {
+	public Long hGetLong(String key, Object hashKey, long defaultVal) {
 		Long rtVal = hGetLong(key, hashKey);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
-	public Integer hGetInteger(String key, String hashKey) {
+	public Integer hGetInteger(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_INTEGER);
 	}
 
-	public Integer hGetInteger(String key, String hashKey, int defaultVal) {
+	public Integer hGetInteger(String key, Object hashKey, int defaultVal) {
 		Integer rtVal = hGetInteger(key, hashKey);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
-	public <T> T hGetFor(String key, String hashKey, Class<T> clazz) {
+	public <T> T hGetFor(String key, Object hashKey, Class<T> clazz) {
 		return hGetFor(key, hashKey, member -> clazz.cast(member));
 	}
 
-	public <T> T hGetFor(String key, String hashKey, Function<Object, T> mapper) {
+	public <T> T hGetFor(String key, Object hashKey, Function<Object, T> mapper) {
 		Object rt = this.hGet(key, hashKey);
 		return Objects.nonNull(rt) ? mapper.apply(rt) : null;
 	}
 
-	public List<String> hGetString(Collection<Object> keys, String hashKey) {
+	public List<String> hGetString(Collection<Object> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_STRING);
 	}
 
-	public List<Double> hGetDouble(Collection<Object> keys, String hashKey) {
+	public List<Double> hGetDouble(Collection<Object> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_DOUBLE);
 	}
 
-	public List<Long> hGetLong(Collection<Object> keys, String hashKey) {
+	public List<Long> hGetLong(Collection<Object> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_LONG);
 	}
 
-	public List<Integer> hGetInteger(Collection<Object> keys, String hashKey) {
+	public List<Integer> hGetInteger(Collection<Object> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_INTEGER);
 	}
 
-	public <T> List<T> hGetFor(Collection<Object> keys, String hashKey, Class<T> clazz) {
+	public <T> List<T> hGetFor(Collection<Object> keys, Object hashKey, Class<T> clazz) {
 		return hGetFor(keys, hashKey, member -> clazz.cast(member));
 	}
 
-	public <T> List<T> hGetFor(Collection<Object> keys, String hashKey, Function<Object, T> mapper) {
+	public <T> List<T> hGetFor(Collection<Object> keys, Object hashKey, Function<Object, T> mapper) {
 		List<Object> members = this.hGet(keys, hashKey);
 		if (Objects.nonNull(members)) {
 			return members.stream().map(mapper).collect(Collectors.toList());
@@ -1875,7 +1875,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
-	public List<Object> hGet(Collection<Object> keys, String hashKey) {
+	public List<Object> hGet(Collection<Object> keys, Object hashKey) {
 		try {
 			List<Object> result = getOperations().executePipelined((RedisConnection connection) -> {
 				keys.stream().forEach(key -> {
@@ -1890,7 +1890,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public List<Object> hGet(Collection<Object> keys, String redisPrefix, String hashKey) {
+	public List<Object> hGet(Collection<Object> keys, String redisPrefix, Object hashKey) {
 		try {
 			List<Object> result = getOperations().executePipelined((RedisConnection connection) -> {
 				keys.stream().forEach(key -> {
@@ -1913,7 +1913,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param hashKey 项 不能为null
 	 * @return true 存在 false不存在
 	 */
-	public boolean hHasKey(String key, String hashKey) {
+	public boolean hHasKey(String key, Object hashKey) {
 		try {
 			return getOperations().opsForHash().hasKey(key, hashKey);
 		} catch (Exception e) {
@@ -1928,9 +1928,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key 键
 	 * @return 对应的多个键值
 	 */
-	public Map<String, Object> hmGet(String key) {
+	public Map<Object, Object> hmGet(String key) {
 		try {
-			HashOperations<String, String, Object> opsForHash = getOperations().opsForHash();
+			HashOperations<String, Object, Object> opsForHash = getOperations().opsForHash();
 			return opsForHash.entries(key);
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -1938,7 +1938,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public List<Map<String, Object>> hmGet(Collection<String> keys) {
+	public List<Map<Object, Object>> hmGet(Collection<String> keys) {
 		if (CollectionUtils.isEmpty(keys)) {
 			return Lists.newArrayList();
 		}
@@ -1947,7 +1947,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}).collect(Collectors.toList());
 	}
 
-	public List<Map<String, Object>> hmGet(Collection<String> keys, String redisPrefix) {
+	public List<Map<Object, Object>> hmGet(Collection<String> keys, String redisPrefix) {
 		if (CollectionUtils.isEmpty(keys)) {
 			return Lists.newArrayList();
 		}
@@ -1965,10 +1965,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Map<String, Object> hmMultiGet(String key, Collection<Object> hashKeys) {
+	public Map<Object, Object> hmMultiGet(String key, Collection<Object> hashKeys) {
 		try {
 			List<Object> result = getOperations().opsForHash().multiGet(key, hashKeys);
-			Map<String, Object> ans = new HashMap<>(hashKeys.size());
+			Map<Object, Object> ans = new HashMap<>(hashKeys.size());
 			int index = 0;
 			for (Object hashKey : hashKeys) {
 				ans.put(hashKey.toString(), result.get(index));
@@ -1981,7 +1981,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public List<Map<String, Object>> hmMultiGet(Collection<String> keys, Collection<Object> hashKeys) {
+	public List<Map<Object, Object>> hmMultiGet(Collection<String> keys, Collection<Object> hashKeys) {
 		if (CollectionUtils.isEmpty(keys) || CollectionUtils.isEmpty(hashKeys)) {
 			return Lists.newArrayList();
 		}
@@ -1990,7 +1990,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}).collect(Collectors.toList());
 	}
 
-	public Map<String, Map<String, Object>> hmMultiGet(Collection<String> keys, String identityHashKey,
+	public Map<String, Map<Object, Object>> hmMultiGet(Collection<String> keys, String identityHashKey,
 			Collection<Object> hashKeys) {
 		if (CollectionUtils.isEmpty(keys) || CollectionUtils.isEmpty(hashKeys)) {
 			return Maps.newHashMap();
@@ -2000,7 +2000,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}).collect(Collectors.toMap(kv -> MapUtils.getString(kv, identityHashKey), Function.identity()));
 	}
 
-	public List<Map<String, Object>> hmMultiGetAll(Collection<Object> keys) {
+	public List<Map<Object, Object>> hmMultiGetAll(Collection<Object> keys) {
 		try {
 			List<Object> result = getOperations().executePipelined((RedisConnection connection) -> {
 				keys.stream().forEach(key -> {
@@ -2009,14 +2009,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().map(mapper -> (Map<String, Object>) mapper).collect(Collectors.toList());
+			return result.stream().map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
 		}
 	}
 
-	public List<Object> hMultiGet(Collection<Object> keys, String hashKey) {
+	public List<Object> hMultiGet(Collection<Object> keys, Object hashKey) {
 		try {
 			List<Object> result = getOperations().executePipelined((RedisConnection connection) -> {
 				byte[] rawHashKey = rawHashKey(hashKey);
@@ -2033,27 +2033,27 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public List<String> hMultiGetString(Collection<Object> keys, String hashKey) {
+	public List<String> hMultiGetString(Collection<Object> keys, Object hashKey) {
 		return hMultiGetFor(keys, hashKey, TO_STRING);
 	}
 
-	public List<Double> hMultiGetDouble(Collection<Object> keys, String hashKey) {
+	public List<Double> hMultiGetDouble(Collection<Object> keys, Object hashKey) {
 		return hMultiGetFor(keys, hashKey, TO_DOUBLE);
 	}
 
-	public List<Long> hMultiGetLong(Collection<Object> keys, String hashKey) {
+	public List<Long> hMultiGetLong(Collection<Object> keys, Object hashKey) {
 		return hMultiGetFor(keys, hashKey, TO_LONG);
 	}
 
-	public List<Integer> hMultiGetInteger(Collection<Object> keys, String hashKey) {
+	public List<Integer> hMultiGetInteger(Collection<Object> keys, Object hashKey) {
 		return hMultiGetFor(keys, hashKey, TO_INTEGER);
 	}
 
-	public <T> List<T> hMultiGetFor(Collection<Object> keys, String hashKey, Class<T> clazz) {
+	public <T> List<T> hMultiGetFor(Collection<Object> keys, Object hashKey, Class<T> clazz) {
 		return hMultiGetFor(keys, hashKey, member -> clazz.cast(member));
 	}
 
-	public <T> List<T> hMultiGetFor(Collection<Object> keys, String hashKey, Function<Object, T> mapper) {
+	public <T> List<T> hMultiGetFor(Collection<Object> keys, Object hashKey, Function<Object, T> mapper) {
 		List<Object> members = this.hMultiGet(keys, hashKey);
 		if (Objects.nonNull(members)) {
 			return members.stream().map(mapper).collect(Collectors.toList());
@@ -2061,7 +2061,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
-	public List<Map<String, Object>> hmMultiGetAll(Collection<Object> keys, String redisPrefix) {
+	public List<Map<Object, Object>> hmMultiGetAll(Collection<Object> keys, String redisPrefix) {
 		try {
 			List<Object> result = getOperations().executePipelined((RedisConnection connection) -> {
 				keys.stream().forEach(key -> {
@@ -2070,7 +2070,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().map(mapper -> (Map<String, Object>) mapper).collect(Collectors.toList());
+			return result.stream().map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());

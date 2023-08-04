@@ -1334,7 +1334,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param delta   要减少记(小于0)
 	 * @return
 	 */
-	public Mono<Long> hDecr(String key, String hashKey, int delta) {
+	public Mono<Long> hDecr(String key, Object hashKey, int delta) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递减因子必须>=0"));
 		}
@@ -1353,7 +1353,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param delta   要减少记(&gt;=0)
 	 * @return
 	 */
-	public Mono<Long> hDecr(String key, String hashKey, long delta) {
+	public Mono<Long> hDecr(String key, Object hashKey, long delta) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递减因子必须>=0"));
 		}
@@ -1372,7 +1372,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param delta   要减少记(&gt;=0)
 	 * @return
 	 */
-	public Mono<Double> hDecr(String key, String hashKey, double delta) {
+	public Mono<Double> hDecr(String key, Object hashKey, double delta) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递减因子必须>=0"));
 		}
@@ -1422,7 +1422,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param hashKey hash键
 	 * @return 对应的键值
 	 */
-	public Mono<Object> hGet(String key, String hashKey) {
+	public Mono<Object> hGet(String key, Object hashKey) {
 		try {
 			return reactiveRedisTemplate.opsForHash().get(key, hashKey);
 		} catch (Exception e) {
@@ -1430,7 +1430,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Object> hGet(String key, String hashKey, Object defaultVal) {
+	public Mono<Object> hGet(String key, Object hashKey, Object defaultVal) {
 		try {
 			Mono<Object> rtVal = reactiveRedisTemplate.opsForHash().get(key, hashKey);
 			return rtVal.defaultIfEmpty(defaultVal);
@@ -1439,77 +1439,77 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<String> hGetString(String key, String hashKey) {
+	public Mono<String> hGetString(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_STRING);
 	}
 
-	public Mono<String> hGetString(String key, String hashKey, String defaultVal) {
+	public Mono<String> hGetString(String key, Object hashKey, String defaultVal) {
 		Mono<String> rtVal = hGetString(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
-	public Mono<Double> hGetDouble(String key, String hashKey) {
+	public Mono<Double> hGetDouble(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_DOUBLE);
 	}
 
-	public Mono<Double> hGetDouble(String key, String hashKey, double defaultVal) {
+	public Mono<Double> hGetDouble(String key, Object hashKey, double defaultVal) {
 		Mono<Double> rtVal = hGetDouble(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
-	public Mono<Long> hGetLong(String key, String hashKey) {
+	public Mono<Long> hGetLong(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_LONG);
 	}
 
-	public Mono<Long> hGetLong(String key, String hashKey, long defaultVal) {
+	public Mono<Long> hGetLong(String key, Object hashKey, long defaultVal) {
 		Mono<Long> rtVal = hGetLong(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
-	public Mono<Integer> hGetInteger(String key, String hashKey) {
+	public Mono<Integer> hGetInteger(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_INTEGER);
 	}
 
-	public Mono<Integer> hGetInteger(String key, String hashKey, int defaultVal) {
+	public Mono<Integer> hGetInteger(String key, Object hashKey, int defaultVal) {
 		Mono<Integer> rtVal = hGetInteger(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
-	public <T> Mono<T> hGetFor(String key, String hashKey, Class<T> clazz) {
+	public <T> Mono<T> hGetFor(String key, Object hashKey, Class<T> clazz) {
 		return hGetFor(key, hashKey, member -> clazz.cast(member));
 	}
 
-	public <T> Mono<T> hGetFor(String key, String hashKey, Function<Object, T> mapper) {
+	public <T> Mono<T> hGetFor(String key, Object hashKey, Function<Object, T> mapper) {
 		Mono<Object> rt = this.hGet(key, hashKey);
 		return rt.map(mapper);
 	}
 
-	public Flux<String> hGetString(Collection<String> keys, String hashKey) {
+	public Flux<String> hGetString(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_STRING);
 	}
 
-	public Flux<Double> hGetDouble(Collection<String> keys, String hashKey) {
+	public Flux<Double> hGetDouble(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_DOUBLE);
 	}
 
-	public Flux<Long> hGetLong(Collection<String> keys, String hashKey) {
+	public Flux<Long> hGetLong(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_LONG);
 	}
 
-	public Flux<Integer> hGetInteger(Collection<String> keys, String hashKey) {
+	public Flux<Integer> hGetInteger(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_INTEGER);
 	}
 
-	public <T> Flux<T> hGetFor(Collection<String> keys, String hashKey, Class<T> clazz) {
+	public <T> Flux<T> hGetFor(Collection<String> keys, Object hashKey, Class<T> clazz) {
 		return hGetFor(keys, hashKey, member -> clazz.cast(member));
 	}
 
-	public <T> Flux<T> hGetFor(Collection<String> keys, String hashKey, Function<Object, T> mapper) {
+	public <T> Flux<T> hGetFor(Collection<String> keys, Object hashKey, Function<Object, T> mapper) {
 		Flux<Object> members = this.hGet(keys, hashKey);
 		return members.map(mapper);
 	}
 
-	public Flux<Object> hGet(Collection<String> keys, String hashKey) {
+	public Flux<Object> hGet(Collection<String> keys, Object hashKey) {
 		try {
 			return Flux.fromIterable(keys).flatMap(key -> {
 				return reactiveRedisTemplate.opsForHash().get(key, hashKey);
@@ -1519,7 +1519,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Flux<Object> hGet(Collection<String> keys, String redisPrefix, String hashKey) {
+	public Flux<Object> hGet(Collection<String> keys, String redisPrefix, Object hashKey) {
 		try {
 			return Flux.fromIterable(keys).flatMap(key -> {
 				String nkey = RedisKey.getKeyStr(redisPrefix, String.valueOf(key));
@@ -1537,7 +1537,7 @@ public class ReactiveRedisOperationTemplate {
 	 * @param hashKey 项 不能为null
 	 * @return true 存在 false不存在
 	 */
-	public Mono<Boolean> hHasKey(String key, String hashKey) {
+	public Mono<Boolean> hHasKey(String key, Object hashKey) {
 		try {
 			return reactiveRedisTemplate.opsForHash().hasKey(key, hashKey);
 		} catch (Exception e) {
@@ -1586,14 +1586,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Map<String, Object>> hmMultiGet(String key, Collection<Object> hashKeys) {
+	public Mono<Map<Object, Object>> hmMultiGet(String key, Collection<Object> hashKeys) {
 		try {
 			Mono<List<Object>> rt = reactiveRedisTemplate.opsForHash().multiGet(key, hashKeys);
 			return rt.map(list -> {
-				Map<String, Object> ans = new HashMap<>(hashKeys.size());
+				Map<Object, Object> ans = new HashMap<>(hashKeys.size());
 				int index = 0;
 				for (Object hashKey : hashKeys) {
-					ans.put(hashKey.toString(), list.get(index));
+					ans.put(hashKey, list.get(index));
 					index++;
 				}
 				return ans;
@@ -1603,7 +1603,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Flux<Map<String, Object>> hmMultiGet(Collection<String> keys, Collection<Object> hashKeys) {
+	public Flux<Map<Object, Object>> hmMultiGet(Collection<String> keys, Collection<Object> hashKeys) {
 		if (CollectionUtils.isEmpty(keys) || CollectionUtils.isEmpty(hashKeys)) {
 			return Flux.empty();
 		}
@@ -1612,7 +1612,7 @@ public class ReactiveRedisOperationTemplate {
 		});
 	}
 
-	public Mono<Map<String, Map<String, Object>>> hmMultiGet(Collection<String> keys, String identityHashKey,
+	public Mono<Map<Object, Map<Object, Object>>> hmMultiGet(Collection<String> keys, String identityHashKey,
 			Collection<Object> hashKeys) {
 		if (CollectionUtils.isEmpty(keys) || CollectionUtils.isEmpty(hashKeys)) {
 			return Mono.empty();
@@ -1649,7 +1649,7 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
-	public Mono<Boolean> hmMultiSet(String key, Collection<String> hashKeys, Object value) {
+	public Mono<Boolean> hmMultiSet(String key, Collection<Object> hashKeys, Object value) {
 		if (CollectionUtils.isEmpty(hashKeys) || !StringUtils.hasText(key)) {
 			return Mono.just(false);
 		}
