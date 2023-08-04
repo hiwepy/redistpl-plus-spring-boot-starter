@@ -37,6 +37,8 @@ import org.springframework.data.redis.hash.ObjectHashMapper;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.annotation.RedisChannelTopic;
@@ -71,7 +73,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 
 		// 使用Jackson2JsonRedisSerialize 替换默认序列化
 		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-
+		//GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapperProvider.getIfAvailable());
 		ObjectMapper objectMapper = objectMapperProvider.getIfAvailable(() -> {
 			return JsonMapper.builder()
 					// 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
@@ -103,7 +105,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 
 		// 设置hash key 和value序列化模式
-		redisTemplate.setHashKeySerializer(RedisSerializer.string());
+		redisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Object.class));
 		// 这个地方不可使用 json 序列化，如果使用的是ObjectRecord传输对象时，可能会有问题，会出现一个 java.lang.IllegalArgumentException: Value must not be null! 错误
 		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
