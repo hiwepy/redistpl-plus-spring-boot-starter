@@ -1938,6 +1938,39 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	public <V> Map<Integer, V> hmGetForInteger(String key, Function<Object, V> valueMapper) {
+		return this.hmGetFor(key, TO_INTEGER, valueMapper);
+	}
+
+	public <V> Map<Long, V> hmGetForLong(String key, Function<Object, V> valueMapper) {
+		return this.hmGetFor(key, TO_LONG, valueMapper);
+	}
+
+	public <V> Map<Double, V> hmGetForDouble(String key, Function<Object, V> valueMapper) {
+		return this.hmGetFor(key, TO_DOUBLE, valueMapper);
+	}
+
+	public Map<Integer, Integer> hmGetForInteger(String key) {
+		return this.hmGetFor(key, TO_INTEGER, TO_INTEGER);
+	}
+
+	public Map<Long, Long> hmGetForLong(String key) {
+		return this.hmGetFor(key, TO_LONG, TO_LONG);
+	}
+
+	public Map<Double, Double> hmGetForDouble(String key) {
+		return this.hmGetFor(key, TO_DOUBLE, TO_DOUBLE);
+	}
+
+	public <K, V> Map<K, V> hmGetFor(String key, Function<Object, K> keyMapper, Function<Object, V> valueMapper) {
+		Map<Object, Object> map = this.hmGet(key);
+		if (Objects.nonNull(map)) {
+			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()),
+					entry -> valueMapper.apply(entry.getValue())));
+		}
+		return Collections.emptyMap();
+	}
+
 	public List<Map<Object, Object>> hmGet(Collection<String> keys) {
 		if (CollectionUtils.isEmpty(keys)) {
 			return Lists.newArrayList();

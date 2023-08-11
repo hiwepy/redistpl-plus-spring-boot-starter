@@ -66,15 +66,17 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		// 4.1、设置连接工厂
 		redisTemplate.setConnectionFactory(redisConnectionFactoryProvider.getIfAvailable());
 
+		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = jackson2JsonRedisSerializerProvider.getIfAvailable();
 		// 5、使用StringRedisSerializer来序列化和反序列化redis的key值
 		redisTemplate.setKeySerializer(RedisSerializer.string());
 		// 6、用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值
-		redisTemplate.setValueSerializer(jackson2JsonRedisSerializerProvider.getIfAvailable());
+		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 
 		// 7、设置hash key 序列化模式
 		redisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Object.class));
+		//redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer);
 		// 8、设置hash value序列化模式
-		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializerProvider.getIfAvailable());
+		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 
 		redisTemplate.afterPropertiesSet();
 
