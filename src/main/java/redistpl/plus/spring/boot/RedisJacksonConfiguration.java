@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter({CacheAutoConfiguration.class})
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 @EnableConfigurationProperties({RedisJacksonProperties.class})
-public class RedisJacksonConfiguration extends CachingConfigurerSupport {
+public class RedisJacksonConfiguration {
 
 	private static final Map<ConfigFeature, Boolean> FEATURE_DEFAULTS;
 
