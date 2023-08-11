@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.databind.json.Jsr310JsonMapperBuilderCustomizer;
 import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
 import com.fasterxml.jackson.databind.ser.RedisBeanSerializerModifier;
 import hitool.core.lang3.time.DateFormats;
@@ -21,9 +21,9 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,6 +49,7 @@ public class RedisJacksonConfiguration {
 	private static final Map<ConfigFeature, Boolean> FEATURE_DEFAULTS;
 
 	static {
+
 		Map<ConfigFeature, Boolean> featureDefaults = new HashMap<>();
 		featureDefaults.put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		featureDefaults.put(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false);
@@ -60,6 +61,7 @@ public class RedisJacksonConfiguration {
 		featureDefaults.put(MapperFeature.USE_GETTERS_AS_SETTERS, true);
 
 		FEATURE_DEFAULTS = Collections.unmodifiableMap(featureDefaults);
+
 	}
 
 	/**
@@ -76,7 +78,8 @@ public class RedisJacksonConfiguration {
 				.visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
 				.serializationInclusion(JsonInclude.Include.NON_NULL)
 				// 为objectMapper注册一个带有SerializerModifier的Factory
-				.serializerFactory(BeanSerializerFactory.instance.withSerializerModifier(new RedisBeanSerializerModifier()));
+				.serializerFactory(BeanSerializerFactory.instance.withSerializerModifier(new RedisBeanSerializerModifier()))
+				;
 
 		for (JsonMapperBuilderCustomizer customizer : customizers) {
 			customizer.customize(builder);
@@ -84,6 +87,8 @@ public class RedisJacksonConfiguration {
 
 		return builder.build();
 	}
+
+
 
 	@Bean
 	public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer(ObjectProvider<JsonMapperBuilderCustomizer> customizerProvider) {
@@ -98,15 +103,23 @@ public class RedisJacksonConfiguration {
 		return jackson2JsonRedisSerializer;
 	}
 
+
+
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(JsonMapper.class)
 	@EnableConfigurationProperties(RedisJacksonProperties.class)
 	static class JsonMapperBuilderCustomizerConfiguration {
 
 		@Bean
-		RedisJacksonConfiguration.JsonMapperBuilderCustomizerConfiguration.StandardJsonMapperBuilderCustomizer standardJsonMapperBuilderCustomizer(
+		public RedisJacksonConfiguration.JsonMapperBuilderCustomizerConfiguration.StandardJsonMapperBuilderCustomizer standardJsonMapperBuilderCustomizer(
 				ApplicationContext applicationContext, RedisJacksonProperties jacksonProperties) {
 			return new RedisJacksonConfiguration.JsonMapperBuilderCustomizerConfiguration.StandardJsonMapperBuilderCustomizer(applicationContext, jacksonProperties);
+		}
+
+		@Bean
+		@ConditionalOnMissingBean
+		public Jsr310JsonMapperBuilderCustomizer jsr310JsonMapperBuilderCustomizer(RedisJacksonProperties jacksonProperties) {
+			return new Jsr310JsonMapperBuilderCustomizer(jacksonProperties);
 		}
 
 		static final class StandardJsonMapperBuilderCustomizer
@@ -262,6 +275,7 @@ public class RedisJacksonConfiguration {
 			private static <T> Collection<T> getBeans(ListableBeanFactory beanFactory, Class<T> type) {
 				return BeanFactoryUtils.beansOfTypeIncludingAncestors(beanFactory, type).values();
 			}
+
 
 		}
 
