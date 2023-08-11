@@ -1938,15 +1938,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public <V> Map<Integer, V> hmGetForInteger(String key, Function<Object, V> valueMapper) {
+	public <HV> Map<Integer, HV> hmGetForInteger(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_INTEGER, valueMapper);
 	}
 
-	public <V> Map<Long, V> hmGetForLong(String key, Function<Object, V> valueMapper) {
+	public <HV> Map<Long, HV> hmGetForLong(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_LONG, valueMapper);
 	}
 
-	public <V> Map<Double, V> hmGetForDouble(String key, Function<Object, V> valueMapper) {
+	public <HV> Map<Double, HV> hmGetForDouble(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_DOUBLE, valueMapper);
 	}
 
@@ -1962,7 +1962,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, TO_DOUBLE, TO_DOUBLE);
 	}
 
-	public <K, V> Map<K, V> hmGetFor(String key, Function<Object, K> keyMapper, Function<Object, V> valueMapper) {
+	public <HK, HV> Map<HK, HV> hmGetFor(String key, Function<Object, HK> keyMapper, Function<Object, HV> valueMapper) {
 		Map<Object, Object> map = this.hmGet(key);
 		if (Objects.nonNull(map)) {
 			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()),
@@ -2137,7 +2137,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param map 对应多个键值
 	 * @return true 成功 false 失败
 	 */
-	public boolean hmSet(String key, Map<Object, Object> map) {
+	public <K, V> boolean hmSet(String key, Map<K, V> map) {
 		try {
 			getHashOperations().putAll(key, map);
 			return true;
@@ -2155,7 +2155,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param seconds 时间(秒)
 	 * @return true成功 false失败
 	 */
-	public boolean hmSet(String key, Map<Object, Object> map, long seconds) {
+	public <K, V> boolean hmSet(String key, Map<K, V> map, long seconds) {
 		try {
 			getHashOperations().putAll(key, map);
 			if (seconds > 0) {
@@ -2168,7 +2168,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public boolean hmSet(String key, Map<Object, Object> map, Duration timeout) {
+	public <K, V> boolean hmSet(String key, Map<K, V> map, Duration timeout) {
 		try {
 			getHashOperations().putAll(key, map);
 			if (!timeout.isNegative()) {
