@@ -54,7 +54,7 @@ import org.springframework.data.redis.stream.StreamListenerAdapter;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.*;
-import redistpl.plus.spring.boot.jackson.JsonMapperBuilderCustomizer;
+import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
 
 import java.lang.reflect.Field;
 import java.net.InetAddress;
