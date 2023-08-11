@@ -19,7 +19,7 @@ import reactor.core.publisher.Flux;
 @ConditionalOnClass({ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
 @AutoConfigureAfter({RedisAutoConfiguration.class, RedisCachingConfiguration.class})
 @ConditionalOnBean({ ReactiveRedisConnectionFactory.class })
-@AutoConfigureBefore(RedisReactiveAutoConfiguration.class)
+@AutoConfigureBefore({RedisJacksonConfiguration.class, RedisReactiveAutoConfiguration.class})
 public class RedisReactiveCachingConfiguration {
 
 	@Bean(name = "reactiveRedisTemplate")
