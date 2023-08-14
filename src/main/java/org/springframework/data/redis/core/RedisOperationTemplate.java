@@ -2014,6 +2014,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 					if (Objects.isNull(entry.getValue())) {
 						return null;
 					}
+					if (entry.getValue().getClass().isAssignableFrom(valueClass)){
+						return valueClass.cast(entry.getValue());
+					}
 					// hash 转 string
 					String valueStr = entry.getValue() instanceof String ? entry.getValue().toString() : getObjectMapper().writeValueAsString(entry.getValue());
 					// string 转 对象
