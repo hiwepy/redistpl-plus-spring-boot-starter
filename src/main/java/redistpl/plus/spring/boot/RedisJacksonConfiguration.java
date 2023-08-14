@@ -78,7 +78,7 @@ public class RedisJacksonConfiguration {
 				.visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
 				.serializationInclusion(JsonInclude.Include.NON_NULL)
 				// 为objectMapper注册一个带有SerializerModifier的Factory
-				.serializerFactory(BeanSerializerFactory.instance.withSerializerModifier(new RedisBeanSerializerModifier()))
+				//.serializerFactory(BeanSerializerFactory.instance.withSerializerModifier(new RedisBeanSerializerModifier()))
 				;
 
 		for (JsonMapperBuilderCustomizer customizer : customizers) {
