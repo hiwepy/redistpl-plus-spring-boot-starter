@@ -2015,7 +2015,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 						return null;
 					}
 					// hash 转 string
-					String valueStr = getObjectMapper().writeValueAsString(entry.getValue());
+					String valueStr = entry.getValue() instanceof String ? entry.getValue().toString() : getObjectMapper().writeValueAsString(entry.getValue());
 					// string 转 对象
 					return getObjectMapper().readValue(valueStr, valueClass);
 				} catch (JsonProcessingException e) {
