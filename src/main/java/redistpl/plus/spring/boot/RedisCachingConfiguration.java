@@ -1,5 +1,7 @@
 package redistpl.plus.spring.boot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.springframework.beans.factory.ObjectProvider;
@@ -35,6 +37,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.stream.StreamListenerAdapter;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
+import org.springframework.data.redis.util.ObjectMappers;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -93,8 +96,14 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 
 	@Bean
 	@Order(1)
-	public RedisOperationTemplate redisOperationTemplate(RedisTemplate<String, Object> redisTemplate) {
-		return new RedisOperationTemplate(redisTemplate);
+	public RedisOperationTemplate redisOperationTemplate(RedisTemplate<String, Object> redisTemplate,
+														 ObjectProvider<JsonMapperBuilderCustomizer> customizerProvider) {
+		// 1、获取自定义的JsonMapperBuilderCustomizer
+		List<JsonMapperBuilderCustomizer> customizers = customizerProvider.orderedStream().collect(Collectors.toList());
+		// 2、初始化 ObjectMapper
+		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
+		// 3、初始化 RedisOperationTemplate
+		return new RedisOperationTemplate(redisTemplate, objectMapper);
 	}
 
 	@Bean

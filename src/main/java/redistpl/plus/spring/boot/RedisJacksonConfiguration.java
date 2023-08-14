@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.util.ObjectMappers;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -64,38 +65,12 @@ public class RedisJacksonConfiguration {
 
 	}
 
-	/**
-	 * 单独初始化ObjectMapper，不使用全局对象，保持缓存序列化的独立配置
-	 * @return ObjectMapper
-	 */
-	protected ObjectMapper objectMapper(List<JsonMapperBuilderCustomizer> customizers) {
-
-		JsonMapper.Builder builder = JsonMapper.builder()
-				// 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
-				//.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL)
-				.defaultDateFormat(new SimpleDateFormat(DateFormats.DATE_LONGFORMAT))
-				// 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
-				.visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
-				.serializationInclusion(JsonInclude.Include.NON_NULL)
-				// 为objectMapper注册一个带有SerializerModifier的Factory
-				//.serializerFactory(BeanSerializerFactory.instance.withSerializerModifier(new RedisBeanSerializerModifier()))
-				;
-
-		for (JsonMapperBuilderCustomizer customizer : customizers) {
-			customizer.customize(builder);
-		}
-
-		return builder.build();
-	}
-
-
-
 	@Bean
 	public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer(ObjectProvider<JsonMapperBuilderCustomizer> customizerProvider) {
 		// 1、获取自定义的JsonMapperBuilderCustomizer
 		List<JsonMapperBuilderCustomizer> customizers = customizerProvider.orderedStream().collect(Collectors.toList());
 		// 2、初始化 ObjectMapper
-		ObjectMapper objectMapper = this.objectMapper(customizers);
+		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
 		// 3、初始化 Jackson2JsonRedisSerializer<Object>，用于RedisTemplate的序列化和反序列化
 		//GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapperProvider.getIfAvailable());
 		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);

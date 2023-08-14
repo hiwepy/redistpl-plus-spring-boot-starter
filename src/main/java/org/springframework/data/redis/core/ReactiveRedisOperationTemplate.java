@@ -1,5 +1,6 @@
 package org.springframework.data.redis.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -81,9 +82,19 @@ public class ReactiveRedisOperationTemplate {
 	};
 
 	private final ReactiveRedisTemplate<String, Object> reactiveRedisTemplate;
+	private final ObjectMapper objectMapper;
 
-	public ReactiveRedisOperationTemplate(ReactiveRedisTemplate<String, Object> reactiveRedisTemplate) {
+	public ReactiveRedisOperationTemplate(ReactiveRedisTemplate<String, Object> reactiveRedisTemplate, ObjectMapper objectMapper) {
 		this.reactiveRedisTemplate = reactiveRedisTemplate;
+		this.objectMapper = objectMapper;
+	}
+
+	public ReactiveRedisTemplate<String, Object> getReactiveRedisTemplate() {
+		return reactiveRedisTemplate;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
 	}
 
 	protected <T> Mono<T> monoError(Exception e){

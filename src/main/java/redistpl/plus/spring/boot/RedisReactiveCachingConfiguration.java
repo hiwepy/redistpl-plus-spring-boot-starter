@@ -1,5 +1,8 @@
 package redistpl.plus.spring.boot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -13,7 +16,11 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.serializer.*;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.core.ReactiveRedisOperationTemplate;
+import org.springframework.data.redis.util.ObjectMappers;
 import reactor.core.publisher.Flux;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
@@ -57,8 +64,14 @@ public class RedisReactiveCachingConfiguration {
 
 	@Bean
 	@ConditionalOnBean({ ReactiveRedisTemplate.class })
-	public ReactiveRedisOperationTemplate reactiveRedisOperationTemplate(ReactiveRedisTemplate<String, Object> reactiveRedisTemplate) {
-		return new ReactiveRedisOperationTemplate(reactiveRedisTemplate);
+	public ReactiveRedisOperationTemplate reactiveRedisOperationTemplate(ReactiveRedisTemplate<String, Object> reactiveRedisTemplate,
+																		 ObjectProvider<JsonMapperBuilderCustomizer> customizerProvider) {
+		// 1、获取自定义的JsonMapperBuilderCustomizer
+		List<JsonMapperBuilderCustomizer> customizers = customizerProvider.orderedStream().collect(Collectors.toList());
+		// 2、初始化 ObjectMapper
+		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
+		// 3、初始化 ReactiveRedisOperationTemplate
+		return new ReactiveRedisOperationTemplate(reactiveRedisTemplate, objectMapper);
 	}
 
 }

@@ -1,5 +1,7 @@
 package org.springframework.data.redis.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -85,14 +87,20 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	};
 
 	private final RedisTemplate<String, Object> redisTemplate;
+	private final ObjectMapper objectMapper;
 
-	public RedisOperationTemplate(RedisTemplate<String, Object> redisTemplate) {
+	public RedisOperationTemplate(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
 		super(redisTemplate);
 		this.redisTemplate = redisTemplate;
+		this.objectMapper = objectMapper;
 	}
 
 	public RedisTemplate<String, Object> getRedisTemplate() {
 		return redisTemplate;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
 	}
 
 	// =============================Serializer============================
@@ -548,8 +556,23 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
-	public <T> T getFor(String key, Class<T> clazz) {
-		return getFor(key, member -> clazz.cast(member));
+	public <T> T getFor(String key, Class<T> valueClass) {
+		return getFor(key, member -> {
+			if(Objects.isNull(member)) {
+				return null;
+			}
+			if (member.getClass().isAssignableFrom(valueClass)){
+				return valueClass.cast(member);
+			}
+			try {
+				// hash 转 string
+				String valueStr = member instanceof String ? member.toString() : getObjectMapper().writeValueAsString(member);
+				// string 转 对象
+				return getObjectMapper().readValue(valueStr, valueClass);
+			} catch (JsonProcessingException e) {
+				throw new RedisOperationException(e.getMessage());
+			}
+		});
 	}
 
 	/**
@@ -1942,12 +1965,24 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, TO_INTEGER, valueMapper);
 	}
 
+	public <HV> Map<Integer, HV> hmGetForInteger(String key, Class<HV> valueClass) {
+		return this.hmGetFor(key, TO_INTEGER, valueClass);
+	}
+
 	public <HV> Map<Long, HV> hmGetForLong(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_LONG, valueMapper);
 	}
 
+	public <HV> Map<Long, HV> hmGetForLong(String key, Class<HV> valueClass) {
+		return this.hmGetFor(key, TO_LONG, valueClass);
+	}
+
 	public <HV> Map<Double, HV> hmGetForDouble(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_DOUBLE, valueMapper);
+	}
+
+	public <HV> Map<Double, HV> hmGetForDouble(String key, Class<HV> valueClass) {
+		return this.hmGetFor(key, TO_DOUBLE, valueClass);
 	}
 
 	public Map<Integer, Integer> hmGetForInteger(String key) {
@@ -1967,6 +2002,26 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		if (Objects.nonNull(map)) {
 			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()),
 					entry -> valueMapper.apply(entry.getValue())));
+		}
+		return Collections.emptyMap();
+	}
+
+	public <HK, HV> Map<HK, HV> hmGetFor(String key, Function<Object, HK> keyMapper, Class<HV> valueClass) {
+		Map<Object, Object> map = this.hmGet(key);
+		if (Objects.nonNull(map)) {
+			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()), entry -> {
+				try {
+					if (Objects.isNull(entry.getValue())) {
+						return null;
+					}
+					// hash 转 string
+					String valueStr = getObjectMapper().writeValueAsString(entry.getValue());
+					// string 转 对象
+					return getObjectMapper().readValue(valueStr, valueClass);
+				} catch (JsonProcessingException e) {
+					throw new RedisOperationException(e.getMessage());
+				}
+			}));
 		}
 		return Collections.emptyMap();
 	}
