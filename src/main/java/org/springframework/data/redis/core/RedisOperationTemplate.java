@@ -3031,7 +3031,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	// ===============================ZSet=================================
+	// 相关命令：https://www.redis.net.cn/order/3627.html
+	// ====================================================================
 
+	/**
+	 * 向有序集合添加一个成员，或者更新已存在成员的分数
+	 * https://www.redis.net.cn/order/3609.html
+	 * @param key  键
+	 * @param value	成员元素
+	 * @param score 成员的分数值
+	 * @return 是否添加成功
+	 */
 	public Boolean zAdd(String key, Object value, double score) {
 		try {
 			return getZSetOperations().add(key, value, score);
@@ -3041,6 +3051,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 向有序集合添加一个成员，或者更新已存在成员的分数
+	 * https://www.redis.net.cn/order/3609.html
+	 * @param key  键
+	 * @param value	成员元素
+	 * @param score 成员的分数值
+	 * @param seconds 过期时长（秒）
+	 * @return 是否添加成功
+	 */
 	public Boolean zAdd(String key, Object value, double score, long seconds) {
 		try {
 			Boolean result = getZSetOperations().add(key, value, score);
@@ -3054,6 +3073,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 向有序集合添加一个成员，或者更新已存在成员的分数
+	 * https://www.redis.net.cn/order/3609.html
+	 * @param key  键
+	 * @param value	成员元素
+	 * @param score 成员的分数值
+	 * @param timeout 过期时长
+	 * @return 是否添加成功
+	 */
 	public Boolean zAdd(String key, Object value, double score, Duration timeout) {
 		try {
 			Boolean result = getZSetOperations().add(key, value, score);
@@ -3067,6 +3095,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 向有序集合添加一个成员，或者更新已存在成员的分数
+	 * https://www.redis.net.cn/order/3609.html
+	 * @param key  键
+	 * @param tuples 成员元素
+	 * @return 是否添加成功
+	 */
 	public Long zAdd(String key, Set<TypedTuple<Object>> tuples) {
 		try {
 			return getZSetOperations().add(key, tuples);
@@ -3076,6 +3111,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 向有序集合添加多个成员，或者更新已存在成员的分数
+	 * https://www.redis.net.cn/order/3609.html
+	 * @param key  键
+	 * @param tuples 成员元素
+	 * @param seconds 过期时长（秒）
+	 * @return 是否添加成功
+	 */
 	public Long zAdd(String key, Set<TypedTuple<Object>> tuples, long seconds) {
 		try {
 			Long result = getZSetOperations().add(key, tuples);
@@ -3089,6 +3132,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 向有序集合添加多个成员，或者更新已存在成员的分数
+	 * https://www.redis.net.cn/order/3609.html
+	 * @param key  键
+	 * @param tuples 成员元素
+	 * @param timeout 过期时长
+	 * @return 是否添加成功
+	 */
 	public Long zAdd(String key, Set<TypedTuple<Object>> tuples, Duration timeout) {
 		try {
 			Long result = getZSetOperations().add(key, tuples);
@@ -3102,6 +3153,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 获取有序集合的成员数
+	 * https://www.redis.net.cn/order/3610.html
+	 * @param key 键
+	 * @return 有序集合的成员数
+	 */
 	public Long zCard(String key) {
 		try {
 			return getZSetOperations().zCard(key);
@@ -3111,6 +3168,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 返回有序集中，指定成员是否存在
+	 * https://www.redis.net.cn/order/3626.html
+	 * @param key 键
+	 * @param value 成员元素
+	 * @return 是否存在
+	 */
 	public Boolean zHas(String key, Object value) {
 		try {
 			return getZSetOperations().score(key, value) != null;
@@ -3120,6 +3184,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算在有序集合中指定区间分数的成员数
+	 * https://www.redis.net.cn/order/3611.html
+	 * @param key 键
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 在有序集合中指定区间分数的成员数
+	 */
 	public Long zCount(String key, double min, double max) {
 		try {
 			return getZSetOperations().count(key, min, max);
@@ -3304,10 +3376,29 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return zRangeFor(key, start, end, TO_INTEGER);
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员
+	 * https://www.redis.net.cn/order/3615.html
+	 * @param key 键
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @param clazz 期望返回的类型 class
+	 * @return 指定区间内的成员
+	 * @param <T> 期望返回的类型
+	 */
 	public <T> Set<T> zRangeFor(String key, long start, long end, Class<T> clazz) {
 		return zRangeFor(key, start, end, this.toObject(clazz));
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员
+	 * https://www.redis.net.cn/order/3615.html
+	 * @param key 键
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @param mapper 类型转换函数
+	 * @return 指定区间内的成员
+	 */
 	public <T> Set<T> zRangeFor(String key, long  start, long end, Function<Object, T> mapper) {
 		Set<Object> members = this.zRange(key, start, end);
 		if(Objects.nonNull(members)) {
@@ -3317,6 +3408,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员
+	 * https://www.redis.net.cn/order/3615.html
+	 * @param key 键
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<Object> zRange(String key, long start, long end) {
 		try {
 			return getZSetOperations().range(key, start, end);
@@ -3523,11 +3622,26 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		});
 	}
 
+	/**
+	 * 返回有序集中，指定成员的分数值
+	 * https://www.redis.net.cn/order/3626.html
+	 * @param key 键
+	 * @param value 成员元素
+	 * @param defaultVal 默认值
+	 * @return 成员的分数值
+	 */
 	public Double zScore(String key, Object value, double defaultVal) {
 		Double rtVal = zScore(key, value);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
+	/**
+	 * 返回有序集中，指定成员的分数值
+	 * https://www.redis.net.cn/order/3626.html
+	 * @param key 键
+	 * @param value 成员元素
+	 * @return 成员的分数值
+	 */
 	public Double zScore(String key, Object value) {
 		try {
 			return getZSetOperations().score(key, value);
