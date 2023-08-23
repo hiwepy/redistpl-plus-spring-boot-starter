@@ -216,7 +216,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 判断key是否存在
 	 *
-	 * @param key 键
+	 * @param key 缓存key
 	 * @return true 存在 false不存在
 	 */
 	public Boolean hasKey(String key) {
@@ -279,7 +279,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回 key 的剩余的过期时间
 	 *
-	 * @param key 键 不能为null
+	 * @param key 缓存key 不能为null
 	 * @return 时间(秒) 返回0代表为永久有效
 	 */
 	public Long getExpire(String key) {
@@ -294,7 +294,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回 key 的剩余的过期时间
 	 *
-	 * @param key 键 不能为null
+	 * @param key 缓存key 不能为null
 	 * @param unit 缓存过期时间单位
 	 * @return 时间(秒) 返回0代表为永久有效
 	 */
@@ -506,9 +506,125 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
-	 * 普通缓存获取
-	 *
-	 * @param key 键
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @return 转换成String类型的对象
+	 */
+	public String getString(String key) {
+		return getFor(key, TO_STRING);
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @param defaultVal 默认值
+	 * @return 转换成String类型的对象
+	 */
+	public String getString(String key, String defaultVal) {
+		String rtVal = getString(key);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @return 转换成Double类型的对象
+	 */
+	public Double getDouble(String key) {
+		return getFor(key, TO_DOUBLE);
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @param defaultVal 默认值
+	 * @return 转换成Double类型的对象
+	 */
+	public Double getDouble(String key, double defaultVal) {
+		Double rtVal = getDouble(key);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @return 转换成Long类型的对象
+	 */
+	public Long getLong(String key) {
+		return getFor(key, TO_LONG);
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @param defaultVal 默认值
+	 * @return 转换成Long类型的对象
+	 */
+	public Long getLong(String key, long defaultVal) {
+		Long rtVal = getLong(key);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @return 转换成Integer类型的对象
+	 */
+	public Integer getInteger(String key) {
+		return getFor(key, TO_INTEGER);
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @param defaultVal 默认值
+	 * @return 转换成Integer类型的对象
+	 */
+	public Integer getInteger(String key, int defaultVal) {
+		Integer rtVal = getInteger(key);
+		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
+	 * @param clazz 目标对象类型 Class
+	 * @param <T> 指定的类型
+	 * @return 转换成目标对象类型的对象
+	 */
+	public <T> T getFor(String key, Class<T> clazz) {
+		return getFor(key, this.toObject(clazz));
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key  缓存key
+	 * @param mapper 对象转换函数
+	 * @param <T>  指定的类型
+	 * @return 转换函数转换后的对象
+	 */
+	public <T> T getFor(String key, Function<Object, T> mapper) {
+		Object obj = this.get(key);
+		if (Objects.nonNull(obj)) {
+			return mapper.apply(obj);
+		}
+		return null;
+	}
+
+	/**
+	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
+	 * https://www.redis.net.cn/order/3545.html
+	 * @param key 缓存key
 	 * @return 值
 	 */
 	public Object get(String key) {
@@ -520,62 +636,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public String getString(String key) {
-		return getFor(key, TO_STRING);
-	}
-
-	public String getString(String key, String defaultVal) {
-		String rtVal = getString(key);
-		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
-	}
-
-	public Double getDouble(String key) {
-		return getFor(key, TO_DOUBLE);
-	}
-
-	public Double getDouble(String key, double defaultVal) {
-		Double rtVal = getDouble(key);
-		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
-	}
-
-	public Long getLong(String key) {
-		return getFor(key, TO_LONG);
-	}
-
-	public Long getLong(String key, long defaultVal) {
-		Long rtVal = getLong(key);
-		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
-	}
-
-	public Integer getInteger(String key) {
-		return getFor(key, TO_INTEGER);
-	}
-
-	public Integer getInteger(String key, int defaultVal) {
-		Integer rtVal = getInteger(key);
-		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
-	}
-
-	public <T> T getFor(String key, Class<T> clazz) {
-		return getFor(key, this.toObject(clazz));
-	}
-
 	/**
-	 * 根据key获取值，并按Function函数进行转换
-	 *
-	 * @param key    键
-	 * @param mapper 对象转换函数
-	 * @param <T>   指定的类型
-	 * @return xx
+	 * 获取存储在指定 key 中字符串的子字符串。字符串的截取范围由 start 和 end 两个偏移量决定(包括 start 和 end 在内)
+	 * https://www.redis.net.cn/order/3546.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 截取后的字符串
 	 */
-	public <T> T getFor(String key, Function<Object, T> mapper) {
-		Object obj = this.get(key);
-		if (Objects.nonNull(obj)) {
-			return mapper.apply(obj);
-		}
-		return null;
-	}
-
 	public String getRange(String key, long start, long end) {
 		try {
 			return redisTemplate.opsForValue().get(key, start, end);
@@ -585,22 +653,72 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	 * https://www.redis.net.cn/order/3547.html
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @return 转换成String类型的对象
+	 */
 	public String getStringAndSet(String key, Object value) {
 		return getForAndSet(key, value, TO_STRING);
 	}
 
+	/**
+	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	 * https://www.redis.net.cn/order/3547.html
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @return 转换成Double类型的对象
+	 */
 	public Double getDoubleAndSet(String key, Object value) {
 		return getForAndSet(key, value, TO_DOUBLE);
 	}
 
+	/**
+	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	 * https://www.redis.net.cn/order/3547.html
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @return 转换成Long类型的对象
+	 */
 	public Long getLongAndSet(String key, Object value) {
 		return getForAndSet(key, value, TO_LONG);
 	}
 
+	/**
+	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	 * https://www.redis.net.cn/order/3547.html
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @return 转换成Integer类型的对象
+	 */
 	public Integer getIntegerAndSet(String key, Object value) {
 		return getForAndSet(key, value, TO_INTEGER);
 	}
 
+	/**
+	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	 * https://www.redis.net.cn/order/3547.html
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @param clazz 目标对象类型 Class
+	 * @param <T> 指定的类型
+	 * @return 转换成目标对象类型的对象
+	 */
+	public <T> T getForAndSet(String key, Object value, Class<T> clazz) {
+		return getForAndSet(key, value, this.toObject(clazz));
+	}
+
+	/**
+	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+	 * https://www.redis.net.cn/order/3547.html
+	 * @param key 缓存key
+	 * @param value 新的值
+	 * @param mapper 对象转换函数
+	 * @param <T> 指定的类型
+	 * @return 类型转换后的对象
+	 */
 	public <T> T getForAndSet(String key, Object value, Function<Object, T> mapper) {
 		Object obj = this.getAndSet(key, value);
 		if (Objects.nonNull(obj)) {
@@ -611,10 +729,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 *
+	 * https://www.redis.net.cn/order/3547.html
 	 * @param key 缓存key
 	 * @param value 新的值
-	 * @return 设置前的值
+	 * @return 缓存Key的旧值
 	 */
 	public Object getAndSet(String key, Object value) {
 		try {
@@ -627,7 +745,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 根据key表达式获取缓存
-	 *
+	 * https://www.redis.net.cn/order/3549.html
 	 * @param pattern 键表达式
 	 * @return 值
 	 */
@@ -1068,7 +1186,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param end   结束下标, 0 到 -1代表所有值
 	 * @param clazz 指定的类型
 	 * @param <T>   指定的类型
-	 * @return 类型转换后端集合
+	 * @return 类型转换后的集合
 	 */
 	public <T> List<T> lRangeFor(String key, long start, long end, Class<T> clazz) {
 		return lRangeFor(key, start, end, this.toObject(clazz));
@@ -1081,7 +1199,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param end   结束下标, 0 到 -1代表所有值
 	 * @param mapper 对象转换函数
 	 * @param <T>   指定的类型
-	 * @return 类型转换后端集合
+	 * @return 类型转换后的集合
 	 */
 	public <T> List<T> lRangeFor(String key, long start, long end, Function<Object, T> mapper) {
 		List<Object> members = this.lRange(key, start, end);
@@ -1670,7 +1788,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 获取list缓存的长度
 	 *
-	 * @param key 键
+	 * @param key 缓存key
 	 * @return list集合的元素个数
 	 */
 	public long lSize(String key) {
@@ -1952,7 +2070,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 获取hashKey对应的所有键值
 	 *
-	 * @param key 键
+	 * @param key 缓存key
 	 * @return 对应的多个键值
 	 */
 	public Map<Object, Object> hmGet(String key) {
@@ -2195,7 +2313,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * HashSet
 	 *
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param map 对应多个键值
 	 * @return true 成功 false 失败
 	 */
@@ -2620,7 +2738,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 根据key获取Set中的所有值
 	 *
-	 * @param key 键
+	 * @param key 缓存key
 	 * @return Set 集合的所有元素
 	 */
 	public Set<Object> sGet(String key) {
@@ -2947,7 +3065,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 获取set缓存的长度
 	 *
-	 * @param key 键
+	 * @param key 缓存key
 	 * @return set缓存的长度
 	 */
 	public Long sSize(String key) {
@@ -3037,7 +3155,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
 	 * https://www.redis.net.cn/order/3609.html
-	 * @param key  键
+	 * @param key 缓存key
 	 * @param value	成员元素
 	 * @param score 成员的分数值
 	 * @return 是否添加成功
@@ -3054,7 +3172,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
 	 * https://www.redis.net.cn/order/3609.html
-	 * @param key  键
+	 * @param key 缓存key
 	 * @param value	成员元素
 	 * @param score 成员的分数值
 	 * @param seconds 过期时长（秒）
@@ -3076,7 +3194,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
 	 * https://www.redis.net.cn/order/3609.html
-	 * @param key  键
+	 * @param key 缓存key
 	 * @param value	成员元素
 	 * @param score 成员的分数值
 	 * @param timeout 过期时长
@@ -3098,7 +3216,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
 	 * https://www.redis.net.cn/order/3609.html
-	 * @param key  键
+	 * @param key 缓存key
 	 * @param tuples 成员元素
 	 * @return 是否添加成功
 	 */
@@ -3114,7 +3232,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 向有序集合添加多个成员，或者更新已存在成员的分数
 	 * https://www.redis.net.cn/order/3609.html
-	 * @param key  键
+	 * @param key 缓存key
 	 * @param tuples 成员元素
 	 * @param seconds 过期时长（秒）
 	 * @return 是否添加成功
@@ -3135,7 +3253,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 向有序集合添加多个成员，或者更新已存在成员的分数
 	 * https://www.redis.net.cn/order/3609.html
-	 * @param key  键
+	 * @param key 缓存key
 	 * @param tuples 成员元素
 	 * @param timeout 过期时长
 	 * @return 是否添加成功
@@ -3156,7 +3274,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 获取有序集合的成员数
 	 * https://www.redis.net.cn/order/3610.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @return 有序集合的成员数
 	 */
 	public Long zCard(String key) {
@@ -3171,7 +3289,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回有序集中，指定成员是否存在
 	 * https://www.redis.net.cn/order/3626.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @return 是否存在
 	 */
@@ -3187,7 +3305,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 计算在有序集合中指定区间分数的成员数
 	 * https://www.redis.net.cn/order/3611.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
 	 * @return 在有序集合中指定区间分数的成员数
@@ -3219,6 +3337,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 有序集合中对指定成员的分数加上增量 increment
+	 * https://www.redis.net.cn/order/3612.html
+	 * @param key 缓存key
+	 * @param value 成员元素
+	 * @param delta 增量值
+	 * @return 增加后的分数值
+	 */
 	public Double zIncr(String key, Object value, double delta) {
 		try {
 			return getZSetOperations().incrementScore(key, value, delta);
@@ -3228,6 +3354,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 有序集合中对指定成员的分数加上增量 increment，并给key设置过期时间
+	 * https://www.redis.net.cn/order/3612.html
+	 * @param key 缓存key
+	 * @param value 成员元素
+	 * @param delta 增量值
+	 * @param seconds 过期时长（秒）
+	 * @return 增加后的分数值
+	 */
 	public Double zIncr(String key, Object value, double delta, long seconds) {
 		try {
 			Double result = getZSetOperations().incrementScore(key, value, delta);
@@ -3241,6 +3376,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 有序集合中对指定成员的分数加上增量 increment，并给key设置过期时间
+	 * https://www.redis.net.cn/order/3612.html
+	 * @param key 缓存key
+	 * @param value 成员元素
+	 * @param delta 增量值
+	 * @param timeout 过期时长
+	 * @return 增加后的分数值
+	 */
 	public Double zIncr(String key, Object value, double delta, Duration timeout) {
 		try {
 			Double result = getZSetOperations().incrementScore(key, value, delta);
@@ -3254,7 +3398,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	// zset指定元素增加值，并监听指定区域的顺序变化，如果指定区域元素发送变化，则返回true
+	/**
+	 * zset指定元素增加值，并监听指定区域的顺序变化，如果指定区域元素发送变化，则返回true
+	 * @param key 缓存key
+	 * @param value 成员元素
+	 * @param delta 增量值
+	 * @param start 开始位置
+	 * @param end 结束位置
+	 * @return  指定区域元素发生变化返回true，否则返回false
+	 */
 	public Boolean zIncrAndWatch(String key, Object value, double delta, long start, long end) {
 		try {
 			byte[] rawKey = rawKey(key);
@@ -3290,6 +3442,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
+	 * https://www.redis.net.cn/order/3613.html
+	 * @param key 第一个有序集合的键
+	 * @param otherKey 第二个有序集合的键
+	 * @param destKey 目标键
+	 * @return 保存到 destKey 的结果集的基数
+	 */
 	public Long zIntersectAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKey, destKey);
@@ -3299,6 +3459,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
+	 * https://www.redis.net.cn/order/3613.html
+	 * @param key 第一个有序集合的键
+	 * @param otherKeys 其他多个有序集合Key的集合
+	 * @param destKey 目标键
+	 * @return 保存到 destKey 的结果集的基数
+	 */
 	public Long zIntersectAndStore(String key, Collection<String> otherKeys, String destKey) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKeys, destKey);
@@ -3308,6 +3476,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
+	 * https://www.redis.net.cn/order/3613.html
+	 * @param key 第一个有序集合的键
+	 * @param otherKeys 其他多个有序集合Key的集合
+	 * @param destKey 目标键
+	 * @param aggregate 聚合方式（SUM, MIN, MAX）
+	 * @return 保存到 destKey 的结果集的基数
+	 */
 	public Long zIntersectAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKeys, destKey, aggregate);
@@ -3317,8 +3494,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Long zIntersectAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate,
-			Weights weights) {
+	/**
+	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
+	 * https://www.redis.net.cn/order/3613.html
+	 * @param key 第一个有序集合的键
+	 * @param otherKeys 其他多个有序集合Key的集合
+	 * @param destKey 目标键
+	 * @param aggregate 聚合方式（SUM, MIN, MAX）
+	 * @param weights 权重
+	 * @return 保存到 destKey 的结果集的基数
+	 */
+	public Long zIntersectAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate, Weights weights) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKeys, destKey, aggregate, weights);
 		} catch (Exception e) {
@@ -3328,8 +3514,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
-	 * 移除zset中的元素
-	 *
+	 * 移除有序集合中的一个或多个成员
+	 * https://www.redis.net.cn/order/3619.html
 	 * @param key 缓存key
 	 * @param values 要移除的value数组
 	 * @return 移除的元素个数
@@ -3344,11 +3530,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
-	 * 移除分数区间内的元素
-	 *
-	 * @param key redis key
-	 * @param min 最小score
-	 * @param max 最大score
+	 * 移除有序集中，指定分数（score）区间内的所有成员
+	 * https://www.redis.net.cn/order/3622.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
 	 * @return 移除的元素个数
 	 */
 	public Long zRemByScore(String key, double min, double max) {
@@ -3360,26 +3546,54 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员，并转换成String类型集合
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<String> zRangeString(String key, long start, long end) {
 		return zRangeFor(key, start, end, TO_STRING);
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员，并转换成Double类型集合
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<Double> zRangeDouble(String key, long  start, long end) {
 		return zRangeFor(key, start, end, TO_DOUBLE);
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员，并转换成Long类型集合
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<Long> zRangeLong(String key, long  start, long end) {
 		return zRangeFor(key, start, end, TO_LONG);
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员，并转换成Integer类型集合
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<Integer> zRangeInteger(String key, long  start, long end) {
 		return zRangeFor(key, start, end, TO_INTEGER);
 	}
 
 	/**
-	 * 通过索引区间返回有序集合成指定区间内的成员
+	 * 通过索引区间返回有序集合成指定区间内的成员，并转换成指定类型对象集合
 	 * https://www.redis.net.cn/order/3615.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
 	 * @param clazz 期望返回的类型 class
@@ -3393,7 +3607,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员
 	 * https://www.redis.net.cn/order/3615.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
 	 * @param mapper 类型转换函数
@@ -3411,7 +3625,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员
 	 * https://www.redis.net.cn/order/3615.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
 	 * @return 指定区间内的成员
@@ -3425,6 +3639,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 移除有序集中，指定分数（score）区间内的所有成员
+	 * https://www.redis.net.cn/order/3622.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 移除的元素个数
+	 */
 	public Set<String> zRangeStringByScore(String key, double min, double max) {
 		return zRangeByScoreFor(key, min, max, TO_STRING);
 	}
@@ -3445,6 +3667,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return zRangeByScoreFor(key, min, max, this.toObject(clazz));
 	}
 
+	/**
+	 * 移除有序集中，指定分数（score）区间内的所有成员
+	 * https://www.redis.net.cn/order/3622.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 移除的元素个数
+	 */
 	public <T> Set<T> zRangeByScoreFor(String key, double min, double max, Function<Object, T> mapper) {
 		Set<Object> members = this.zRangeByScore(key, min, max);
 		if(Objects.nonNull(members)) {
@@ -3454,6 +3684,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+	/**
+	 * 返回有序集合中指定分数区间的成员列表。有序集成员按分数值递增(从小到大)次序排列。
+	 * https://www.redis.net.cn/order/3617.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定分数区间的成员列表
+	 */
 	public Set<Object> zRangeByScore(String key, double min, double max) {
 		try {
 			return getZSetOperations().rangeByScore(key, min, max);
@@ -3463,6 +3701,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 通过索引区间返回有序集合成指定区间内的成员。其中成员的位置按分数值递增(从小到大)来排序。
+	 * https://www.redis.net.cn/order/3615.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<TypedTuple<Object>> zRangeWithScores(String key, long start, long end) {
 		try {
 			return getZSetOperations().rangeWithScores(key, start, end);
@@ -3472,6 +3718,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 返回有序集合中指定分数区间的成员列表。有序集成员按分数值递增(从小到大)次序排列。
+	 * https://www.redis.net.cn/order/3617.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定分数区间的成员列表
+	 */
 	public Set<TypedTuple<Object>> zRangeByScoreWithScores(String key, double min, double max) {
 		try {
 			return getZSetOperations().rangeByScoreWithScores(key, min, max);
@@ -3481,6 +3735,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 通过字典区间返回有序集合的成员
+	 * https://www.redis.net.cn/order/3616.html
+	 * @param key 缓存key
+	 * @param range 字典区间
+	 * @return 指定字典区间的成员列表
+	 */
 	public Set<Object> zRangeByLex(String key, Range range) {
 		try {
 			return getZSetOperations().rangeByLex(key, range);
@@ -3490,6 +3751,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 通过字典区间返回有序集合的成员
+	 * https://www.redis.net.cn/order/3616.html
+	 * @param key 缓存key
+	 * @param range 字典区间
+	 * @param limit 限制
+	 * @return 指定字典区间的成员列表
+	 */
 	public Set<Object> zRangeByLex(String key, Range range, Limit limit) {
 		try {
 			return getZSetOperations().rangeByLex(key, range, limit);
@@ -3499,6 +3768,93 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内转换成String类型的成员
+	 */
+	public Set<String> zRevrangeString(String key, long  start, long end) {
+		return zRevrangeFor(key, start, end, TO_STRING);
+	}
+
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内转换成Double类型的成员
+	 */
+	public Set<Double> zRevrangeDouble(String key, long  start, long end) {
+		return zRevrangeFor(key, start, end, TO_DOUBLE);
+	}
+
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内转换成Long类型的成员
+	 */
+	public Set<Long> zRevrangeLong(String key, long  start, long end) {
+		return zRevrangeFor(key, start, end, TO_LONG);
+	}
+
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内转换成Integer类型的成员
+	 */
+	public Set<Integer> zRevrangeInteger(String key, long  start, long end) {
+		return zRevrangeFor(key, start, end, TO_INTEGER);
+	}
+
+
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @param clazz 目标对象类型
+	 * @return 指定区间内转换成目标对象类型的成员
+	 */
+	public <T> Set<T> zRevrangeFor(String key, long start, long end, Class<T> clazz) {
+		return zRevrangeFor(key, start, end, this.toObject(clazz));
+	}
+
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @param mapper 类型转换函数
+	 * @return 指定区间内转换函数转换后的的成员
+	 */
+	public <T> Set<T> zRevrangeFor(String key, long  start, long end, Function<Object, T> mapper) {
+		Set<Object> members = this.zRevrange(key, start, end);
+		if(Objects.nonNull(members)) {
+			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return null;
+	}
+
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<Object> zRevrange(String key, long start, long end) {
 		try {
 			return getZSetOperations().reverseRange(key, start, end);
@@ -3508,34 +3864,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Set<String> zRevrangeString(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, TO_STRING);
-	}
-
-	public Set<Double> zRevrangeDouble(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, TO_DOUBLE);
-	}
-
-	public Set<Long> zRevrangeLong(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, TO_LONG);
-	}
-
-	public Set<Integer> zRevrangeInteger(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, TO_INTEGER);
-	}
-
-	public <T> Set<T> zRevrangeFor(String key, long start, long end, Class<T> clazz) {
-		return zRevrangeFor(key, start, end, this.toObject(clazz));
-	}
-
-	public <T> Set<T> zRevrangeFor(String key, long  start, long end, Function<Object, T> mapper) {
-		Set<Object> members = this.zRevrange(key, start, end);
-		if(Objects.nonNull(members)) {
-			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
-		}
-		return null;
-	}
-
+	/**
+	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
+	 * https://www.redis.net.cn/order/3623.html
+	 * @param key 缓存key
+	 * @param start 开始索引
+	 * @param end 结束索引
+	 * @return 指定区间内的成员
+	 */
 	public Set<TypedTuple<Object>> zRevrangeWithScores(String key, long start, long end) {
 		try {
 			return getZSetOperations().reverseRangeWithScores(key, start, end);
@@ -3545,6 +3881,92 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定区间内转换成String类型的成员
+	 */
+	public Set<String> zRevrangeStringByScore(String key, double min, double max) {
+		return zRevrangeForByScore(key, min, max, TO_STRING);
+	}
+
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定区间内转换成Double类型的成员
+	 */
+	public Set<Double> zRevrangeDoubleByScore(String key, double min, double max) {
+		return zRevrangeForByScore(key, min, max, TO_DOUBLE);
+	}
+
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定区间内转换成Long类型的成员
+	 */
+	public Set<Long> zRevrangeLongByScore(String key, double min, double max) {
+		return zRevrangeForByScore(key, min, max, TO_LONG);
+	}
+
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定区间内转换成Integer类型的成员
+	 */
+	public Set<Integer> zRevrangeIntegerByScore(String key, double min, double max) {
+		return zRevrangeForByScore(key, min, max, TO_INTEGER);
+	}
+
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @param clazz 目标对象类型
+	 * @return 指定区间内转换成目标对象类型的成员
+	 */
+	public <T> Set<T> zRevrangeForByScore(String key, double min, double max, Class<T> clazz) {
+		return zRevrangeForByScore(key, min, max, this.toObject(clazz));
+	}
+
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @param mapper 类型转换函数
+	 * @return 指定区间内转换函数转换后的的成员
+	 */
+	public <T> Set<T> zRevrangeForByScore(String key, double min, double max, Function<Object, T> mapper) {
+		Set<Object> members = this.zRevrangeByScore(key, min, max);
+		if(Objects.nonNull(members)) {
+			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return null;
+	}
+
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定分数区间的成员列表
+	 */
 	public Set<Object> zRevrangeByScore(String key, double min, double max) {
 		try {
 			return getZSetOperations().reverseRangeByScore(key, min, max);
@@ -3554,34 +3976,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public Set<String> zRevrangeStringByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, TO_STRING);
-	}
-
-	public Set<Double> zRevrangeDoubleByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, TO_DOUBLE);
-	}
-
-	public Set<Long> zRevrangeLongByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, TO_LONG);
-	}
-
-	public Set<Integer> zRevrangeIntegerByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, TO_INTEGER);
-	}
-
-	public <T> Set<T> zRevrangeForByScore(String key, double min, double max, Class<T> clazz) {
-		return zRevrangeForByScore(key, min, max, this.toObject(clazz));
-	}
-
-	public <T> Set<T> zRevrangeForByScore(String key, double min, double max, Function<Object, T> mapper) {
-		Set<Object> members = this.zRevrangeByScore(key, min, max);
-		if(Objects.nonNull(members)) {
-			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
-		}
-		return null;
-	}
-
+	/**
+	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
+	 * https://www.redis.net.cn/order/3624.html
+	 * @param key 缓存key
+	 * @param min 最小分数
+	 * @param max 最大分数
+	 * @return 指定分数区间的成员列表
+	 */
 	public Set<TypedTuple<Object>> zRevrangeByScoreWithScores(String key, double min, double max) {
 		try {
 			return getZSetOperations().reverseRangeByScoreWithScores(key, min, max);
@@ -3591,6 +3993,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 返回有序集中成员的排名。其中有序集成员按分数值递减(从大到小)排序。
+	 * 排名以 0 为底，也就是说， 分数值最大的成员排名为 0 。
+	 * https://www.redis.net.cn/order/3625.html
+	 * @param key 缓存key
+	 * @param value 成员元素
+	 * @return 指定成员的排名
+	 */
 	public Long zRevRank(String key, Object value) {
 		try {
 			return getZSetOperations().reverseRank(key, value);
@@ -3600,16 +4010,36 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 迭代有序集合中的元素（包括元素成员和元素分值）
+	 * https://www.redis.net.cn/order/3628.html
+	 * @param bigZsetKey 缓存key
+	 * @param consumer 消费者
+	 */
 	public void zScan(String bigZsetKey, Consumer<Tuple> consumer) {
 		ScanOptions options = ScanOptions.scanOptions().count(Long.MAX_VALUE).build();
 		this.zScan(bigZsetKey, options, consumer);
 	}
 
+	/**
+	 * 迭代有序集合中的元素（包括元素成员和元素分值）
+	 * https://www.redis.net.cn/order/3628.html
+	 * @param bigZsetKey 缓存key
+	 * @param pattern 匹配表达式
+	 * @param consumer 消费者
+	 */
 	public void zScan(String bigZsetKey, String pattern, Consumer<Tuple> consumer) {
 		ScanOptions options = ScanOptions.scanOptions().count(Long.MAX_VALUE).match(pattern).build();
 		this.zScan(bigZsetKey, options, consumer);
 	}
 
+	/**
+	 * 迭代有序集合中的元素（包括元素成员和元素分值）
+	 * https://www.redis.net.cn/order/3628.html
+	 * @param bigZsetKey 缓存key
+	 * @param options 扫描选项
+	 * @param consumer 消费者
+	 */
 	public void zScan(String bigZsetKey, ScanOptions options, Consumer<Tuple> consumer) {
 		this.redisTemplate.execute((RedisConnection redisConnection) -> {
 			try (Cursor<Tuple> cursor = redisConnection.zScan(rawKey(bigZsetKey), options)) {
@@ -3625,7 +4055,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回有序集中，指定成员的分数值
 	 * https://www.redis.net.cn/order/3626.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @param defaultVal 默认值
 	 * @return 成员的分数值
@@ -3638,7 +4068,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回有序集中，指定成员的分数值
 	 * https://www.redis.net.cn/order/3626.html
-	 * @param key 键
+	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @return 成员的分数值
 	 */
@@ -3651,6 +4081,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
+	 * https://www.redis.net.cn/order/3627.html
+	 * @param key 缓存key
+	 * @param otherKey 另外一个缓存Key
+	 * @param destKey 目标缓存Key
+	 * @return 结果集中的成员数量
+	 */
 	public Long zUnionAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getZSetOperations().unionAndStore(key, otherKey, destKey);
@@ -3660,6 +4098,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
+	 * https://www.redis.net.cn/order/3627.html
+	 * @param key 缓存key
+	 * @param keys 其他缓存Key集合
+	 * @param destKey 目标缓存Key
+	 * @return 结果集中的成员数量
+	 */
 	public Long zUnionAndStore(String key, Collection<String> keys, String destKey) {
 		try {
 			return getZSetOperations().unionAndStore(key, keys, destKey);
@@ -3669,6 +4115,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
+	 * https://www.redis.net.cn/order/3627.html
+	 * @param key 缓存key
+	 * @param keys 其他缓存Key集合
+	 * @param destKey 目标缓存Key
+	 * @param aggregate 聚合方式（SUM, MIN, MAX）
+	 * @return 结果集中的成员数量
+	 */
 	public Long zUnionAndStore(String key, Collection<String> keys, String destKey, Aggregate aggregate) {
 		try {
 			return getZSetOperations().unionAndStore(key, keys, destKey, aggregate);
@@ -3678,6 +4133,16 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
+	 * https://www.redis.net.cn/order/3627.html
+	 * @param key 缓存key
+	 * @param keys 其他缓存Key集合
+	 * @param destKey 目标缓存Key
+	 * @param aggregate 聚合方式（SUM, MIN, MAX）
+ 	 * @param weights 权重
+	 * @return 结果集中的成员数量
+	 */
 	public Long zUnionAndStore(String key, Collection<String> keys, String destKey, Aggregate aggregate, Weights weights) {
 		try {
 			return getZSetOperations().unionAndStore(key, keys, destKey, aggregate, weights);
