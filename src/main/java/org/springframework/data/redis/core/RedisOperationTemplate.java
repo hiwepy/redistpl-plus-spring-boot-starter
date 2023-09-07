@@ -1965,6 +1965,21 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	public <HV> HV hmGetFor(String key, Class<HV> clazz) {
+		Map<Object, Object> map = this.hmGet(key);
+		if (Objects.nonNull(map)) {
+			try {
+				// hash 转 string
+				String valueStr = getObjectMapper().writeValueAsString(map);
+				// string 转 对象
+				return getObjectMapper().readValue(valueStr, clazz);
+			} catch (JsonProcessingException e) {
+				throw new RedisOperationException(e.getMessage());
+			}
+		}
+		return null;
+	}
+
 	public <HV> Map<Integer, HV> hmGetForInteger(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_INTEGER, valueMapper);
 	}
