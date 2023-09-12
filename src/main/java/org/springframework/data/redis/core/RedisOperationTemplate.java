@@ -671,7 +671,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param value 新的值
 	 * @return 转换成Double类型的对象
 	 */
-	public Double getDoubleAndSet(String key, Object value) {
+	public Double getDoubleAndSet(String key, Double value) {
 		return getForAndSet(key, value, TO_DOUBLE);
 	}
 
@@ -682,7 +682,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param value 新的值
 	 * @return 转换成Long类型的对象
 	 */
-	public Long getLongAndSet(String key, Object value) {
+	public Long getLongAndSet(String key, Long value) {
 		return getForAndSet(key, value, TO_LONG);
 	}
 
@@ -693,7 +693,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param value 新的值
 	 * @return 转换成Integer类型的对象
 	 */
-	public Integer getIntegerAndSet(String key, Object value) {
+	public Integer getIntegerAndSet(String key, Integer value) {
 		return getForAndSet(key, value, TO_INTEGER);
 	}
 
