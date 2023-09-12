@@ -2228,33 +2228,42 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}).collect(Collectors.toMap(kv -> MapUtils.getString(kv, identityHashKey), Function.identity()));
 	}
 
-	public List<Map<Object, Object>> hmMultiGetAll(Collection<Object> keys) {
+	public List<Map<Object, Object>> hGetAll(Collection<String> keys) {
+		return this.hGetAllFor(keys, entry -> (Map<Object, Object>) entry);
+	}
+
+	public <T> List<T> hGetAllFor(Collection<String> keys, Class<T> clazz) {
+		return this.hGetAllFor(keys, this.toObject(clazz));
+	}
+
+	public <T> List<T> hGetAllFor(Collection<String> keys, Function<Object, T> objectMapper) {
 		try {
 			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
 				keys.stream().forEach(key -> {
-					byte[] rawKey = rawKey(String.valueOf(key));
+					byte[] rawKey = rawKey(key);
 					connection.hGetAll(rawKey);
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
+			return result.stream().filter(Objects::nonNull)
+					.map(objectMapper)
+					.collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
 		}
 	}
 
-	public List<Object> hMultiGet(Collection<Object> keys, Object hashKey) {
+	public List<Map<Object, Object>> hmMultiGetAll(Collection<Object> keys, String redisPrefix) {
 		try {
 			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
-				byte[] rawHashKey = rawHashKey(hashKey);
 				keys.stream().forEach(key -> {
-					byte[] rawKey = rawKey(String.valueOf(key));
-					connection.hGet(rawKey, rawHashKey);
+					byte[] rawKey = rawKey(RedisKey.getKeyStr(redisPrefix, String.valueOf(key)));
+					connection.hGetAll(rawKey);
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().collect(Collectors.toList());
+			return result.stream().map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2289,21 +2298,23 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
-	public List<Map<Object, Object>> hmMultiGetAll(Collection<Object> keys, String redisPrefix) {
+	public List<Object> hMultiGet(Collection<Object> keys, Object hashKey) {
 		try {
 			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
+				byte[] rawHashKey = rawHashKey(hashKey);
 				keys.stream().forEach(key -> {
-					byte[] rawKey = rawKey(RedisKey.getKeyStr(redisPrefix, String.valueOf(key)));
-					connection.hGetAll(rawKey);
+					byte[] rawKey = rawKey(String.valueOf(key));
+					connection.hGet(rawKey, rawHashKey);
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
+			return result.stream().collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
 		}
 	}
+
 
 	public boolean hmMultiSet(String key, Collection<Object> hashKeys, Object value) {
 		if (CollectionUtils.isEmpty(hashKeys) || !StringUtils.hasText(key)) {
