@@ -1,6 +1,7 @@
 package org.springframework.data.redis.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -64,6 +65,42 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
     public static final RedisScript<Double> HDECR_BYFLOAT_SCRIPT = RedisScript.of(RedisLua.HDECR_BYFLOAT_SCRIPT, Double.class);
 
     public static final Function<Object, String> TO_STRING = member -> Objects.toString(member, null);
+
+
+	protected <T> Function<Object, T> toObject(Class<T> clazz) {
+		return value -> {
+			if(Objects.isNull(value)) {
+				return null;
+			}
+			if (value.getClass().isAssignableFrom(clazz)){
+				return clazz.cast(value);
+			}
+			try {
+				// hash 转 string
+				String valueStr = value instanceof String ? value.toString() : getObjectMapper().writeValueAsString(value);
+				// string 转 对象
+				return getObjectMapper().readValue(valueStr, clazz);
+			} catch (JsonProcessingException e) {
+				throw new RedisOperationException(e.getMessage());
+			}
+		};
+	}
+
+	protected <T> Function<Object, T> toObject(TypeReference<T> typeRef) {
+		return value -> {
+			if(Objects.isNull(value)) {
+				return null;
+			}
+			try {
+				// hash 转 string
+				String valueStr = value instanceof String ? value.toString() : getObjectMapper().writeValueAsString(value);
+				// string 转 对象
+				return getObjectMapper().readValue(valueStr, typeRef);
+			} catch (JsonProcessingException e) {
+				throw new RedisOperationException(e.getMessage());
+			}
+		};
+	}
 
     public static final Function<Object, Double> TO_DOUBLE = member -> {
 		if(Objects.isNull(member)) {
@@ -605,6 +642,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return getFor(key, this.toObject(clazz));
 	}
 
+	public <T> T getFor(String key, TypeReference<T> typeRef) {
+		return getFor(key, this.toObject(typeRef));
+	}
+
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
 	 * https://www.redis.net.cn/order/3545.html
@@ -710,6 +751,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return getForAndSet(key, value, this.toObject(clazz));
 	}
 
+	public <T> T getForAndSet(String key, Object value, TypeReference<T> typeRef) {
+		return getForAndSet(key, value, this.toObject(typeRef));
+	}
+
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
 	 * https://www.redis.net.cn/order/3547.html
@@ -782,23 +827,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return mGetFor(keys, this.toObject(clazz));
 	}
 
-	protected <T> Function<Object, T> toObject(Class<T> clazz) {
-		return value -> {
-			if(Objects.isNull(value)) {
-				return null;
-			}
-			if (value.getClass().isAssignableFrom(clazz)){
-				return clazz.cast(value);
-			}
-			try {
-				// hash 转 string
-				String valueStr = value instanceof String ? value.toString() : getObjectMapper().writeValueAsString(value);
-				// string 转 对象
-				return getObjectMapper().readValue(valueStr, clazz);
-			} catch (JsonProcessingException e) {
-				throw new RedisOperationException(e.getMessage());
-			}
-		};
+	public <T> List<T> mGetFor(Collection keys, TypeReference<T> typeRef) {
+		return mGetFor(keys, this.toObject(typeRef));
 	}
 
 	public <T> List<T> mGetFor(Collection keys, Function<Object, T> mapper) {
@@ -1192,6 +1222,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return lRangeFor(key, start, end, this.toObject(clazz));
 	}
 
+	public <T> List<T> lRangeFor(String key, long start, long end, TypeReference<T> typeRef) {
+		return lRangeFor(key, start, end, this.toObject(typeRef));
+	}
+
 	/**
 	 * 获取list缓存的，并指定转换器
 	 * @param key   键
@@ -1486,6 +1520,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		try {
 			List<Object> range = this.lLeftPop(key, count);
 			List<T> result = range.stream().map(this.toObject(clazz)).collect(Collectors.toList());
+			return result;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public <T> List<T> lLeftPop(String key, Integer count, TypeReference<T> typeRef) {
+		try {
+			List<Object> range = this.lLeftPop(key, count);
+			List<T> result = range.stream().map(this.toObject(typeRef)).collect(Collectors.toList());
 			return result;
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -2003,6 +2048,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return hGetFor(key, hashKey, this.toObject(clazz));
 	}
 
+	public <T> T hGetFor(String key, Object hashKey, TypeReference<T> typeRef) {
+		return hGetFor(key, hashKey, this.toObject(typeRef));
+	}
+
 	public <T> T hGetFor(String key, Object hashKey, Function<Object, T> mapper) {
 		Object rt = this.hGet(key, hashKey);
 		return Objects.nonNull(rt) ? mapper.apply(rt) : null;
@@ -2026,6 +2075,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <T> List<T> hGetFor(Collection<Object> keys, Object hashKey, Class<T> clazz) {
 		return hGetFor(keys, hashKey, this.toObject(clazz));
+	}
+
+	public <T> List<T> hGetFor(Collection<Object> keys, Object hashKey, TypeReference<T> typeRef) {
+		return hGetFor(keys, hashKey, this.toObject(typeRef));
 	}
 
 	public <T> List<T> hGetFor(Collection<Object> keys, Object hashKey, Function<Object, T> mapper) {
@@ -2076,12 +2129,25 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+	public <HV> HV hmGetFor(String key, TypeReference<HV> typeRef) {
+		Map<Object, Object> map = this.hmGet(key);
+		if (Objects.nonNull(map)) {
+			return this.toObject(typeRef).apply(map);
+
+		}
+		return null;
+	}
+
 	public <HV> Map<String, HV> hmGetForString(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_STRING, valueMapper);
 	}
 
 	public <HV> Map<String, HV> hmGetForString(String key, Class<HV> clazz) {
 		return this.hmGetFor(key, TO_STRING, clazz);
+	}
+
+	public <HV> Map<String, HV> hmGetForString(String key, TypeReference<HV> typeRef) {
+		return this.hmGetFor(key, TO_STRING, typeRef);
 	}
 
 	public <HV> Map<Integer, HV> hmGetForInteger(String key, Function<Object, HV> valueMapper) {
@@ -2092,6 +2158,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, TO_INTEGER, clazz);
 	}
 
+	public <HV> Map<Integer, HV> hmGetForInteger(String key, TypeReference<HV> typeRef) {
+		return this.hmGetFor(key, TO_INTEGER, typeRef);
+	}
+
 	public <HV> Map<Long, HV> hmGetForLong(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_LONG, valueMapper);
 	}
@@ -2100,12 +2170,20 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, TO_LONG, clazz);
 	}
 
+	public <HV> Map<Long, HV> hmGetForLong(String key, TypeReference<HV> typeRef) {
+		return this.hmGetFor(key, TO_LONG, typeRef);
+	}
+
 	public <HV> Map<Double, HV> hmGetForDouble(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_DOUBLE, valueMapper);
 	}
 
 	public <HV> Map<Double, HV> hmGetForDouble(String key, Class<HV> clazz) {
 		return this.hmGetFor(key, TO_DOUBLE, clazz);
+	}
+
+	public <HV> Map<Double, HV> hmGetForDouble(String key, TypeReference<HV> typeRef) {
+		return this.hmGetFor(key, TO_DOUBLE, typeRef);
 	}
 
 	public Map<String, String> hmGetForString(String key) {
@@ -2136,6 +2214,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		Map<Object, Object> map = this.hmGet(key);
 		if (Objects.nonNull(map)) {
 			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()), entry -> this.toObject(clazz).apply(entry.getValue())));
+		}
+		return Collections.emptyMap();
+	}
+
+	public <HK, HV> Map<HK, HV> hmGetFor(String key, Function<Object, HK> keyMapper, TypeReference<HV> typeRef) {
+		Map<Object, Object> map = this.hmGet(key);
+		if (Objects.nonNull(map)) {
+			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()), entry -> this.toObject(typeRef).apply(entry.getValue())));
 		}
 		return Collections.emptyMap();
 	}
@@ -2226,6 +2312,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hGetAllFor(keys, this.toObject(clazz));
 	}
 
+	public <T> List<T> hGetAllFor(Collection<String> keys, TypeReference<T> typeRef) {
+		return this.hGetAllFor(keys, this.toObject(typeRef));
+	}
+
 	public <T> List<T> hGetAllFor(Collection<String> keys, Function<Object, T> objectMapper) {
 		try {
 			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
@@ -2278,6 +2368,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <T> List<T> hMultiGetFor(Collection<Object> keys, Object hashKey, Class<T> clazz) {
 		return hMultiGetFor(keys, hashKey, this.toObject(clazz));
+	}
+
+	public <T> List<T> hMultiGetFor(Collection<Object> keys, Object hashKey, TypeReference<T> typeRef) {
+		return hMultiGetFor(keys, hashKey, this.toObject(typeRef));
 	}
 
 	public <T> List<T> hMultiGetFor(Collection<Object> keys, Object hashKey, Function<Object, T> mapper) {
@@ -2787,6 +2881,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return sGetFor(key, this.toObject(clazz));
 	}
 
+	public <T> Set<T> sGetFor(String key, TypeReference<T> typeRef) {
+		return sGetFor(key, this.toObject(typeRef));
+	}
+
 	public <T> Set<T> sGetFor(String key, Function<Object, T> mapper) {
 		Set<Object> members = this.sGet(key);
 		if (Objects.nonNull(members)) {
@@ -2958,6 +3056,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return sRandomFor(key, count, this.toObject(clazz));
 	}
 
+	public <T> List<T> sRandomFor(String key, long count, TypeReference<T> typeRef) {
+		return sRandomFor(key, count, this.toObject(typeRef));
+	}
+
 	public <T> List<T> sRandomFor(String key, long count, Function<Object, T> mapper) {
 		List<Object> members = this.sRandom(key, count);
 		if (Objects.nonNull(members)) {
@@ -3000,6 +3102,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <T> Set<T> sRandomDistinctFor(String key, long count, Class<T> clazz) {
 		return sRandomDistinctFor(key, count, this.toObject(clazz));
+	}
+
+	public <T> Set<T> sRandomDistinctFor(String key, long count, TypeReference<T> typeRef) {
+		return sRandomDistinctFor(key, count, this.toObject(typeRef));
 	}
 
 	public <T> Set<T> sRandomDistinctFor(String key, long count, Function<Object, T> mapper) {
@@ -3621,6 +3727,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return zRangeFor(key, start, end, this.toObject(clazz));
 	}
 
+	public <T> Set<T> zRangeFor(String key, long start, long end, TypeReference<T> typeRef) {
+		return zRangeFor(key, start, end, this.toObject(typeRef));
+	}
+
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员
 	 * https://www.redis.net.cn/order/3615.html
@@ -3682,6 +3792,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <T> Set<T> zRangeByScoreFor(String key, double min, double max, Class<T> clazz) {
 		return zRangeByScoreFor(key, min, max, this.toObject(clazz));
+	}
+
+	public <T> Set<T> zRangeByScoreFor(String key, double min, double max, TypeReference<T> typeRef) {
+		return zRangeByScoreFor(key, min, max, this.toObject(typeRef));
 	}
 
 	/**
@@ -3847,6 +3961,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return zRevrangeFor(key, start, end, this.toObject(clazz));
 	}
 
+	public <T> Set<T> zRevrangeFor(String key, long start, long end, TypeReference<T> typeRef) {
+		return zRevrangeFor(key, start, end, this.toObject(typeRef));
+	}
+
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
 	 * https://www.redis.net.cn/order/3623.html
@@ -3957,6 +4075,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public <T> Set<T> zRevrangeForByScore(String key, double min, double max, Class<T> clazz) {
 		return zRevrangeForByScore(key, min, max, this.toObject(clazz));
+	}
+
+	public <T> Set<T> zRevrangeForByScore(String key, double min, double max, TypeReference<T> typeRef) {
+		return zRevrangeForByScore(key, min, max, this.toObject(typeRef));
 	}
 
 	/**
