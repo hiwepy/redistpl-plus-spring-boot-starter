@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.core.io.Resource;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.DataType;
@@ -66,6 +67,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
     public static final Function<Object, String> TO_STRING = member -> Objects.toString(member, null);
 
+	public static final MapTypeReference MAP_TYPE = new MapTypeReference();
+
+	public static final ListTypeReference LIST_TYPE = new ListTypeReference();
+
+	public static class MapTypeReference extends TypeReference<Map<String, Object>> {
+
+	}
+
+	public static class ListTypeReference extends TypeReference<List<Object>> {
+
+	}
 
 	protected <T> Function<Object, T> toObject(Class<T> clazz) {
 		return value -> {
@@ -630,6 +642,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
+	public Map<String, Object> getMap(String key) {
+		return getFor(key, this.toObject(MAP_TYPE));
+	}
+
+	public List<Object> getList(String key) {
+		return getFor(key, this.toObject(LIST_TYPE));
+	}
+
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
 	 * https://www.redis.net.cn/order/3545.html
@@ -821,6 +841,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public List<String> mGetString(Collection keys) {
 		return mGetFor(keys, TO_STRING);
+	}
+
+	public List<Map<String, Object>> mGetMap(Collection keys) {
+		return mGetFor(keys, this.toObject(MAP_TYPE));
+	}
+
+	public List<List<Object>> mGetList(Collection keys) {
+		return mGetFor(keys, this.toObject(LIST_TYPE));
 	}
 
 	public <T> List<T> mGetFor(Collection keys, Class<T> clazz) {
@@ -1206,6 +1234,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public List<Integer> lRangeInteger(String key, long start, long end) {
 		return lRangeFor(key, start, end, TO_INTEGER);
+	}
+
+	public List<Map<String, Object>> lRangeMap(String key, long start, long end) {
+		return lRangeFor(key, start, end, this.toObject(MAP_TYPE));
+	}
+
+	public List<List<Object>> lRangeList(String key, long start, long end) {
+		return lRangeFor(key, start, end, this.toObject(LIST_TYPE));
 	}
 
 	/**
