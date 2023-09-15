@@ -2076,6 +2076,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+	public <HV> Map<String, HV> hmGetForString(String key, Function<Object, HV> valueMapper) {
+		return this.hmGetFor(key, TO_STRING, valueMapper);
+	}
+
+	public <HV> Map<String, HV> hmGetForString(String key, Class<HV> clazz) {
+		return this.hmGetFor(key, TO_STRING, clazz);
+	}
+
 	public <HV> Map<Integer, HV> hmGetForInteger(String key, Function<Object, HV> valueMapper) {
 		return this.hmGetFor(key, TO_INTEGER, valueMapper);
 	}
@@ -2098,6 +2106,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <HV> Map<Double, HV> hmGetForDouble(String key, Class<HV> clazz) {
 		return this.hmGetFor(key, TO_DOUBLE, clazz);
+	}
+
+	public Map<String, String> hmGetForString(String key) {
+		return this.hmGetFor(key, TO_STRING, TO_STRING);
 	}
 
 	public Map<Integer, Integer> hmGetForInteger(String key) {
