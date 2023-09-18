@@ -2158,16 +2158,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <HV> HV hmGetFor(String key, Class<HV> clazz) {
 		Map<Object, Object> map = this.hmGet(key);
-		if (Objects.nonNull(map)) {
+		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
 			return this.toObject(clazz).apply(map);
-
 		}
 		return null;
 	}
 
 	public <HV> HV hmGetFor(String key, TypeReference<HV> typeRef) {
 		Map<Object, Object> map = this.hmGet(key);
-		if (Objects.nonNull(map)) {
+		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
 			return this.toObject(typeRef).apply(map);
 
 		}
@@ -2248,7 +2247,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <HK, HV> Map<HK, HV> hmGetFor(String key, Function<Object, HK> keyMapper, Class<HV> clazz) {
 		Map<Object, Object> map = this.hmGet(key);
-		if (Objects.nonNull(map)) {
+		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
 			return map.entrySet().stream().collect(Collectors.toMap(entry -> keyMapper.apply(entry.getKey()), entry -> this.toObject(clazz).apply(entry.getValue())));
 		}
 		return Collections.emptyMap();
