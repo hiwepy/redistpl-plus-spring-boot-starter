@@ -2310,6 +2310,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				return Collections.emptyMap();
 			}
 			List<Object> result = getHashOperations().multiGet(key, hashKeys);
+			log.debug("multiGet key:{}, hashKeys: {},  clazz: {}, ", key, hashKeys, result);
+			if (Objects.isNull(result)) {
+				return Collections.emptyMap();
+			}
+			if (result.stream().allMatch(Objects::isNull)) {
+				return Collections.emptyMap();
+			}
 			Map<Object, Object> ans = new HashMap<>(hashKeys.size());
 			int index = 0;
 			for (Object hashKey : hashKeys) {
