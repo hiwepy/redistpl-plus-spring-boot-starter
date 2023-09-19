@@ -2306,6 +2306,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Map<Object, Object> hmMultiGet(String key, Collection<Object> hashKeys) {
 		try {
+			if (CollectionUtils.isEmpty(hashKeys)) {
+				return Collections.emptyMap();
+			}
 			List<Object> result = getHashOperations().multiGet(key, hashKeys);
 			Map<Object, Object> ans = new HashMap<>(hashKeys.size());
 			int index = 0;
@@ -2318,6 +2321,22 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
 		}
+	}
+
+	public <T> T hmMultiGetFor(String key, Collection<Object> hashKeys, Class<T> clazz) {
+		Map<Object, Object> map = this.hmMultiGet(key, hashKeys);
+		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
+			return this.toObject(clazz).apply(map);
+		}
+		return null;
+	}
+
+	public <T> T hmMultiGetFor(String key, Collection<Object> hashKeys, TypeReference<T> typeRef) {
+		Map<Object, Object> map = this.hmMultiGet(key, hashKeys);
+		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
+			return this.toObject(typeRef).apply(map);
+		}
+		return null;
 	}
 
 	public List<Map<Object, Object>> hmMultiGet(Collection<String> keys, Collection<Object> hashKeys) {
