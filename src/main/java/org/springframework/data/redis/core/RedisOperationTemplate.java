@@ -633,15 +633,44 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public Map<String, Object> getMap(String key) {
+		Object obj = this.get(key);
+		if (Objects.nonNull(obj)) {
+			if(obj instanceof Map){
+				return (Map<String, Object>) obj;
+			}
+			return this.toObject(TypeReferences.MAP_TYPE).apply(obj);
+		}
+
 		return getFor(key, this.toObject(TypeReferences.MAP_TYPE));
 	}
 
 	public List<Object> getList(String key) {
-		return getFor(key, this.toObject(TypeReferences.LIST_TYPE));
+		Object obj = this.get(key);
+		if (Objects.nonNull(obj)) {
+			if(obj instanceof List){
+				return (List<Object>) obj;
+			}
+			return this.toObject(TypeReferences.LIST_TYPE).apply(obj);
+		}
+		return null;
 	}
 
 	public <T> List<T> getList(String key, Class<T> clazz) {
-		return getFor(key, this.toObject(TypeReferences.getListType(clazz)));
+		// 1、获取缓存中的对象
+		Object obj = this.get(key);
+		// 2、判断对象是否为空
+		if (Objects.nonNull(obj)) {
+			// 如果是List类型，则转换元素类型
+			if(obj instanceof List){
+				List<Object> objList = (List<Object>) obj;
+				if(CollectionUtils.isEmpty(objList)){
+					return Lists.newArrayList();
+				}
+				return objList.stream().map(this.toObject(clazz)).collect(Collectors.toList());
+			}
+			return this.toObject(TypeReferences.getListType(clazz)).apply(obj);
+		}
+		return null;
 	}
 
 	/**
