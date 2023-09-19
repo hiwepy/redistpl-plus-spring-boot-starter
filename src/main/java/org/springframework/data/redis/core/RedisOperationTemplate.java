@@ -19,6 +19,7 @@ import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.util.TypeReferences;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -67,17 +68,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
     public static final Function<Object, String> TO_STRING = member -> Objects.toString(member, null);
 
-	public static final MapTypeReference MAP_TYPE = new MapTypeReference();
-
-	public static final ListTypeReference LIST_TYPE = new ListTypeReference();
-
-	public static class MapTypeReference extends TypeReference<Map<String, Object>> {
-
-	}
-
-	public static class ListTypeReference extends TypeReference<List<Object>> {
-
-	}
 
 	protected <T> Function<Object, T> toObject(Class<T> clazz) {
 		return value -> {
@@ -643,11 +633,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public Map<String, Object> getMap(String key) {
-		return getFor(key, this.toObject(MAP_TYPE));
+		return getFor(key, this.toObject(TypeReferences.MAP_TYPE));
 	}
 
 	public List<Object> getList(String key) {
-		return getFor(key, this.toObject(LIST_TYPE));
+		return getFor(key, this.toObject(TypeReferences.LIST_TYPE));
+	}
+
+	public <T> List<T> getList(String key, Class<T> clazz) {
+		return getFor(key, this.toObject(TypeReferences.getListType(clazz)));
 	}
 
 	/**
@@ -844,11 +838,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public List<Map<String, Object>> mGetMap(Collection keys) {
-		return mGetFor(keys, this.toObject(MAP_TYPE));
+		return mGetFor(keys, this.toObject(TypeReferences.MAP_TYPE));
 	}
 
 	public List<List<Object>> mGetList(Collection keys) {
-		return mGetFor(keys, this.toObject(LIST_TYPE));
+		return mGetFor(keys, this.toObject(TypeReferences.LIST_TYPE));
 	}
 
 	public <T> List<T> mGetFor(Collection keys, Class<T> clazz) {
@@ -1237,11 +1231,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public List<Map<String, Object>> lRangeMap(String key, long start, long end) {
-		return lRangeFor(key, start, end, this.toObject(MAP_TYPE));
+		return lRangeFor(key, start, end, this.toObject(TypeReferences.MAP_TYPE));
 	}
 
 	public List<List<Object>> lRangeList(String key, long start, long end) {
-		return lRangeFor(key, start, end, this.toObject(LIST_TYPE));
+		return lRangeFor(key, start, end, this.toObject(TypeReferences.LIST_TYPE));
 	}
 
 	/**
