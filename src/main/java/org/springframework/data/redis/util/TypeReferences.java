@@ -2,6 +2,7 @@ package org.springframework.data.redis.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,13 +46,41 @@ public final class TypeReferences {
 
     }
 
+
+    public static class JavaTypeReference extends TypeReference<Type> {
+
+        protected Type _type;
+        public JavaTypeReference(Type type) {
+            _type = type;
+        }
+
+        @Override
+        public Type getType() {
+            return _type;
+        }
+    }
+
     private static final Map<String, TypeReference<?>> typeReferenceCache = new ConcurrentHashMap<String, TypeReference<?>>();
     private static final Map<String, TypeReference<?>> listTypeReferenceCache = new ConcurrentHashMap<String, TypeReference<?>>();
+    private static final Map<Type, TypeReference<?>> javaTypeReferenceCache = new ConcurrentHashMap<Type, TypeReference<?>>();
 
     public static <T> TypeReference<T> getType(Class<T> clazz){
         TypeReference<?> typeReference = typeReferenceCache.get(clazz.getName());
         if(Objects.isNull(typeReference)){
-            typeReferenceCache.put(clazz.getName(), new TypeReference<T>() {});
+            typeReference = new TypeReference<T>() {};
+            typeReferenceCache.put(clazz.getName(), typeReference);
+        }
+        return (TypeReference<T>) typeReference;
+    }
+
+    public static <T> TypeReference<T> getType(Type valueType){
+        if (valueType instanceof Class<?>) {
+            return getType((Class<T>) valueType);
+        }
+        TypeReference<?> typeReference = javaTypeReferenceCache.get(valueType);
+        if(Objects.isNull(typeReference)){
+            typeReference = new JavaTypeReference(valueType);
+            javaTypeReferenceCache.put(valueType, typeReference);
         }
         return (TypeReference<T>) typeReference;
     }
@@ -59,7 +88,8 @@ public final class TypeReferences {
     public static <T> TypeReference<List<T>> getListType(Class<T> clazz){
         TypeReference<?> typeReference = listTypeReferenceCache.get(clazz.getName());
         if(Objects.isNull(typeReference)){
-            listTypeReferenceCache.put(clazz.getName(), new TypeReference<List<T>>() {});
+            typeReference = new TypeReference<List<T>>() {};
+            listTypeReferenceCache.put(clazz.getName(), typeReference);
         }
         return (TypeReference<List<T>>) typeReference;
     }
