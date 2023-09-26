@@ -19,6 +19,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.util.ObjectMappers;
 import org.springframework.data.redis.util.TypeReferences;
+import org.springframework.data.redis.util.Values;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -600,8 +601,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		// 2、判断对象是否为空
 		if (Objects.nonNull(obj)) {
 			// 如果是List类型，则转换元素类型
-			if(obj instanceof List){
-				List<Object> objList = (List<Object>) obj;
+			if(obj instanceof Collection){
+				Collection<Object> objList = (Collection<Object>) obj;
 				if(CollectionUtils.isEmpty(objList)){
 					return Lists.newArrayList();
 				}
@@ -2348,9 +2349,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().filter(Objects::nonNull)
-					.map(objectMapper)
-					.collect(Collectors.toList());
+			return result.stream().filter(Values::nonNull).map(objectMapper).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2366,7 +2365,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
+			return result.stream().filter(Values::nonNull).map(mapper -> (Map<Object, Object>) mapper).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2415,7 +2414,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				});
 				return null;
 			}, this.valueSerializer());
-			return result.stream().collect(Collectors.toList());
+			return result.stream().filter(Values::nonNull).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2911,7 +2910,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public <T> Set<T> sGetFor(String key, Function<Object, T> mapper) {
 		Set<Object> members = this.sGet(key);
 		if (Objects.nonNull(members)) {
-			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
+			return members.stream().filter(Values::nonNull).map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
 		}
 		return null;
 	}
@@ -3766,8 +3765,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public <T> Set<T> zRangeFor(String key, long  start, long end, Function<Object, T> mapper) {
 		Set<Object> members = this.zRange(key, start, end);
 		if(Objects.nonNull(members)) {
-			return members.stream().map(mapper)
-					.collect(Collectors.toCollection(LinkedHashSet::new));
+			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
 		}
 		return null;
 	}
@@ -3832,8 +3830,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public <T> Set<T> zRangeByScoreFor(String key, double min, double max, Function<Object, T> mapper) {
 		Set<Object> members = this.zRangeByScore(key, min, max);
 		if(Objects.nonNull(members)) {
-			return members.stream().map(mapper)
-					.collect(Collectors.toCollection(LinkedHashSet::new));
+			return members.stream().map(mapper).collect(Collectors.toCollection(LinkedHashSet::new));
 		}
 		return null;
 	}

@@ -38,3 +38,4 @@ target
 transaction-logs
 .flattened-pom.xml
 secrets.yml
+!/src/main/java/org/springframework/data/redis/core/RedisOperationTemplate.java
