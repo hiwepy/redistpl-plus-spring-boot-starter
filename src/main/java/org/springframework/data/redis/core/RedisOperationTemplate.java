@@ -2421,6 +2421,41 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	public List<Map<String, Object>> hmMultiGetAll(Collection<Object> keys, String redisPrefix) {
+		try {
+			List<Object> result = getOperations().executePipelined((RedisConnection connection) -> {
+				keys.stream().forEach(key -> {
+					byte[] rawKey = rawKey(RedisKey.getKeyStr(redisPrefix, String.valueOf(key)));
+					connection.hGetAll(rawKey);
+				});
+				return null;
+			}, this.valueSerializer());
+			return result.stream().map(mapper -> (Map<String, Object>) mapper).collect(Collectors.toList());
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	public boolean hmMultiSet(String key, Collection<Object> hashKeys, Object value) {
+		if (CollectionUtils.isEmpty(hashKeys) || !StringUtils.hasText(key)) {
+			return false;
+		}
+		try {
+			getOperations().executePipelined((RedisConnection connection) -> {
+				byte[] rawKey = rawKey(key);
+				byte[] rawHashValue = rawHashValue(value);
+				for (Object hashKey : hashKeys) {
+					connection.hSet(rawKey, rawHashKey(hashKey), rawHashValue);
+				}
+				return null;
+			});
+			return true;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
 
 	/**
 	 * HashSet
