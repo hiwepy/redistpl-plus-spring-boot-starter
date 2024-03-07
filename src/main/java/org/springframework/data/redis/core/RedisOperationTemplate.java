@@ -2266,7 +2266,6 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
         }
     }
 
-
 	public List<Map<Object, Object>> hmGet(Collection<String> keys, String redisPrefix) {
 		if (CollectionUtils.isEmpty(keys)) {
 			return Lists.newArrayList();
@@ -2311,20 +2310,24 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public <HK, HV> HV hmMultiGetFor(String key, Collection<Object> hashKeys, Class<HV> clazz) {
-		Map<Object, Object> map = this.hmMultiGet(key, hashKeys);
-		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
-			return ObjectMappers.getMapperFor( objectMapper, clazz).apply(map);
+	public <HK, HV> Map<HK, HV> hmMultiGetFor(String key, Collection<HK> hashKeys, Class<HV> hashValueClass) {
+		Map<HK, Object> map = this.hmMultiGet(key, hashKeys);
+		if (Objects.isNull(map)) {
+			return Collections.emptyMap();
 		}
-		return null;
+		return map.entrySet().stream().map(entry -> {
+			return new AbstractMap.SimpleEntry<>(entry.getKey(), ObjectMappers.getMapperFor( objectMapper, hashValueClass).apply(entry.getValue()));
+		}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
-	public <HK, HV> HV hmMultiGetFor(String key, Collection<HK> hashKeys, TypeReference<HV> typeRef) {
+	public <HK, HV> Map<HK, HV>  hmMultiGetFor(String key, Collection<HK> hashKeys, TypeReference<HV> typeRef) {
 		Map<HK, Object> map = this.hmMultiGet(key, hashKeys);
-		if (Objects.nonNull(map) && !CollectionUtils.isEmpty(map)) {
-			return ObjectMappers.getMapperFor( objectMapper, typeRef).apply(map);
+		if (Objects.isNull(map)) {
+			return Collections.emptyMap();
 		}
-		return null;
+		return map.entrySet().stream().map(entry -> {
+			return new AbstractMap.SimpleEntry<>(entry.getKey(), ObjectMappers.getMapperFor( objectMapper, typeRef).apply(entry.getValue()));
+		}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public <HK> List<Map<HK, Object>> hmMultiGet(Collection<String> keys, Collection<HK> hashKeys) {
