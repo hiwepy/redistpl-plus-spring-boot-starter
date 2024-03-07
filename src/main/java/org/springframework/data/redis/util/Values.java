@@ -19,7 +19,7 @@ public class Values {
         if(value instanceof Map){
             return !CollectionUtils.isEmpty((Map) value);
         }
-        return true;
+        return Boolean.TRUE;
     }
 
 }
