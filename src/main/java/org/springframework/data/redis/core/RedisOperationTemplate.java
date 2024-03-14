@@ -2315,7 +2315,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		if (Objects.isNull(map)) {
 			return Collections.emptyMap();
 		}
-		return map.entrySet().stream().map(entry -> {
+		return map.entrySet().stream().filter(entry -> Objects.nonNull(entry.getValue())).map(entry -> {
 			return new AbstractMap.SimpleEntry<>(entry.getKey(), ObjectMappers.getMapperFor( objectMapper, hashValueClass).apply(entry.getValue()));
 		}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
@@ -2325,7 +2325,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		if (Objects.isNull(map)) {
 			return Collections.emptyMap();
 		}
-		return map.entrySet().stream().map(entry -> {
+		return map.entrySet().stream().filter(entry -> Objects.nonNull(entry.getValue())).map(entry -> {
 			return new AbstractMap.SimpleEntry<>(entry.getKey(), ObjectMappers.getMapperFor( objectMapper, typeRef).apply(entry.getValue()));
 		}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
@@ -2343,7 +2343,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		if (CollectionUtils.isEmpty(keys) || CollectionUtils.isEmpty(hashKeys)) {
 			return Maps.newHashMap();
 		}
-		return keys.parallelStream().map(key -> {
+		return keys.parallelStream().filter(StringUtils::hasText).map(key -> {
 			return this.hmMultiGet(key, hashKeys);
 		}).collect(Collectors.toMap(kv -> MapUtils.getString(kv, identityHashKey), Function.identity()));
 	}
@@ -2402,7 +2402,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public <HK, HV> List<HV> hMultiGetFor(Collection<String> keys, HK hashKey, Function<Object, HV> valueMapper) {
 		List<Object> members = this.hMultiGet(keys, hashKey);
 		if (Objects.nonNull(members)) {
-			return members.stream().map(valueMapper).collect(Collectors.toList());
+			return members.stream().filter(Objects::nonNull).map(valueMapper).collect(Collectors.toList());
 		}
 		return null;
 	}
