@@ -1,5 +1,8 @@
 package com.fasterxml.jackson.databind.json;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -10,7 +13,10 @@ import hitool.core.lang3.time.DateFormats;
 import org.springframework.core.Ordered;
 import redistpl.plus.spring.boot.RedisJacksonProperties;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,9 +50,39 @@ public class Jsr310JsonMapperBuilderCustomizer implements JsonMapperBuilderCusto
         return new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(pattern));
     }
 
-    public LocalDateTimeDeserializer localDateTimeDeserializer() {
+    public MyLocalDateTimeDeserializer localDateTimeDeserializer() {
         String pattern = Optional.ofNullable(this.jacksonProperties.getDateFormat()).orElse(DateFormats.DATE_LONGFORMAT);
-        return new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(pattern));
+        return new MyLocalDateTimeDeserializer(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    /**
+     * 反序列化
+     */
+    public static class MyLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+
+        public LocalDateTimeDeserializer dateTimeDeserializer;
+
+        public MyLocalDateTimeDeserializer(DateTimeFormatter formatter) {
+            this.dateTimeDeserializer = new LocalDateTimeDeserializer(formatter);
+        }
+
+        protected JsonDeserializer<LocalDateTime> withDateFormat(DateTimeFormatter formatter) {
+            return new MyLocalDateTimeDeserializer(formatter);
+        }
+
+        @Override
+        public LocalDateTime deserialize(JsonParser parser, DeserializationContext deserializationContext)
+                throws IOException {
+            if (parser.hasToken(JsonToken.VALUE_NUMBER_INT)) {
+                long timestamp = parser.getValueAsLong();
+                if (timestamp > 0) {
+                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+                } else {
+                    return null;
+                }
+            }
+            return dateTimeDeserializer.deserialize(parser, deserializationContext);
+        }
     }
 
     /**
