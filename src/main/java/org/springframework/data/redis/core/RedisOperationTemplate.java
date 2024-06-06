@@ -2446,8 +2446,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
-	 * HashSet
-	 *
+	 * 缓存Hash对象
+	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
 	 * @param key 缓存key
 	 * @param map 对应多个键值
 	 * @return true 成功 false 失败
@@ -2464,7 +2464,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * HashSet 并设置时间
-	 *
+	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
 	 * @param key     键
 	 * @param map     对应多个键值
 	 * @param seconds 时间(秒)
@@ -2483,6 +2483,16 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @param map
+	 * @param timeout
+	 * @return
+	 * @param <HK>
+	 * @param <HV>
+	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
+	 */
 	public <HK, HV> boolean hmSet(String key, Map<HK, HV> map, Duration timeout) {
 		try {
 			getHashOperations().putAll(key, map);
