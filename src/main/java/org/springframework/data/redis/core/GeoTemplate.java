@@ -126,7 +126,7 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
  		return getBoundGeoOperations().add(locations);
  	}
 
- 	public Long geoAdd(Point point, Object member) {
+ 	public <M> Long geoAdd(Point point, M member) {
  		return getBoundGeoOperations().add(point, member);
  	}
 
@@ -141,26 +141,25 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
      * @param latitude  用户最新位置纬度
 	 * @return 添加成功的元素个数
      */
-    public Long geoAdd(String member, double longitude, double latitude) {
+    public <M> Long geoAdd(M member, double longitude, double latitude) {
     	// 例：89 118.803805,32.060168
         Point point = new Point(longitude, latitude);
         return getBoundGeoOperations().add(point, member);
     }
 
-    public Distance distance(String uid1, String uid2) {
+    public <M> Distance distance(M member1, M member2) {
     	// 例：89 118.803805,32.060168
-    	Distance distance = boundGeoOperations.distance(uid1, uid2);
-    	log.info("UserId {} >> UserId {} . distance = {}{}", uid1, uid2, distance.getValue(), distance.getUnit());
-    	System.out.println(distance);
+    	Distance distance = boundGeoOperations.distance(member1, member2);
+    	log.info("member1 {} >> member2 {} . distance = {}{}", member1, member2, distance.getValue(), distance.getUnit());
     	return distance;
     }
 
-    public double distanceValue(String uid1, String uid2) {
-    	Distance distance = this.distance(uid1, uid2);
+    public <M> double distanceValue(M member1, M member2) {
+    	Distance distance = this.distance(member1, member2);
     	return distance.getValue();
     }
 
-    public GeoResults<GeoLocation<Object>> getCircleUsersByDistance(String uid, double distance){
+    public <M> GeoResults<GeoLocation<Object>> getCircleUsersByDistance(M member, double distance){
 
     	// 1.1、设置geo查询参数
         RedisGeoCommands.GeoRadiusCommandArgs geoRadiusArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs();
@@ -170,16 +169,16 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
         geoRadiusArgs.sortAscending();
 
         // 2、根据给定地理位置获取指定范围内的地理位置集合
-        GeoResults<GeoLocation<Object>> geoResults = boundGeoOperations.radius(uid, new Distance(distance), geoRadiusArgs);
+        GeoResults<GeoLocation<Object>> geoResults = boundGeoOperations.radius(member, new Distance(distance), geoRadiusArgs);
 
     	return geoResults;
 
     }
 
-    public <T> List<T> getCircleUsersByDistance(String uid, double distance, Function<GeoResult<GeoLocation<Object>>, T> mapper){
+    public <T> List<T> getCircleUsersByDistance(String member, double distance, Function<GeoResult<GeoLocation<Object>>, T> mapper){
 
         // 1、根据给定地理位置获取指定范围内的地理位置集合
-        GeoResults<GeoLocation<Object>> geoResults = this.getCircleUsersByDistance(uid, distance);
+        GeoResults<GeoLocation<Object>> geoResults = this.getCircleUsersByDistance(member, distance);
 
         // 2、解析结果判断
         List<GeoResult<GeoLocation<Object>>> geoResultList = geoResults.getContent();
@@ -190,10 +189,10 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
 
     }
 
-    public GeoResults<GeoLocation<Object>> getCircleUsersByRadius(String uid, double radius){
+    public GeoResults<GeoLocation<Object>> getCircleUsersByRadius(String member, double radius){
 
     	// 1、根据Uid查询指定Uid对应坐标点指定范围内的用户
-        Circle within = new Circle(boundGeoOperations.position(uid).get(0), radius);
+        Circle within = new Circle(boundGeoOperations.position(member).get(0), radius);
         // 1.1、设置geo查询参数
         RedisGeoCommands.GeoRadiusCommandArgs geoRadiusArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs();
         // 1.2、查询返回结果包括距离和坐标
@@ -207,9 +206,9 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
     	return geoResults;
     }
 
-    public <T> List<T> getCircleUsersByRadius(String uid, double radius, Function<GeoResult<GeoLocation<Object>>, T> mapper){
+    public <T> List<T> getCircleUsersByRadius(String member, double radius, Function<GeoResult<GeoLocation<Object>>, T> mapper){
         // 1、执行查询操作
-        GeoResults<GeoLocation<Object>> geoResults = this.getCircleUsersByRadius(uid, radius);
+        GeoResults<GeoLocation<Object>> geoResults = this.getCircleUsersByRadius(member, radius);
         // 2、解析结果判断
         List<GeoResult<GeoLocation<Object>>> geoResultList = geoResults.getContent();
         if (CollectionUtils.isEmpty(geoResultList)) {
