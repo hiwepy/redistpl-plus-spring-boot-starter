@@ -25,7 +25,8 @@ public class ObjectMappers {
 
     /**
      * 单独初始化ObjectMapper，不使用全局对象，保持缓存序列化的独立配置
-     * @return ObjectMapper
+     * @param customizers 自定义配置
+     * @return ObjectMapper 对象
      */
     public static ObjectMapper defaultObjectMapper(List<JsonMapperBuilderCustomizer> customizers) {
 

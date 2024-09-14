@@ -51,27 +51,37 @@ public class RedisBeanSerializerModifier extends BeanSerializerModifier {
         return beanProperties;
     }
 
-    // 判断是否是对象类型
+    /**
+     * 判断是否是对象类型
+     * @param clazz 类型
+     * @return 是否是对象类型
+     */
     private boolean isObjectType(Class<?> clazz) {
         return !clazz.isPrimitive() && clazz.isAssignableFrom(Object.class) && ClassUtils.isCustomClass(clazz);
     }
 
     /**
-     * 1、是否是集合
+     * 是否是集合类型
+     * @param clazz 类型
+     * @return 是否是集合类型
      */
     protected boolean isArrayType(Class<?> clazz) {
         return clazz.isArray() || Collection.class.isAssignableFrom(clazz);
     }
 
     /**
-     * 2、是否是String
+     * 是否是String
+     * @param clazz 类型
+     * @return 是否是String
      */
     protected boolean isStringType(Class<?> clazz) {
         return CharSequence.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz);
     }
 
     /**
-     * 3、是否是Date
+     * 是否是Date
+     * @param clazz 类型
+     * @return 是否是Date
      */
     protected boolean isDateType(Class<?> clazz) {
         return Date.class.isAssignableFrom(clazz) || java.sql.Date.class.isAssignableFrom(clazz)
@@ -81,14 +91,18 @@ public class RedisBeanSerializerModifier extends BeanSerializerModifier {
     }
 
     /**
-     * 4、是否是数值类型
+     * 是否是数值类型
+     * @param clazz 类型
+     * @return 是否是数值类型
      */
     protected boolean isNumberType(Class<?> clazz) {
         return Number.class.isAssignableFrom(clazz);
     }
 
     /**
-     * 5、是否是boolean
+     * 是否是boolean
+     * @param clazz 类型
+     * @return 是否是boolean
      */
 	protected boolean isBooleanType(Class<?> clazz) {
         return clazz.equals(Boolean.class);

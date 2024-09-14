@@ -139,6 +139,7 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
      * @param member 用户id
      * @param longitude  用户最新位置经度
      * @param latitude  用户最新位置纬度
+	 * @param <M> 用户id类型
 	 * @return 添加成功的元素个数
      */
     public <M> Long geoAdd(M member, double longitude, double latitude) {

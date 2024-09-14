@@ -1101,6 +1101,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * 删除缓存
 	 *
 	 * @param keys 可以传一个值 或多个
+	 * @return 删除的数量
 	 */
 	public Long del(String... keys) {
 		try {
@@ -1879,6 +1880,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param hashKey 项
 	 * @param delta   要减少记(小于0)
+	 * @param <HK>    hash键类型
 	 * @return 减少指定数值后的结果
 	 */
 	public <HK> Long hDecr(String key, HK hashKey, int delta) {
@@ -1899,6 +1901,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param hashKey 项
 	 * @param delta   要减少记(&gt;=0)
+	 * @param <HK>    hash键类型
 	 * @return 减少指定数值后的结果
 	 */
 	public <HK> Long hDecr(String key, HK hashKey, long delta) {
@@ -1919,6 +1922,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param hashKey 项
 	 * @param delta   要减少记(&gt;=0)
+	 * @param <HK>    hash键类型
 	 * @return 减少指定数值后的结果
 	 */
 	public <HK> Double hDecr(String key, HK hashKey, double delta) {
@@ -1938,6 +1942,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key      键 不能为null
 	 * @param hashKeys 项 可以使多个 不能为null
+	 * @param <HK>    hash键类型
 	 */
 	public <HK> void hDel(String key, HK... hashKeys) {
 		try {
@@ -1970,6 +1975,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键 不能为null
 	 * @param hashKey 项 不能为null
+	 * @param <HK>    hash键类型
 	 * @return true 存在 false不存在
 	 */
 	public <HK> boolean hHasKey(String key, HK hashKey) {
@@ -1986,6 +1992,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey hash键
+	 * @param <HK>    hash键类型
 	 * @return 对应的键值
 	 */
 	public <HK> Object hGet(String key, HK hashKey) {
@@ -2468,6 +2475,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param key     键
 	 * @param map     对应多个键值
 	 * @param seconds 时间(秒)
+	 * @param <HK>    hash键类型
+	 * @param <HV>    hash值类型
 	 * @return true成功 false失败
 	 */
 	public <HK, HV> boolean hmSet(String key, Map<HK, HV> map, long seconds) {
@@ -2484,13 +2493,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	/**
-	 *
-	 * @param key
-	 * @param map
-	 * @param timeout
-	 * @return
-	 * @param <HK>
-	 * @param <HV>
+	 * HashSet 并设置时间
+	 * @param key     键
+	 * @param map     对应多个键值
+	 * @param timeout 时间
+	 * @param <HK>    hash键类型
+	 * @param <HV>    hash值类型
+	 * @return true成功 false失败
 	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
 	 */
 	public <HK, HV> boolean hmSet(String key, Map<HK, HV> map, Duration timeout) {
@@ -2529,7 +2538,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param value   值
+	 * @param hashValue   值
 	 * @return true 成功 false失败
 	 */
 	public <HK, HV> boolean hSet(String key, HK hashKey, HV hashValue) {
@@ -2568,7 +2577,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 *
 	 * @param key     键
 	 * @param hashKey 项
-	 * @param value   值
+	 * @param hashValue   值
 	 * @param seconds    时间(秒) 注意:如果已存在的hash表有时间,这里将会替换原有的时间
 	 * @return true 成功 false失败
 	 */
