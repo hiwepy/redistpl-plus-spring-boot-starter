@@ -15,12 +15,12 @@
  */
 package redistpl.plus.spring.boot;
 
-import javax.annotation.PostConstruct;
-
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.redis.core.RedisOperationTemplate;
+
 
 @SpringBootApplication
 public class RedisApplication_Test {

@@ -3,7 +3,6 @@ package com.fasterxml.jackson.databind.ser;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

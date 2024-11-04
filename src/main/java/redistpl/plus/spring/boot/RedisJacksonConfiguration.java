@@ -1,17 +1,15 @@
 package redistpl.plus.spring.boot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
 import com.fasterxml.jackson.databind.json.Jsr310JsonMapperBuilderCustomizer;
-import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
-import com.fasterxml.jackson.databind.ser.RedisBeanSerializerModifier;
 import hitool.core.lang3.time.DateFormats;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -73,11 +71,9 @@ public class RedisJacksonConfiguration {
 		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
 		// 3、初始化 Jackson2JsonRedisSerializer<Object>，用于RedisTemplate的序列化和反序列化
 		//GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapperProvider.getIfAvailable());
-		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-		jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
 		return jackson2JsonRedisSerializer;
 	}
-
 
 
 	@Configuration(proxyBeanMethods = false)

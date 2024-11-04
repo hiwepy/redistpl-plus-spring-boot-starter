@@ -2,7 +2,6 @@ package redistpl.plus.spring.boot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.connection.stream.ReadOffset;
-import org.springframework.lang.Nullable;
 
 import java.time.Duration;
 import java.util.concurrent.RejectedExecutionHandler;

@@ -6,14 +6,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Range;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.connection.Limit;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
-import org.springframework.data.redis.connection.RedisZSetCommands.*;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
+import org.springframework.data.redis.connection.zset.Aggregate;
+import org.springframework.data.redis.connection.zset.Tuple;
+import org.springframework.data.redis.connection.zset.Weights;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -4409,7 +4413,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public List<MapRecord<String, Object, Object>> xRange(String key, org.springframework.data.domain.Range<String> range){
+	public List<MapRecord<String, Object, Object>> xRange(String key, Range<String> range){
 		try {
 			return getStreamOperations().range(key, range);
 		} catch (Exception e) {
@@ -4418,7 +4422,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public List<MapRecord<String, Object, Object>> xRange(String key, org.springframework.data.domain.Range<String> range, Limit limit){
+	public List<MapRecord<String, Object, Object>> xRange(String key, Range<String> range, Limit limit){
 		try {
 			return getStreamOperations().range(key, range, limit);
 		} catch (Exception e) {
@@ -4427,7 +4431,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public <V> List<ObjectRecord<String, V>> xRangeFor(Class<V> targetType, String key, org.springframework.data.domain.Range<String> range){
+	public <V> List<ObjectRecord<String, V>> xRangeFor(Class<V> targetType, String key, Range<String> range){
 		try {
 			return getStreamOperations().range(targetType, key, range);
 		} catch (Exception e) {
@@ -4436,7 +4440,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public <V> List<ObjectRecord<String, V>> xRangeFor(Class<V> targetType, String key, org.springframework.data.domain.Range<String> range, Limit limit){
+	public <V> List<ObjectRecord<String, V>> xRangeFor(Class<V> targetType, String key, Range<String> range, Limit limit){
 		try {
 			return getStreamOperations().range(targetType, key, range, limit);
 		} catch (Exception e) {

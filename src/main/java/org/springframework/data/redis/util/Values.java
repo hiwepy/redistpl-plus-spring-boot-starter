@@ -3,7 +3,6 @@ package org.springframework.data.redis.util;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
