@@ -4577,12 +4577,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	// ===============================Lock=================================
 
 	/**
-	 * 1、对指定key来进行加锁逻辑（此锁是分布式阻塞锁）
-	 * https://www.jianshu.com/p/6dbc44defd94
-	 * @param lockKey  锁 key
-	 * @param seconds  最大阻塞时间(秒)，超过时间将不再等待拿锁
-	 * @return 获取锁成功/失败
-	 */
+     * 1、对指定key来进行加锁逻辑（此锁是分布式阻塞锁）
+     * @param lockKey  锁 key
+     * @param seconds  最大阻塞时间(秒)，超过时间将不再等待拿锁
+     * @return 获取锁成功/失败
+     */
 	public boolean tryBlockLock(String lockKey, int seconds) {
         try {
 			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
@@ -4594,9 +4593,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			        return Boolean.TRUE;
 			    } else {
 			    	// 3、非第一次请求，阻塞等待拿到锁
-			    	redisConnection.bRPop(seconds, rawKey(lockKey + ":list"));
+			    	return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(lockKey + ":lock")));
 			    }
-			    return Boolean.FALSE;
 			});
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
