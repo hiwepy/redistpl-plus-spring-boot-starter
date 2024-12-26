@@ -10,12 +10,14 @@ import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
+import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.connection.RedisZSetCommands.*;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.util.ObjectMappers;
 import org.springframework.data.redis.util.TypeReferences;
@@ -4578,13 +4580,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
      * 1、对指定key来进行加锁逻辑（此锁是分布式阻塞锁）
-     * @param lockKey  锁 key
+     * @param requestKey  锁 key
      * @param seconds  最大阻塞时间(秒)，超过时间将不再等待拿锁
      * @return 获取锁成功/失败
      */
-	public boolean tryBlockLock(String lockKey, int seconds) {
+	public boolean tryBlockLock(String requestKey, int seconds) {
         try {
 			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
+				String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
 			    // 1、获取时间毫秒值
 			    long expireAt = redisConnection.time() + seconds * 1000 + 1;
 			    // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
@@ -4593,7 +4596,8 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			        return Boolean.TRUE;
 			    } else {
 			    	// 3、非第一次请求，阻塞等待拿到锁
-			    	return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(lockKey + ":lock")));
+					String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
+			    	return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(blockingLockKey)));
 			    }
 			});
         } catch (Exception e) {
@@ -4604,15 +4608,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 2、删除指定key来进行完成解锁逻辑
-	 * @param lockKey  锁key
+	 * @param requestKey  锁key
 	 * @param requestId  锁值
 	 * @return 释放锁成功/失败
 	 */
-    public boolean unBlockLock(String lockKey, String requestId) {
+    public boolean unBlockLock(String requestKey, String requestId) {
     	try {
     		return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-    			redisConnection.del(rawKey(lockKey));
-    			byte[] rawKey = rawKey(lockKey + ":list");
+				String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
+				redisConnection.del(rawKey(lockKey));
+				String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
+    			byte[] rawKey = rawKey(blockingLockKey);
     			byte[] rawValue = rawValue(requestId);
     			redisConnection.rPush(rawKey, rawValue);
     		    return Boolean.TRUE;
@@ -4623,41 +4629,82 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-	public boolean tryLock(String lockKey, Duration timeout) {
-		return tryLock( lockKey, timeout.toMillis());
+	/**
+	 * 1、对指定key来进行加锁逻辑（此锁是全局性的）
+	 * @param lockKey  锁key
+	 * @param lockExpireTime 锁有效时间
+	 * @return 是否加锁成功
+	 */
+	public boolean tryLock(String lockKey, Duration lockExpireTime) {
+		return tryLock( lockKey, lockExpireTime.toMillis());
 	}
 
 	/**
 	 * 1、对指定key来进行加锁逻辑（此锁是全局性的）
 	 * @param lockKey  锁key
-	 * @param expireMillis 锁有效期
+	 * @param lockExpireMillis 锁有效时间
 	 * @return 是否加锁成功
 	 */
-	public boolean tryLock(String lockKey, long expireMillis) {
+	public boolean tryLock(String lockKey, long lockExpireMillis) {
+		try {
+			byte[] rawKey = rawKey(lockKey);
+			byte[] rawValue = rawValue(RedisKeyConstant.ONE);
+			Expiration expiration = Expiration.from(lockExpireMillis, TimeUnit.MILLISECONDS);
+			return redisTemplate.execute(connection -> {
+				return connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
+			}, true);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RedisOperationException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 1、对指定key来进行加锁逻辑，该方法需要指定锁的释放时间（此锁是全局性的）
+	 * @param lockKey  锁key
+	 * @param lockExpireTime 锁有效时间
+	 * @param lockReleaseTime 锁释放时间
+	 * @return 是否加锁成功
+	 */
+	public boolean tryLock(String lockKey, Duration lockExpireTime, Duration lockReleaseTime) {
+		return tryLock(lockKey, lockExpireTime.toMillis(), lockReleaseTime.toMillis());
+	}
+
+	/**
+	 * 1、对指定key来进行加锁逻辑，该方法需要指定锁的释放时间（此锁是全局性的）
+	 * @param lockKey  锁key
+	 * @param lockExpireMillis 锁有效时间
+	 * @param lockReleaseMillis 锁释放时间
+	 * @return 是否加锁成功
+	 */
+	public boolean tryLock(String lockKey, long lockExpireMillis, long lockReleaseMillis) {
         try {
 			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				byte[] serLockKey = rawString(lockKey);
+				byte[] rawKey = rawKey(lockKey);
 			    // 1、获取时间毫秒值
-			    long expireAt = redisConnection.time() + expireMillis + 1;
+			    long expireAt = redisConnection.time() + lockExpireMillis + 1;
+				byte[] rawValue = String.valueOf(expireAt).getBytes();
 			    // 2、获取锁
-			    Boolean acquire = redisConnection.setNX(serLockKey, String.valueOf(expireAt).getBytes());
+				Expiration expiration = Expiration.from(Math.max(lockExpireMillis, lockReleaseMillis), TimeUnit.MILLISECONDS);
+				Boolean acquire = redisConnection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
 			    if (acquire) {
 			        return Boolean.TRUE;
 			    } else {
-			        byte[] bytes = redisConnection.get(serLockKey);
-			        // 3、非空判断
+					// 3、获取锁失败，获取锁的时间
+			        byte[] bytes = redisConnection.get(rawKey);
 			        if (Objects.nonNull(bytes) && bytes.length > 0) {
-			            long expireTime = Long.parseLong(new String(bytes));
 			            // 4、如果锁已经过期
+						long expireTime = Long.parseLong(new String(bytes));
 			            if (expireTime < redisConnection.time()) {
 			                // 5、重新加锁，防止死锁
-			                byte[] set = redisConnection.getSet(serLockKey, String.valueOf(redisConnection.time() + expireMillis + 1).getBytes());
+							rawValue = String.valueOf(redisConnection.time() + lockExpireMillis + 1).getBytes();
+			                byte[] set = redisConnection.getSet(rawKey, rawValue);
 			                return Long.parseLong(new String(set)) < redisConnection.time();
 			            }
 			        }
 			    }
 			    return Boolean.FALSE;
-			});
+			}, true);
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -4678,13 +4725,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
-    public boolean tryLock(String lockKey, String requestId, Duration timeout, int retryTimes, long retryInterval) {
-    	return tryLock(lockKey, requestId, timeout.toMillis(), retryTimes, retryInterval);
+    public boolean tryLock(String requestKey, String requestId, Duration timeout, int retryTimes, long retryInterval) {
+    	return tryLock(requestKey, requestId, timeout.toMillis(), retryTimes, retryInterval);
     }
 
     /**
 	 * 1、lua脚本加锁
-	 * @param lockKey       锁的 key
+	 * @param requestKey       锁的 key
 	 * @param requestId     锁的 value
 	 * @param expire        key 的过期时间，单位 ms
 	 * @param retryTimes    重试次数，即加锁失败之后的重试次数
@@ -4697,27 +4744,27 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				// 1、执行lua脚本
 				Long result =  this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
 				if(LOCK_SUCCESS.equals(result)) {
-				    log.info("locked... redisK = {}", lockKey);
-				    return Boolean.TRUE;
+					log.info("locked... lockKey = {}", lockKey);
+					return Boolean.TRUE;
 				} else {
 					// 2、重试获取锁
-			        int count = 0;
-			        while(count < retryTimes) {
-			            try {
-			                Thread.sleep(retryInterval);
-			                result = this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
-			                if(LOCK_SUCCESS.equals(result)) {
-			                	log.info("locked... redisK = {}", lockKey);
-			                    return Boolean.TRUE;
-			                }
-			                log.warn("{} times try to acquire lock", count + 1);
-			                count++;
-			            } catch (Exception e) {
-			            	log.error("acquire redis occurred an exception", e);
-			            }
-			        }
-			        log.info("fail to acquire lock {}", lockKey);
-			        return Boolean.FALSE;
+					int count = 0;
+					while(count < retryTimes) {
+						try {
+							Thread.sleep(retryInterval);
+							result = this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
+							if(LOCK_SUCCESS.equals(result)) {
+								log.info("locked... lockKey = {}", lockKey);
+								return Boolean.TRUE;
+							}
+							log.warn("{} times try to acquire lock", count + 1);
+							count++;
+						} catch (Exception e) {
+							log.error("acquire redis occurred an exception", e);
+						}
+					}
+					log.info("fail to acquire lock {}", lockKey);
+					return Boolean.FALSE;
 				}
 			});
 		} catch (Exception e) {
@@ -4733,13 +4780,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 释放锁 true 成功
 	 */
     public boolean unlock(String lockKey, String requestId) {
-        log.info("unlock... redisK = {}", lockKey);
         try {
+			log.info("unlock... lockKey = {}", lockKey);
             // 使用lua脚本删除redis中匹配value的key
             Long result = this.executeLuaScript(UNLOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId);
             //如果这里抛异常，后续锁无法释放
             if (LOCK_SUCCESS.equals(result)) {
-            	log.info("release lock success. redisK = {}", lockKey);
+            	log.info("release lock success. lockKey = {}", lockKey);
                 return Boolean.TRUE;
             } else if (LOCK_EXPIRED.equals(result)) {
             	log.warn("release lock exception, key has expired or released");
