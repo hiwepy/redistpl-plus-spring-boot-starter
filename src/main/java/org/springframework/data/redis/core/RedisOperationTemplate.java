@@ -38,8 +38,7 @@ import java.util.stream.Stream;
 
 /**
  * 1、基于RedisTemplate操作的二次封装
- * 2、参考：
- * https://blog.csdn.net/qq_24598601/article/details/105876432
+ * 2、参考： <a href="https://blog.csdn.net/qq_24598601/article/details/105876432">...</a>
  */
 @SuppressWarnings({"unchecked","rawtypes"})
 @Slf4j
@@ -4599,7 +4598,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 					String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
 			    	return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(blockingLockKey)));
 			    }
-			});
+			}, true);
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -4744,7 +4743,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 				// 1、执行lua脚本
 				Long result =  this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
 				if(LOCK_SUCCESS.equals(result)) {
-					log.info("locked... lockKey = {}", lockKey);
+					log.debug("locked... lockKey = {}", lockKey);
 					return Boolean.TRUE;
 				} else {
 					// 2、重试获取锁
@@ -4754,19 +4753,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 							Thread.sleep(retryInterval);
 							result = this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
 							if(LOCK_SUCCESS.equals(result)) {
-								log.info("locked... lockKey = {}", lockKey);
+								log.debug("locked... lockKey = {}", lockKey);
 								return Boolean.TRUE;
 							}
-							log.warn("{} times try to acquire lock", count + 1);
+							log.debug("{} times try to acquire lock", count + 1);
 							count++;
 						} catch (Exception e) {
 							log.error("acquire redis occurred an exception", e);
 						}
 					}
-					log.info("fail to acquire lock {}", lockKey);
+					log.debug("fail to acquire lock {}", lockKey);
 					return Boolean.FALSE;
 				}
-			});
+			}, true);
 		} catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -4781,12 +4780,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
     public boolean unlock(String lockKey, String requestId) {
         try {
-			log.info("unlock... lockKey = {}", lockKey);
+			log.debug("unlock... lockKey = {}", lockKey);
             // 使用lua脚本删除redis中匹配value的key
             Long result = this.executeLuaScript(UNLOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId);
             //如果这里抛异常，后续锁无法释放
             if (LOCK_SUCCESS.equals(result)) {
-            	log.info("release lock success. lockKey = {}", lockKey);
+            	log.debug("release lock success. lockKey = {}", lockKey);
                 return Boolean.TRUE;
             } else if (LOCK_EXPIRED.equals(result)) {
             	log.warn("release lock exception, key has expired or released");
