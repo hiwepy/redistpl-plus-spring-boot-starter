@@ -7,6 +7,21 @@ import java.util.StringJoiner;
 
 public abstract class RedisKeyConstant {
 
+	public final static String ONE = "1";
+	public final static String ZEOR = "0";
+
+	/**
+	 * 分布式锁前缀
+	 */
+	public final static String LOCK_KEY = "lock";
+	/**
+	 * 分布式阻塞锁
+	 */
+	public final static String BLOCKING_LOCK_KEY = "blocking-lock";
+	/**
+	 * 分布式阻塞锁前缀
+	 */
+	public final static String BLOCK_LOCK_KEY = "block:lock";
 	/**
 	 * 用户坐标缓存
 	 */

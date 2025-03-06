@@ -243,6 +243,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
 			</plugin>
 			<!-- 资源插件：复制主资源文件至主输出目录 -->
 			<plugin>

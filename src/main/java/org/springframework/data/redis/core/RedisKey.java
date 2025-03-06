@@ -8,6 +8,18 @@ import java.util.function.Function;
 
 public enum RedisKey {
 
+    /**
+     * 分布式锁
+     */
+    LOCK_KEY("分布式锁", (requestKey)->{
+        return getKeyStr(RedisKeyConstant.LOCK_KEY, requestKey);
+    }),
+    /**
+     * 分布式阻塞锁
+     */
+    BLOCKING_LOCK_KEY("分布式阻塞锁", (requestKey)->{
+        return getKeyStr(RedisKeyConstant.BLOCKING_LOCK_KEY, requestKey);
+    }),
 	/**
 	 * 用户坐标缓存
 	 */
