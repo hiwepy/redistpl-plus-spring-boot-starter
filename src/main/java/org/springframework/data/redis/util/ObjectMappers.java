@@ -48,87 +48,22 @@ public class ObjectMappers {
         return builder.build();
     }
 
-    public static final Function<Object, Boolean> TO_BOOLEAN = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Boolean ? (Boolean) value : Boolean.valueOf(value.toString());
-    };
-
-    public static final Function<Object, BigDecimal> TO_BIGDECIMAL = member -> {
-        if(Objects.isNull(member)) {
-            return null;
-        }
-        return member instanceof BigDecimal ? (BigDecimal) member : new BigDecimal(member.toString());
-    };
-
-    public static final Function<Object, Byte> TO_BYTE = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Byte ? (Byte) value : Byte.valueOf(value.toString());
-    };
-
-    public static final Function<Object, Character> TO_CHARACTER = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Character ? (Character) value : Character.valueOf(value.toString().charAt(0));
-    };
-
-    public static final Function<Object, Double> TO_DOUBLE = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Double ? (Double) value : Double.valueOf(value.toString());
-    };
-
-    public static final Function<Object, Float> TO_FLOAT = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Float ? (Float) value : Float.valueOf(value.toString());
-    };
-
-    public static final Function<Object, Integer> TO_INTEGER = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Integer ? (Integer) value : Integer.valueOf(value.toString());
-    };
-
-    public static final Function<Object, Long> TO_LONG = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Long ? (Long) value : Long.valueOf(value.toString());
-    };
-
-    public static final Function<Object, Short> TO_SHORT = value -> {
-        if(Objects.isNull(value)) {
-            return null;
-        }
-        return value instanceof Short ? (Short) value : Short.valueOf(value.toString());
-    };
-
-    public static final Function<Object, String> TO_STRING = value -> Objects.toString(value, null);
-
 
     private static final Map<Class<?>, Function<Object, ?>> classMapperFunctionCache = new ConcurrentHashMap<Class<?>, Function<Object, ?>>();
 
     private static final Map<Type, Function<Object, ?>> typeMapperFunctionCache = new ConcurrentHashMap<Type, Function<Object, ?>>();
 
     static {
-        classMapperFunctionCache.put(Boolean.class, TO_BOOLEAN);
-        classMapperFunctionCache.put(BigDecimal.class, TO_BIGDECIMAL);
-        classMapperFunctionCache.put(Byte.class, TO_BYTE);
-        classMapperFunctionCache.put(Character.class, TO_CHARACTER);
-        classMapperFunctionCache.put(Double.class, TO_DOUBLE);
-        classMapperFunctionCache.put(Float.class, TO_FLOAT);
-        classMapperFunctionCache.put(Integer.class, TO_INTEGER);
-        classMapperFunctionCache.put(Long.class, TO_LONG);
-        classMapperFunctionCache.put(Short.class, TO_SHORT);
-        classMapperFunctionCache.put(String.class, TO_STRING);
+        classMapperFunctionCache.put(Boolean.class, Functions.TO_BOOLEAN);
+        classMapperFunctionCache.put(BigDecimal.class, Functions.TO_BIGDECIMAL);
+        classMapperFunctionCache.put(Byte.class, Functions.TO_BYTE);
+        classMapperFunctionCache.put(Character.class, Functions.TO_CHARACTER);
+        classMapperFunctionCache.put(Double.class, Functions.TO_DOUBLE);
+        classMapperFunctionCache.put(Float.class, Functions.TO_FLOAT);
+        classMapperFunctionCache.put(Integer.class, Functions.TO_INTEGER);
+        classMapperFunctionCache.put(Long.class, Functions.TO_LONG);
+        classMapperFunctionCache.put(Short.class, Functions.TO_SHORT);
+        classMapperFunctionCache.put(String.class, Functions.TO_STRING);
     }
 
     public static <T> Function<Object, T> getMapperFor(ObjectMapper objectMapper, Class<T> valueType) {

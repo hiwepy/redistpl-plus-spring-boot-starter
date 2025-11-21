@@ -21,6 +21,7 @@ import org.springframework.data.redis.connection.zset.Weights;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.util.Functions;
 import org.springframework.data.redis.util.ObjectMappers;
 import org.springframework.data.redis.util.TypeReferences;
 import org.springframework.data.redis.util.Values;
@@ -429,7 +430,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public boolean setNx(String key, Object value) {
 		try {
-			return getValueOperations().setIfAbsent(key, value);
+			return Boolean.TRUE.equals(getValueOperations().setIfAbsent(key, value));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -446,7 +447,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean setNx(String key, Object value, long milliseconds) {
 		try {
-			return getValueOperations().setIfAbsent(key, value, Duration.ofMillis(milliseconds));
+			return Boolean.TRUE.equals(getValueOperations().setIfAbsent(key, value, Duration.ofMillis(milliseconds)));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -464,7 +465,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean setNx(String key, Object value, long timeout, TimeUnit unit) {
 		try {
-			return getValueOperations().setIfAbsent(key, value, timeout, unit);
+			return Boolean.TRUE.equals(getValueOperations().setIfAbsent(key, value, timeout, unit));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -481,7 +482,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean setNx(String key, Object value, Duration timeout) {
 		try {
-			return getValueOperations().setIfAbsent(key, value, timeout);
+			return Boolean.TRUE.equals(getValueOperations().setIfAbsent(key, value, timeout));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -495,7 +496,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成String类型的对象
 	 */
 	public String getString(String key) {
-		return getFor(key, ObjectMappers.TO_STRING);
+		return getFor(key, Functions.TO_STRING);
 	}
 
 	/**
@@ -517,7 +518,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成Double类型的对象
 	 */
 	public Double getDouble(String key) {
-		return getFor(key, ObjectMappers.TO_DOUBLE);
+		return getFor(key, Functions.TO_DOUBLE);
 	}
 
 	/**
@@ -539,7 +540,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成Long类型的对象
 	 */
 	public Long getLong(String key) {
-		return getFor(key, ObjectMappers.TO_LONG);
+		return getFor(key, Functions.TO_LONG);
 	}
 
 	/**
@@ -561,7 +562,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成Integer类型的对象
 	 */
 	public Integer getInteger(String key) {
-		return getFor(key, ObjectMappers.TO_INTEGER);
+		return getFor(key, Functions.TO_INTEGER);
 	}
 
 	/**
@@ -689,7 +690,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成String类型的对象
 	 */
 	public String getStringAndSet(String key, Object value) {
-		return getForAndSet(key, value, ObjectMappers.TO_STRING);
+		return getForAndSet(key, value, Functions.TO_STRING);
 	}
 
 	/**
@@ -700,7 +701,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成Double类型的对象
 	 */
 	public Double getDoubleAndSet(String key, Double value) {
-		return getForAndSet(key, value, ObjectMappers.TO_DOUBLE);
+		return getForAndSet(key, value, Functions.TO_DOUBLE);
 	}
 
 	/**
@@ -711,7 +712,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成Long类型的对象
 	 */
 	public Long getLongAndSet(String key, Long value) {
-		return getForAndSet(key, value, ObjectMappers.TO_LONG);
+		return getForAndSet(key, value, Functions.TO_LONG);
 	}
 
 	/**
@@ -722,7 +723,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 转换成Integer类型的对象
 	 */
 	public Integer getIntegerAndSet(String key, Integer value) {
-		return getForAndSet(key, value, ObjectMappers.TO_INTEGER);
+		return getForAndSet(key, value, Functions.TO_INTEGER);
 	}
 
 	/**
@@ -795,19 +796,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public List<Double> mGetDouble(Collection keys) {
-		return mGetFor(keys, ObjectMappers.TO_DOUBLE);
+		return mGetFor(keys, Functions.TO_DOUBLE);
 	}
 
 	public List<Long> mGetLong(Collection keys) {
-		return mGetFor(keys, ObjectMappers.TO_LONG);
+		return mGetFor(keys, Functions.TO_LONG);
 	}
 
 	public List<Integer> mGetInteger(Collection keys) {
-		return mGetFor(keys, ObjectMappers.TO_INTEGER);
+		return mGetFor(keys, Functions.TO_INTEGER);
 	}
 
 	public List<String> mGetString(Collection keys) {
-		return mGetFor(keys, ObjectMappers.TO_STRING);
+		return mGetFor(keys, Functions.TO_STRING);
 	}
 
 	public List<Map<String, Object>> mGetMap(Collection keys) {
@@ -1189,19 +1190,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public List<String> lRangeString(String key, long start, long end) {
-		return lRangeFor(key, start, end, ObjectMappers.TO_STRING);
+		return lRangeFor(key, start, end, Functions.TO_STRING);
 	}
 
 	public List<Double> lRangeDouble(String key, long start, long end) {
-		return lRangeFor(key, start, end, ObjectMappers.TO_DOUBLE);
+		return lRangeFor(key, start, end, Functions.TO_DOUBLE);
 	}
 
 	public List<Long> lRangeLong(String key, long start, long end) {
-		return lRangeFor(key, start, end, ObjectMappers.TO_LONG);
+		return lRangeFor(key, start, end, Functions.TO_LONG);
 	}
 
 	public List<Integer> lRangeInteger(String key, long start, long end) {
-		return lRangeFor(key, start, end, ObjectMappers.TO_INTEGER);
+		return lRangeFor(key, start, end, Functions.TO_INTEGER);
 	}
 
 	public List<Map<String, Object>> lRangeMap(String key, long start, long end) {
@@ -1264,7 +1265,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public String lIndexString(String key, long index) {
-		return lIndexFor(key, index, ObjectMappers.TO_STRING);
+		return lIndexFor(key, index, Functions.TO_STRING);
 	}
 
 	public String glIndexString(String key, long index, String defaultVal) {
@@ -1273,7 +1274,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public Double lIndexDouble(String key, long index) {
-		return lIndexFor(key, index, ObjectMappers.TO_DOUBLE);
+		return lIndexFor(key, index, Functions.TO_DOUBLE);
 	}
 
 	public Double lIndexDouble(String key, long index, double defaultVal) {
@@ -1282,7 +1283,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public Long lIndexLong(String key, long index) {
-		return lIndexFor(key, index, ObjectMappers.TO_LONG);
+		return lIndexFor(key, index, Functions.TO_LONG);
 	}
 
 	public Long lIndexLong(String key, long index, long defaultVal) {
@@ -1291,7 +1292,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public Integer lIndexInteger(String key, long index) {
-		return lIndexFor(key, index, ObjectMappers.TO_INTEGER);
+		return lIndexFor(key, index, Functions.TO_INTEGER);
 	}
 
 	public Integer lIndexInteger(String key, long index, int defaultVal) {
@@ -2019,7 +2020,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public <HK> String hGetString(String key, HK hashKey) {
-		return hGetFor(key, hashKey, ObjectMappers.TO_STRING);
+		return hGetFor(key, hashKey, Functions.TO_STRING);
 	}
 
 	public <HK> String hGetString(String key, HK hashKey, String defaultVal) {
@@ -2028,7 +2029,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public <HK> Double hGetDouble(String key, HK hashKey) {
-		return hGetFor(key, hashKey, ObjectMappers.TO_DOUBLE);
+		return hGetFor(key, hashKey, Functions.TO_DOUBLE);
 	}
 
 	public <HK> Double hGetDouble(String key, HK hashKey, double defaultVal) {
@@ -2037,7 +2038,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public <HK> Long hGetLong(String key, HK hashKey) {
-		return hGetFor(key, hashKey, ObjectMappers.TO_LONG);
+		return hGetFor(key, hashKey, Functions.TO_LONG);
 	}
 
 	public <HK> Long hGetLong(String key, HK hashKey, long defaultVal) {
@@ -2046,7 +2047,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public <HK> Integer hGetInteger(String key, HK hashKey) {
-		return hGetFor(key, hashKey, ObjectMappers.TO_INTEGER);
+		return hGetFor(key, hashKey, Functions.TO_INTEGER);
 	}
 
 	public <HK> Integer hGetInteger(String key, HK hashKey, int defaultVal) {
@@ -2068,19 +2069,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public <HK> List<String> hGetString(Collection<String> keys, HK hashKey) {
-		return hGetFor(keys, hashKey, ObjectMappers.TO_STRING);
+		return hGetFor(keys, hashKey, Functions.TO_STRING);
 	}
 
 	public <HK> List<Double> hGetDouble(Collection<String> keys, HK hashKey) {
-		return hGetFor(keys, hashKey, ObjectMappers.TO_DOUBLE);
+		return hGetFor(keys, hashKey, Functions.TO_DOUBLE);
 	}
 
 	public <HK> List<Long> hGetLong(Collection<String> keys, HK hashKey) {
-		return hGetFor(keys, hashKey, ObjectMappers.TO_LONG);
+		return hGetFor(keys, hashKey, Functions.TO_LONG);
 	}
 
 	public <HK> List<Integer> hGetInteger(Collection<String> keys, HK hashKey) {
-		return hGetFor(keys, hashKey, ObjectMappers.TO_INTEGER);
+		return hGetFor(keys, hashKey, Functions.TO_INTEGER);
 	}
 
 	public <HK, HV> List<HV> hGetFor(Collection<String> keys, HK hashKey, Class<HV> clazz) {
@@ -2148,67 +2149,67 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
     public Map<String, String> hmGetForString(String key) {
-        return this.hmGetFor(key, ObjectMappers.TO_STRING, ObjectMappers.TO_STRING);
+        return this.hmGetFor(key, Functions.TO_STRING, Functions.TO_STRING);
     }
 
 	public <HV> Map<String, HV> hmGetForString(String key, Function<Object, HV> valueMapper) {
-		return this.hmGetFor(key, ObjectMappers.TO_STRING, valueMapper);
+		return this.hmGetFor(key, Functions.TO_STRING, valueMapper);
 	}
 
 	public <HV> Map<String, HV> hmGetForString(String key, Class<HV> clazz) {
-		return this.hmGetFor(key, ObjectMappers.TO_STRING, clazz);
+		return this.hmGetFor(key, Functions.TO_STRING, clazz);
 	}
 
 	public <HV> Map<String, HV> hmGetForString(String key, TypeReference<HV> typeRef) {
-		return this.hmGetFor(key, ObjectMappers.TO_STRING, typeRef);
+		return this.hmGetFor(key, Functions.TO_STRING, typeRef);
 	}
 
     public Map<Integer, Integer> hmGetForInteger(String key) {
-        return this.hmGetFor(key, ObjectMappers.TO_INTEGER, ObjectMappers.TO_INTEGER);
+        return this.hmGetFor(key, Functions.TO_INTEGER, Functions.TO_INTEGER);
     }
 
 	public <HV> Map<Integer, HV> hmGetForInteger(String key, Function<Object, HV> valueMapper) {
-		return this.hmGetFor(key, ObjectMappers.TO_INTEGER, valueMapper);
+		return this.hmGetFor(key, Functions.TO_INTEGER, valueMapper);
 	}
 
 	public <HV> Map<Integer, HV> hmGetForInteger(String key, Class<HV> clazz) {
-		return this.hmGetFor(key, ObjectMappers.TO_INTEGER, clazz);
+		return this.hmGetFor(key, Functions.TO_INTEGER, clazz);
 	}
 
 	public <HV> Map<Integer, HV> hmGetForInteger(String key, TypeReference<HV> typeRef) {
-		return this.hmGetFor(key, ObjectMappers.TO_INTEGER, typeRef);
+		return this.hmGetFor(key, Functions.TO_INTEGER, typeRef);
 	}
 
     public Map<Long, Long> hmGetForLong(String key) {
-        return this.hmGetFor(key, ObjectMappers.TO_LONG, ObjectMappers.TO_LONG);
+        return this.hmGetFor(key, Functions.TO_LONG, Functions.TO_LONG);
     }
 
 	public <HV> Map<Long, HV> hmGetForLong(String key, Function<Object, HV> valueMapper) {
-		return this.hmGetFor(key, ObjectMappers.TO_LONG, valueMapper);
+		return this.hmGetFor(key, Functions.TO_LONG, valueMapper);
 	}
 
 	public <HV> Map<Long, HV> hmGetForLong(String key, Class<HV> valueClass) {
-		return this.hmGetFor(key, ObjectMappers.TO_LONG, valueClass);
+		return this.hmGetFor(key, Functions.TO_LONG, valueClass);
 	}
 
 	public <HV> Map<Long, HV> hmGetForLong(String key, TypeReference<HV> typeRef) {
-		return this.hmGetFor(key, ObjectMappers.TO_LONG, typeRef);
+		return this.hmGetFor(key, Functions.TO_LONG, typeRef);
 	}
 
     public Map<Double, Double> hmGetForDouble(String key) {
-        return this.hmGetFor(key, ObjectMappers.TO_DOUBLE, ObjectMappers.TO_DOUBLE);
+        return this.hmGetFor(key, Functions.TO_DOUBLE, Functions.TO_DOUBLE);
     }
 
 	public <HV> Map<Double, HV> hmGetForDouble(String key, Function<Object, HV> valueMapper) {
-		return this.hmGetFor(key, ObjectMappers.TO_DOUBLE, valueMapper);
+		return this.hmGetFor(key, Functions.TO_DOUBLE, valueMapper);
 	}
 
 	public <HV> Map<Double, HV> hmGetForDouble(String key, Class<HV> clazz) {
-		return this.hmGetFor(key, ObjectMappers.TO_DOUBLE, clazz);
+		return this.hmGetFor(key, Functions.TO_DOUBLE, clazz);
 	}
 
 	public <HV> Map<Double, HV> hmGetForDouble(String key, TypeReference<HV> typeRef) {
-		return this.hmGetFor(key, ObjectMappers.TO_DOUBLE, typeRef);
+		return this.hmGetFor(key, Functions.TO_DOUBLE, typeRef);
 	}
 
 	public <HK, HV> Map<HK, HV> hmGetFor(String key, Function<Object, HK> keyMapper, Function<Object, HV> valueMapper) {
@@ -2387,19 +2388,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public <HK> List<String> hMultiGetString(Collection<String> keys, HK hashKey) {
-		return hMultiGetFor(keys, hashKey, ObjectMappers.TO_STRING);
+		return hMultiGetFor(keys, hashKey, Functions.TO_STRING);
 	}
 
 	public <HK> List<Double> hMultiGetDouble(Collection<String> keys, HK hashKey) {
-		return hMultiGetFor(keys, hashKey, ObjectMappers.TO_DOUBLE);
+		return hMultiGetFor(keys, hashKey, Functions.TO_DOUBLE);
 	}
 
 	public <HK> List<Long> hMultiGetLong(Collection<String> keys, HK hashKey) {
-		return hMultiGetFor(keys, hashKey, ObjectMappers.TO_LONG);
+		return hMultiGetFor(keys, hashKey, Functions.TO_LONG);
 	}
 
 	public <HK> List<Integer> hMultiGetInteger(Collection<String> keys, HK hashKey) {
-		return hMultiGetFor(keys, hashKey, ObjectMappers.TO_INTEGER);
+		return hMultiGetFor(keys, hashKey, Functions.TO_INTEGER);
 	}
 
 	public <HK, HV> List<HV> hMultiGetFor(Collection<String> keys, HK hashKey, Class<HV> valueClass) {
@@ -2930,19 +2931,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	public Set<String> sGetString(String key) {
-		return sGetFor(key, ObjectMappers.TO_STRING);
+		return sGetFor(key, Functions.TO_STRING);
 	}
 
 	public Set<Double> sGetDouble(String key) {
-		return sGetFor(key, ObjectMappers.TO_DOUBLE);
+		return sGetFor(key, Functions.TO_DOUBLE);
 	}
 
 	public Set<Long> sGetLong(String key) {
-		return sGetFor(key, ObjectMappers.TO_LONG);
+		return sGetFor(key, Functions.TO_LONG);
 	}
 
 	public Set<Integer> sGetInteger(String key) {
-		return sGetFor(key, ObjectMappers.TO_INTEGER);
+		return sGetFor(key, Functions.TO_INTEGER);
 	}
 
 	public <T> Set<T> sGetFor(String key, Class<T> clazz) {
@@ -3105,19 +3106,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 随机获取的元素集合
 	 */
 	public List<String> sRandomString(String key, long count) {
-		return sRandomFor(key, count, ObjectMappers.TO_STRING);
+		return sRandomFor(key, count, Functions.TO_STRING);
 	}
 
 	public List<Double> sRandomDouble(String key, long count) {
-		return sRandomFor(key, count, ObjectMappers.TO_DOUBLE);
+		return sRandomFor(key, count, Functions.TO_DOUBLE);
 	}
 
 	public List<Long> sRandomLong(String key, long count) {
-		return sRandomFor(key, count, ObjectMappers.TO_LONG);
+		return sRandomFor(key, count, Functions.TO_LONG);
 	}
 
 	public List<Integer> sRandomInteger(String key, long count) {
-		return sRandomFor(key, count, ObjectMappers.TO_INTEGER);
+		return sRandomFor(key, count, Functions.TO_INTEGER);
 	}
 
 	public <T> List<T> sRandomFor(String key, long count, Class<T> clazz) {
@@ -3153,19 +3154,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 随机获取的元素集合（不重复）
 	 */
 	public Set<String> sRandomDistinctString(String key, long count) {
-		return sRandomDistinctFor(key, count, ObjectMappers.TO_STRING);
+		return sRandomDistinctFor(key, count, Functions.TO_STRING);
 	}
 
 	public Set<Double> sRandomDistinctDouble(String key, long count) {
-		return sRandomDistinctFor(key, count, ObjectMappers.TO_DOUBLE);
+		return sRandomDistinctFor(key, count, Functions.TO_DOUBLE);
 	}
 
 	public Set<Long> sRandomDistinctLong(String key, long count) {
-		return sRandomDistinctFor(key, count, ObjectMappers.TO_LONG);
+		return sRandomDistinctFor(key, count, Functions.TO_LONG);
 	}
 
 	public Set<Integer> sRandomDistinctInteger(String key, long count) {
-		return sRandomDistinctFor(key, count, ObjectMappers.TO_INTEGER);
+		return sRandomDistinctFor(key, count, Functions.TO_INTEGER);
 	}
 
 	public <T> Set<T> sRandomDistinctFor(String key, long count, Class<T> clazz) {
@@ -3745,7 +3746,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内的成员
 	 */
 	public Set<String> zRangeString(String key, long start, long end) {
-		return zRangeFor(key, start, end, ObjectMappers.TO_STRING);
+		return zRangeFor(key, start, end, Functions.TO_STRING);
 	}
 
 	/**
@@ -3756,7 +3757,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内的成员
 	 */
 	public Set<Double> zRangeDouble(String key, long  start, long end) {
-		return zRangeFor(key, start, end, ObjectMappers.TO_DOUBLE);
+		return zRangeFor(key, start, end, Functions.TO_DOUBLE);
 	}
 
 	/**
@@ -3767,7 +3768,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内的成员
 	 */
 	public Set<Long> zRangeLong(String key, long  start, long end) {
-		return zRangeFor(key, start, end, ObjectMappers.TO_LONG);
+		return zRangeFor(key, start, end, Functions.TO_LONG);
 	}
 
 	/**
@@ -3778,7 +3779,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内的成员
 	 */
 	public Set<Integer> zRangeInteger(String key, long  start, long end) {
-		return zRangeFor(key, start, end, ObjectMappers.TO_INTEGER);
+		return zRangeFor(key, start, end, Functions.TO_INTEGER);
 	}
 
 	/**
@@ -3842,19 +3843,19 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 移除的元素个数
 	 */
 	public Set<String> zRangeStringByScore(String key, double min, double max) {
-		return zRangeByScoreFor(key, min, max, ObjectMappers.TO_STRING);
+		return zRangeByScoreFor(key, min, max, Functions.TO_STRING);
 	}
 
 	public Set<Double> zRangeDoubleByScore(String key, double min, double max) {
-		return zRangeByScoreFor(key, min, max, ObjectMappers.TO_DOUBLE);
+		return zRangeByScoreFor(key, min, max, Functions.TO_DOUBLE);
 	}
 
 	public Set<Long> zRangeLongByScore(String key, double min, double max) {
-		return zRangeByScoreFor(key, min, max, ObjectMappers.TO_LONG);
+		return zRangeByScoreFor(key, min, max, Functions.TO_LONG);
 	}
 
 	public Set<Integer> zRangeIntegerByScore(String key, double min, double max) {
-		return zRangeByScoreFor(key, min, max, ObjectMappers.TO_INTEGER);
+		return zRangeByScoreFor(key, min, max, Functions.TO_INTEGER);
 	}
 
 	public <T> Set<T> zRangeByScoreFor(String key, double min, double max, Class<T> clazz) {
@@ -3974,7 +3975,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成String类型的成员
 	 */
 	public Set<String> zRevrangeString(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, ObjectMappers.TO_STRING);
+		return zRevrangeFor(key, start, end, Functions.TO_STRING);
 	}
 
 	/**
@@ -3986,7 +3987,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成Double类型的成员
 	 */
 	public Set<Double> zRevrangeDouble(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, ObjectMappers.TO_DOUBLE);
+		return zRevrangeFor(key, start, end, Functions.TO_DOUBLE);
 	}
 
 	/**
@@ -3998,7 +3999,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成Long类型的成员
 	 */
 	public Set<Long> zRevrangeLong(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, ObjectMappers.TO_LONG);
+		return zRevrangeFor(key, start, end, Functions.TO_LONG);
 	}
 
 	/**
@@ -4010,7 +4011,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成Integer类型的成员
 	 */
 	public Set<Integer> zRevrangeInteger(String key, long  start, long end) {
-		return zRevrangeFor(key, start, end, ObjectMappers.TO_INTEGER);
+		return zRevrangeFor(key, start, end, Functions.TO_INTEGER);
 	}
 
 
@@ -4091,7 +4092,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成String类型的成员
 	 */
 	public Set<String> zRevrangeStringByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, ObjectMappers.TO_STRING);
+		return zRevrangeForByScore(key, min, max, Functions.TO_STRING);
 	}
 
 	/**
@@ -4103,7 +4104,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成Double类型的成员
 	 */
 	public Set<Double> zRevrangeDoubleByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, ObjectMappers.TO_DOUBLE);
+		return zRevrangeForByScore(key, min, max, Functions.TO_DOUBLE);
 	}
 
 	/**
@@ -4115,7 +4116,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成Long类型的成员
 	 */
 	public Set<Long> zRevrangeLongByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, ObjectMappers.TO_LONG);
+		return zRevrangeForByScore(key, min, max, Functions.TO_LONG);
 	}
 
 	/**
@@ -4127,7 +4128,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @return 指定区间内转换成Integer类型的成员
 	 */
 	public Set<Integer> zRevrangeIntegerByScore(String key, double min, double max) {
-		return zRevrangeForByScore(key, min, max, ObjectMappers.TO_INTEGER);
+		return zRevrangeForByScore(key, min, max, Functions.TO_INTEGER);
 	}
 
 	/**
