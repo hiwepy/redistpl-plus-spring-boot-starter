@@ -77,7 +77,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		this.objectMapper = objectMapper;
 	}
 
-    // =============================Serializer============================
+	public RedisTemplate<String, Object> getRedisTemplate() {
+		return redisTemplate;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
+	}
+
+	// =============================Serializer============================
 
 	public byte[] getRawKey(Object key) {
 		return rawKey(key);
@@ -3511,7 +3519,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public Boolean zDel(String bigZsetKey) {
 		try {
 			this.zScan(bigZsetKey, (tuple) -> {
-				this.zRem(bigZsetKey, deserializeTuple(tuple).getValue());
+				this.zRem(bigZsetKey, Objects.requireNonNull(deserializeTuple(tuple)).getValue());
 			});
 			return redisTemplate.delete(bigZsetKey);
 		} catch (Exception e) {
@@ -3596,17 +3604,17 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			byte[] rawValue = rawValue(value);
 			return this.redisTemplate.execute((RedisConnection redisConnection) -> {
 				// 1、增加score之前查询指定区域的元素对象
-				Set<TypedTuple<Object>> zset1 = deserializeTupleValues(Objects.requireNonNull(redisConnection.zRevRangeWithScores(rawKey, start, end)));
+				Set<TypedTuple<Object>> zset1 = this.deserializeTupleValues(Objects.requireNonNull(redisConnection.zRevRangeWithScores(rawKey, start, end)));
 				// 2、增加score
 				redisConnection.zIncrBy(rawKey, delta, rawValue);
 				// 3、增加score之后查询指定区域的元素对象
-				Set<TypedTuple<Object>> zset2 = deserializeTupleValues(Objects.requireNonNull(redisConnection.zRevRangeWithScores(rawKey, start, end)));
+				Set<TypedTuple<Object>> zset2 = this.deserializeTupleValues(Objects.requireNonNull(redisConnection.zRevRangeWithScores(rawKey, start, end)));
 				// 4、如果同一key两次取值有一个为空，表示元素发生了新增或移除，那两个元素一定有变化了
 				if(CollectionUtils.isEmpty(zset1) && !CollectionUtils.isEmpty(zset2) || !CollectionUtils.isEmpty(zset1) && CollectionUtils.isEmpty(zset2)) {
 					return Boolean.TRUE;
 				}
 				// 5、如果两个元素都不为空，但是长度不相同，表示元素一定有变化了
-				if(zset1.size() != zset2.size()) {
+				if(!CollectionUtils.isEmpty(zset1) && zset1.size() != zset2.size()) {
 					return Boolean.TRUE;
 				}
 				// 6、 两个set都不为空，且长度相同，则对key进行提取，并比较keyList与keyList2,一旦遇到相同位置处的值不一样，表示顺序发生了变化
@@ -4357,8 +4365,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public RecordId xAdd(String key, Map<String,Object> message){
 		try {
-			RecordId add = getStreamOperations().add(key, message);
-			return add;	//返回增加后的id
+            return getStreamOperations().add(key, message);	//返回增加后的id
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4367,8 +4374,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xTrim(String key, long count){
 		try {
-			Long ct = getStreamOperations().trim(key, count);
-			return ct;
+            return getStreamOperations().trim(key, count);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4377,8 +4383,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xDel(String key, String... recordIds){
 		try {
-			Long ct = getStreamOperations().delete(key, recordIds);
-			return ct;
+            return getStreamOperations().delete(key, recordIds);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4387,8 +4392,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xDel(String key, RecordId... recordIds){
 		try {
-			Long ct = getStreamOperations().delete(key, recordIds);
-			return ct;
+            return getStreamOperations().delete(key, recordIds);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4579,20 +4583,23 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
      */
 	public boolean tryBlockLock(String requestKey, int seconds) {
         try {
-			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
-			    // 1、获取时间毫秒值
-			    long expireAt = redisConnection.time() + seconds * 1000 + 1;
-			    // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
-			    Boolean acquire = redisConnection.setNX(rawKey(lockKey), String.valueOf(expireAt).getBytes());
-			    if (acquire) {
-			        return Boolean.TRUE;
-			    } else {
-			    	// 3、非第一次请求，阻塞等待拿到锁
-					String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
-			    	return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(blockingLockKey)));
-			    }
-			}, true);
+            // 1、获取时间毫秒值
+            // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
+            // 3、非第一次请求，阻塞等待拿到锁
+            return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+                String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
+                // 1、获取时间毫秒值
+                long expireAt = Objects.requireNonNull(redisConnection.time()) + seconds * 1000L + 1;
+                // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
+                Boolean acquire = redisConnection.setNX(rawKey(lockKey), String.valueOf(expireAt).getBytes());
+                if (Objects.nonNull(acquire) && acquire) {
+                    return Boolean.TRUE;
+                } else {
+                    // 3、非第一次请求，阻塞等待拿到锁
+                    String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
+                    return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(blockingLockKey)));
+                }
+            }, true));
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -4607,15 +4614,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
     public boolean unBlockLock(String requestKey, String requestId) {
     	try {
-    		return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
-				redisConnection.del(rawKey(lockKey));
-				String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
-    			byte[] rawKey = rawKey(blockingLockKey);
-    			byte[] rawValue = rawValue(requestId);
-    			redisConnection.rPush(rawKey, rawValue);
-    		    return Boolean.TRUE;
-    		}, true);
+    		return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+                String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
+                redisConnection.del(rawKey(lockKey));
+                String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
+                byte[] rawKey = rawKey(blockingLockKey);
+                byte[] rawValue = rawValue(requestId);
+                redisConnection.rPush(rawKey, rawValue);
+                return Boolean.TRUE;
+            }, true));
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 			throw new RedisOperationException(e.getMessage());
@@ -4643,9 +4650,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			byte[] rawKey = rawKey(lockKey);
 			byte[] rawValue = rawValue(RedisKeyConstant.ONE);
 			Expiration expiration = Expiration.from(lockExpireMillis, TimeUnit.MILLISECONDS);
-			return redisTemplate.execute(connection -> {
-				return connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
-			}, true);
+			return Boolean.TRUE.equals(redisTemplate.execute(connection -> connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4672,32 +4677,39 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean tryLock(String lockKey, long lockExpireMillis, long lockReleaseMillis) {
         try {
-			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				byte[] rawKey = rawKey(lockKey);
-			    // 1、获取时间毫秒值
-			    long expireAt = redisConnection.time() + lockExpireMillis + 1;
-				byte[] rawValue = String.valueOf(expireAt).getBytes();
-			    // 2、获取锁
-				Expiration expiration = Expiration.from(Math.max(lockExpireMillis, lockReleaseMillis), TimeUnit.MILLISECONDS);
-				Boolean acquire = redisConnection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
-			    if (acquire) {
-			        return Boolean.TRUE;
-			    } else {
-					// 3、获取锁失败，获取锁的时间
-			        byte[] bytes = redisConnection.get(rawKey);
-			        if (Objects.nonNull(bytes) && bytes.length > 0) {
-			            // 4、如果锁已经过期
-						long expireTime = Long.parseLong(new String(bytes));
-			            if (expireTime < redisConnection.time()) {
-			                // 5、重新加锁，防止死锁
-							rawValue = String.valueOf(redisConnection.time() + lockExpireMillis + 1).getBytes();
-			                byte[] set = redisConnection.getSet(rawKey, rawValue);
-			                return Long.parseLong(new String(set)) < redisConnection.time();
-			            }
-			        }
-			    }
-			    return Boolean.FALSE;
-			}, true);
+            // 1、获取时间毫秒值
+            // 2、获取锁
+            // 3、获取锁失败，获取锁的时间
+            // 4、如果锁已经过期
+            // 5、重新加锁，防止死锁
+            return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+                byte[] rawKey = rawKey(lockKey);
+                // 1、获取时间毫秒值
+                long expireAt = Objects.requireNonNull(redisConnection.time()) + lockExpireMillis + 1;
+                byte[] rawValue = String.valueOf(expireAt).getBytes();
+                // 2、首次获取锁
+                Expiration expiration = Expiration.from(Math.max(lockExpireMillis, lockReleaseMillis), TimeUnit.MILLISECONDS);
+                Boolean acquire = redisConnection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
+                if (Objects.nonNull(acquire) && acquire) {
+                    return Boolean.TRUE;
+                } else {
+                    // 3、获取锁失败，获取锁的时间
+                    byte[] bytes = redisConnection.get(rawKey);
+                    if (Objects.nonNull(bytes) && bytes.length > 0) {
+                        // 4、如果锁已经过期
+                        long expireTime = Long.parseLong(new String(bytes));
+                        if (expireTime < Objects.requireNonNull(redisConnection.time())) {
+                            // 5、重新加锁，防止死锁
+                            rawValue = String.valueOf(Objects.requireNonNull(redisConnection.time()) + lockExpireMillis + 1).getBytes();
+                            byte[] oldValue = redisConnection.getSet(rawKey, rawValue);
+                            if (Objects.nonNull(oldValue) && oldValue.length > 0) {
+                                return Long.parseLong(new String(oldValue)) < Objects.requireNonNull(redisConnection.time());
+                            }
+                        }
+                    }
+                }
+                return Boolean.FALSE;
+            }, true));
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
