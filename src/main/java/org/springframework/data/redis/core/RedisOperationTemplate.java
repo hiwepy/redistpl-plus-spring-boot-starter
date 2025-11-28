@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
+import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.connection.RedisZSetCommands.*;
 import org.springframework.data.redis.connection.stream.MapRecord;
@@ -129,6 +131,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Set<Object> getDeserializeValues(Set<byte[]> rawValues) {
 		return deserializeValues(rawValues);
+	}
+
+	public List<TypedTuple<Object>> getDeserializeTupleValues(List<Tuple> rawValues) {
+		return super.deserializeTupleValues(rawValues);
 	}
 
 	public Set<TypedTuple<Object>> getDeserializeTupleValues(Set<Tuple> rawValues) {
@@ -422,7 +428,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public boolean setNx(String key, Object value) {
 		try {
-			return getValueOperations().setIfAbsent(key, value);
+			return Objects.requireNonNull(getValueOperations().setIfAbsent(key, value));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -439,7 +445,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean setNx(String key, Object value, long milliseconds) {
 		try {
-			return getValueOperations().setIfAbsent(key, value, Duration.ofMillis(milliseconds));
+			return Objects.requireNonNull(getValueOperations().setIfAbsent(key, value, Duration.ofMillis(milliseconds)));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -483,7 +489,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @return 转换成String类型的对象
 	 */
@@ -493,7 +499,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param defaultVal 默认值
 	 * @return 转换成String类型的对象
@@ -505,7 +511,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @return 转换成Double类型的对象
 	 */
@@ -515,7 +521,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param defaultVal 默认值
 	 * @return 转换成Double类型的对象
@@ -527,7 +533,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @return 转换成Long类型的对象
 	 */
@@ -537,7 +543,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param defaultVal 默认值
 	 * @return 转换成Long类型的对象
@@ -549,7 +555,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @return 转换成Integer类型的对象
 	 */
@@ -559,7 +565,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 默认值 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param defaultVal 默认值
 	 * @return 转换成Integer类型的对象
@@ -612,7 +618,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param clazz 目标对象类型 Class
 	 * @param <T> 指定的类型
@@ -628,7 +634,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key  缓存key
 	 * @param mapper 对象转换函数
 	 * @param <T>  指定的类型
@@ -644,7 +650,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取指定 key 的值。如果 key 不存在，返回 null 。如果key 储存的值不是字符串类型，返回一个错误。
-	 * https://www.redis.net.cn/order/3545.html
+	 * @see <a href="https://www.redis.net/order/3545.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @return 值
 	 */
@@ -659,7 +665,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取存储在指定 key 中字符串的子字符串。字符串的截取范围由 start 和 end 两个偏移量决定(包括 start 和 end 在内)
-	 * https://www.redis.net.cn/order/3546.html
+	 * @see <a href="https://www.redis.net/order/3546.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -676,7 +682,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @return 转换成String类型的对象
@@ -687,7 +693,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @return 转换成Double类型的对象
@@ -698,7 +704,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @return 转换成Long类型的对象
@@ -709,7 +715,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @return 转换成Integer类型的对象
@@ -720,7 +726,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @param clazz 目标对象类型 Class
@@ -737,7 +743,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @param mapper 对象转换函数
@@ -754,7 +760,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
-	 * https://www.redis.net.cn/order/3547.html
+	 * @see <a href="https://www.redis.net/order/3547.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 新的值
 	 * @return 缓存Key的旧值
@@ -770,7 +776,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 根据key表达式获取缓存
-	 * https://www.redis.net.cn/order/3549.html
+	 * @see <a href="https://www.redis.net/order/3549.html">Redis命令</a>
 	 * @param pattern 键表达式
 	 * @return 值
 	 */
@@ -1104,8 +1110,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		try {
 			if (keys != null && keys.length > 0) {
 				if (keys.length == 1) {
-					redisTemplate.delete(keys[0]);
-					return 1L;
+					if (redisTemplate.delete(keys[0])){
+                        return 1L;
+                    }
+					return 0L;
 				} else {
 					return redisTemplate.delete(Stream.of(keys).collect(Collectors.toList()));
 				}
@@ -1354,8 +1362,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <V> Long lLeftPushAll(String key, Collection<V> values) {
 		try {
-			Long rt = redisTemplate.opsForList().leftPushAll(key, values.toArray());
-			return rt;
+            return redisTemplate.opsForList().leftPushAll(key, values.toArray());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -1464,6 +1471,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			return redisTemplate.execute((RedisConnection redisConnection) -> {
 				byte[] rawKey = rawKey(key);
 				byte[] rawValue = redisConnection.lPop(rawKey);
+                if (rawValue == null) {
+                    return null;
+                }
 				redisConnection.lRem(rawKey, 0, rawValue);
 				return deserializeValue(rawValue);
 			});
@@ -1516,8 +1526,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public <T> List<T> lLeftPop(String key, Integer count, Class<T> clazz) {
 		try {
 			List<Object> range = this.lLeftPop(key, count);
-			List<T> result = range.stream().map(ObjectMappers.getMapperFor( objectMapper, clazz)).collect(Collectors.toList());
-			return result;
+            return range.stream().map(ObjectMappers.getMapperFor( objectMapper, clazz)).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -1527,8 +1536,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public <T> List<T> lLeftPop(String key, Integer count, TypeReference<T> typeRef) {
 		try {
 			List<Object> range = this.lLeftPop(key, count);
-			List<T> result = range.stream().map(ObjectMappers.getMapperFor( objectMapper, typeRef)).collect(Collectors.toList());
-			return result;
+            return range.stream().map(ObjectMappers.getMapperFor( objectMapper, typeRef)).collect(Collectors.toList());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -1732,6 +1740,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			return redisTemplate.execute((RedisConnection redisConnection) -> {
 				byte[] rawKey = rawKey(key);
 				byte[] rawValue = redisConnection.rPop(rawKey);
+                if (rawValue == null) {
+					return null;
+				}
 				redisConnection.lRem(rawKey, 0, rawValue);
 				return deserializeValue(rawValue);
 			});
@@ -1835,7 +1846,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public long lSize(String key) {
 		try {
-			return redisTemplate.opsForList().size(key);
+			return Objects.requireNonNull(redisTemplate.opsForList().size(key));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -1943,7 +1954,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public <HK> void hDel(String key, HK... hashKeys) {
 		try {
-			getHashOperations().delete(key, hashKeys);
+            if (hashKeys == null || hashKeys.length == 0) {
+				return;
+			}
+            Object[] objHashKeys = Arrays.stream(hashKeys).filter(Objects::nonNull).map(hashKey -> (Object) hashKey).toArray();
+			getHashOperations().delete(key, objHashKeys);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2094,13 +2109,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public List<Object> hGet(Collection<String> keys, Object hashKey) {
 		try {
-			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
-				keys.stream().forEach(key -> {
-					connection.hGet(rawKey(key), rawHashKey(hashKey));
-				});
-				return null;
-			}, this.valueSerializer());
-			return result;
+            return redisTemplate.executePipelined((RedisConnection connection) -> {
+                keys.forEach(key -> {
+                    connection.hGet(rawKey(key), rawHashKey(hashKey));
+                });
+                return null;
+            }, this.valueSerializer());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2109,14 +2123,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public <HK, HV> List<Object> hGet(Collection<HV> keys, String redisPrefix, HK hashKey) {
 		try {
-			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
-				keys.stream().forEach(key -> {
-					byte[] rawKey = rawKey(RedisKey.getKeyStr(redisPrefix, String.valueOf(key)));
-					connection.hGet(rawKey, rawHashKey(hashKey));
-				});
-				return null;
-			}, this.valueSerializer());
-			return result;
+            return redisTemplate.executePipelined((RedisConnection connection) -> {
+                keys.forEach(key -> {
+                    byte[] rawKey = rawKey(RedisKey.getKeyStr(redisPrefix, String.valueOf(key)));
+                    connection.hGet(rawKey, rawHashKey(hashKey));
+                });
+                return null;
+            }, this.valueSerializer());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -2250,9 +2263,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
         if (CollectionUtils.isEmpty(keys)) {
             return Lists.newArrayList();
         }
-        return keys.parallelStream().map(key -> {
-            return this.hmGet(key);
-        }).collect(Collectors.toList());
+        return keys.parallelStream().map(this::hmGet).collect(Collectors.toList());
     }
 
     /**
@@ -2295,10 +2306,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			}
 			List<Object> result = getHashOperations().multiGet(key, (Collection<Object>) hashKeys);
 			log.debug("multiGet key:{}, hashKeys: {},  result: {}, ", key, hashKeys, result);
-			if (Objects.isNull(result)) {
-				return Collections.emptyMap();
-			}
-			if (result.stream().allMatch(Objects::isNull)) {
+            if (result.stream().allMatch(Objects::isNull)) {
 				return Collections.emptyMap();
 			}
 			Map<HK, Object> retMap = new HashMap<>(hashKeys.size());
@@ -2415,7 +2423,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		try {
 			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
 				byte[] rawHashKey = rawHashKey(hashKey);
-				keys.stream().forEach(key -> {
+				keys.forEach(key -> {
 					byte[] rawKey = rawKey(String.valueOf(key));
 					connection.hGet(rawKey, rawHashKey);
 				});
@@ -2451,7 +2459,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 缓存Hash对象
-	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
+	 * @see <a href="@see <a href="https://www.redis.net/order/3573.html">Redis命令</a>">Redis 命令: HMSET</a>
 	 * @param key 缓存key
 	 * @param map 对应多个键值
 	 * @return true 成功 false 失败
@@ -2468,7 +2476,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * HashSet 并设置时间
-	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
+	 * @see <a href="@see <a href="https://www.redis.net/order/3573.html">Redis命令</a>">Redis 命令: HMSET</a>
 	 * @param key     键
 	 * @param map     对应多个键值
 	 * @param seconds 时间(秒)
@@ -2497,7 +2505,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 * @param <HK>    hash键类型
 	 * @param <HV>    hash值类型
 	 * @return true成功 false失败
-	 * @see <a href="https://www.redis.net.cn/order/3573.html">Redis 命令: HMSET</a>
+	 * @see <a href="@see <a href="https://www.redis.net/order/3573.html">Redis命令</a>">Redis 命令: HMSET</a>
 	 */
 	public <HK, HV> boolean hmSet(String key, Map<HK, HV> map, Duration timeout) {
 		try {
@@ -3029,7 +3037,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean sHasKey(String key, Object value) {
 		try {
-			return getSetOperations().isMember(key, value);
+			return Boolean.TRUE.equals(getSetOperations().isMember(key, value));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -3195,8 +3203,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public Long sRemove(String key, Object... values) {
 		try {
-			Long count = getSetOperations().remove(key, values);
-			return count;
+            return getSetOperations().remove(key, values);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -3333,12 +3340,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	// ===============================ZSet=================================
-	// 相关命令：https://www.redis.net.cn/order/3627.html
+	// 相关命令：@see <a href="https://www.redis.net/order/3627.html">Redis命令</a>
 	// ====================================================================
 
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
-	 * https://www.redis.net.cn/order/3609.html
+	 * @see <a href="https://www.redis.net/order/3609.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value	成员元素
 	 * @param score 成员的分数值
@@ -3355,7 +3362,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
-	 * https://www.redis.net.cn/order/3609.html
+	 * @see <a href="https://www.redis.net/order/3609.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value	成员元素
 	 * @param score 成员的分数值
@@ -3377,7 +3384,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
-	 * https://www.redis.net.cn/order/3609.html
+	 * @see <a href="https://www.redis.net/order/3609.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value	成员元素
 	 * @param score 成员的分数值
@@ -3399,7 +3406,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 向有序集合添加一个成员，或者更新已存在成员的分数
-	 * https://www.redis.net.cn/order/3609.html
+	 * @see <a href="https://www.redis.net/order/3609.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param tuples 成员元素
 	 * @return 是否添加成功
@@ -3415,7 +3422,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 向有序集合添加多个成员，或者更新已存在成员的分数
-	 * https://www.redis.net.cn/order/3609.html
+	 * @see <a href="https://www.redis.net/order/3609.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param tuples 成员元素
 	 * @param seconds 过期时长（秒）
@@ -3436,7 +3443,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 向有序集合添加多个成员，或者更新已存在成员的分数
-	 * https://www.redis.net.cn/order/3609.html
+	 * @see <a href="https://www.redis.net/order/3609.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param tuples 成员元素
 	 * @param timeout 过期时长
@@ -3457,7 +3464,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 获取有序集合的成员数
-	 * https://www.redis.net.cn/order/3610.html
+	 * @see <a href="https://www.redis.net/order/3610.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @return 有序集合的成员数
 	 */
@@ -3472,7 +3479,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定成员是否存在
-	 * https://www.redis.net.cn/order/3626.html
+	 * @see <a href="https://www.redis.net/order/3626.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @return 是否存在
@@ -3488,7 +3495,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算在有序集合中指定区间分数的成员数
-	 * https://www.redis.net.cn/order/3611.html
+	 * @see <a href="https://www.redis.net/order/3611.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -3512,7 +3519,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public Boolean zDel(String bigZsetKey) {
 		try {
 			this.zScan(bigZsetKey, (tuple) -> {
-				this.zRem(bigZsetKey, deserializeTuple(tuple).getValue());
+				this.zRem(bigZsetKey, Objects.requireNonNull(deserializeTuple(tuple)).getValue());
 			});
 			return redisTemplate.delete(bigZsetKey);
 		} catch (Exception e) {
@@ -3523,7 +3530,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 有序集合中对指定成员的分数加上增量 increment
-	 * https://www.redis.net.cn/order/3612.html
+	 * @see <a href="https://www.redis.net/order/3612.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @param delta 增量值
@@ -3540,7 +3547,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 有序集合中对指定成员的分数加上增量 increment，并给key设置过期时间
-	 * https://www.redis.net.cn/order/3612.html
+	 * @see <a href="https://www.redis.net/order/3612.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @param delta 增量值
@@ -3562,7 +3569,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 有序集合中对指定成员的分数加上增量 increment，并给key设置过期时间
-	 * https://www.redis.net.cn/order/3612.html
+	 * @see <a href="https://www.redis.net/order/3612.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @param delta 增量值
@@ -3597,22 +3604,22 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			byte[] rawValue = rawValue(value);
 			return this.redisTemplate.execute((RedisConnection redisConnection) -> {
 				// 1、增加score之前查询指定区域的元素对象
-				Set<TypedTuple<Object>> zset1 = deserializeTupleValues(redisConnection.zRevRangeWithScores(rawKey, start, end));
+				Set<TypedTuple<Object>> zset1 = this.deserializeTupleValues(Objects.requireNonNull(redisConnection.zRevRangeWithScores(rawKey, start, end)));
 				// 2、增加score
 				redisConnection.zIncrBy(rawKey, delta, rawValue);
 				// 3、增加score之后查询指定区域的元素对象
-				Set<TypedTuple<Object>> zset2 = deserializeTupleValues(redisConnection.zRevRangeWithScores(rawKey, start, end));
+				Set<TypedTuple<Object>> zset2 = this.deserializeTupleValues(Objects.requireNonNull(redisConnection.zRevRangeWithScores(rawKey, start, end)));
 				// 4、如果同一key两次取值有一个为空，表示元素发生了新增或移除，那两个元素一定有变化了
 				if(CollectionUtils.isEmpty(zset1) && !CollectionUtils.isEmpty(zset2) || !CollectionUtils.isEmpty(zset1) && CollectionUtils.isEmpty(zset2)) {
 					return Boolean.TRUE;
 				}
 				// 5、如果两个元素都不为空，但是长度不相同，表示元素一定有变化了
-				if(zset1.size() != zset2.size()) {
+				if(!CollectionUtils.isEmpty(zset1) && zset1.size() != zset2.size()) {
 					return Boolean.TRUE;
 				}
 				// 6、 两个set都不为空，且长度相同，则对key进行提取，并比较keyList与keyList2,一旦遇到相同位置处的值不一样，表示顺序发生了变化
-				List<String> keyList1 = Objects.isNull(zset1) ? Lists.newArrayList() : zset1.stream().map(item -> item.getValue().toString()).collect(Collectors.toList());
-				List<String> keyList2 = Objects.isNull(zset2) ? Lists.newArrayList() : zset2.stream().map(item -> item.getValue().toString()).collect(Collectors.toList());
+				List<String> keyList1 = zset1.stream().map(item -> Objects.requireNonNull(item.getValue()).toString()).collect(Collectors.toList());
+				List<String> keyList2 = zset2.stream().map(item -> Objects.requireNonNull(item.getValue()).toString()).collect(Collectors.toList());
 				for (int i = 0; i < keyList1.size(); i++) {
 					if(!Objects.equals(keyList1.get(i), keyList2.get(i))) {
 						return Boolean.TRUE;
@@ -3628,7 +3635,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
-	 * https://www.redis.net.cn/order/3613.html
+	 * @see <a href="https://www.redis.net/order/3613.html">Redis命令</a>
 	 * @param key 第一个有序集合的键
 	 * @param otherKey 第二个有序集合的键
 	 * @param destKey 目标键
@@ -3645,7 +3652,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
-	 * https://www.redis.net.cn/order/3613.html
+	 * @see <a href="https://www.redis.net/order/3613.html">Redis命令</a>
 	 * @param key 第一个有序集合的键
 	 * @param otherKeys 其他多个有序集合Key的集合
 	 * @param destKey 目标键
@@ -3662,7 +3669,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
-	 * https://www.redis.net.cn/order/3613.html
+	 * @see <a href="https://www.redis.net/order/3613.html">Redis命令</a>
 	 * @param key 第一个有序集合的键
 	 * @param otherKeys 其他多个有序集合Key的集合
 	 * @param destKey 目标键
@@ -3680,7 +3687,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的交集并将结果集存储在新的有序集合 key 中
-	 * https://www.redis.net.cn/order/3613.html
+	 * @see <a href="https://www.redis.net/order/3613.html">Redis命令</a>
 	 * @param key 第一个有序集合的键
 	 * @param otherKeys 其他多个有序集合Key的集合
 	 * @param destKey 目标键
@@ -3699,7 +3706,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 移除有序集合中的一个或多个成员
-	 * https://www.redis.net.cn/order/3619.html
+	 * @see <a href="https://www.redis.net/order/3619.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param values 要移除的value数组
 	 * @return 移除的元素个数
@@ -3715,7 +3722,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 移除有序集中，指定分数（score）区间内的所有成员
-	 * https://www.redis.net.cn/order/3622.html
+	 * @see <a href="https://www.redis.net/order/3622.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -3776,7 +3783,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员，并转换成指定类型对象集合
-	 * https://www.redis.net.cn/order/3615.html
+	 * @see <a href="https://www.redis.net/order/3615.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3794,7 +3801,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员
-	 * https://www.redis.net.cn/order/3615.html
+	 * @see <a href="https://www.redis.net/order/3615.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3811,7 +3818,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员
-	 * https://www.redis.net.cn/order/3615.html
+	 * @see <a href="https://www.redis.net/order/3615.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3828,7 +3835,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 移除有序集中，指定分数（score）区间内的所有成员
-	 * https://www.redis.net.cn/order/3622.html
+	 * @see <a href="https://www.redis.net/order/3622.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -3860,7 +3867,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 移除有序集中，指定分数（score）区间内的所有成员
-	 * https://www.redis.net.cn/order/3622.html
+	 * @see <a href="https://www.redis.net/order/3622.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -3876,7 +3883,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集合中指定分数区间的成员列表。有序集成员按分数值递增(从小到大)次序排列。
-	 * https://www.redis.net.cn/order/3617.html
+	 * @see <a href="https://www.redis.net/order/3617.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -3893,7 +3900,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 通过索引区间返回有序集合成指定区间内的成员。其中成员的位置按分数值递增(从小到大)来排序。
-	 * https://www.redis.net.cn/order/3615.html
+	 * @see <a href="https://www.redis.net/order/3615.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3910,7 +3917,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集合中指定分数区间的成员列表。有序集成员按分数值递增(从小到大)次序排列。
-	 * https://www.redis.net.cn/order/3617.html
+	 * @see <a href="https://www.redis.net/order/3617.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -3927,7 +3934,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 通过字典区间返回有序集合的成员
-	 * https://www.redis.net.cn/order/3616.html
+	 * @see <a href="https://www.redis.net/order/3616.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param range 字典区间
 	 * @return 指定字典区间的成员列表
@@ -3943,7 +3950,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 通过字典区间返回有序集合的成员
-	 * https://www.redis.net.cn/order/3616.html
+	 * @see <a href="https://www.redis.net/order/3616.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param range 字典区间
 	 * @param limit 限制
@@ -3960,7 +3967,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3972,7 +3979,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3984,7 +3991,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -3996,7 +4003,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -4009,7 +4016,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -4026,7 +4033,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -4043,7 +4050,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -4060,7 +4067,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定区间内的成员。其中成员的位置按分数值递减(从大到小)来排列。
-	 * https://www.redis.net.cn/order/3623.html
+	 * @see <a href="https://www.redis.net/order/3623.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param start 开始索引
 	 * @param end 结束索引
@@ -4077,7 +4084,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4089,7 +4096,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4101,7 +4108,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4113,7 +4120,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4125,7 +4132,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4142,7 +4149,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4159,7 +4166,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4176,7 +4183,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中指定分数区间内的所有的成员。有序集成员按分数值递减(从大到小)的次序排列。
-	 * https://www.redis.net.cn/order/3624.html
+	 * @see <a href="https://www.redis.net/order/3624.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param min 最小分数
 	 * @param max 最大分数
@@ -4194,7 +4201,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	/**
 	 * 返回有序集中成员的排名。其中有序集成员按分数值递减(从大到小)排序。
 	 * 排名以 0 为底，也就是说， 分数值最大的成员排名为 0 。
-	 * https://www.redis.net.cn/order/3625.html
+	 * @see <a href="https://www.redis.net/order/3625.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @return 指定成员的排名
@@ -4210,7 +4217,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 迭代有序集合中的元素（包括元素成员和元素分值）
-	 * https://www.redis.net.cn/order/3628.html
+	 * @see <a href="https://www.redis.net/order/3628.html">Redis命令</a>
 	 * @param bigZsetKey 缓存key
 	 * @param consumer 消费者
 	 */
@@ -4221,7 +4228,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 迭代有序集合中的元素（包括元素成员和元素分值）
-	 * https://www.redis.net.cn/order/3628.html
+	 * @see <a href="https://www.redis.net/order/3628.html">Redis命令</a>
 	 * @param bigZsetKey 缓存key
 	 * @param pattern 匹配表达式
 	 * @param consumer 消费者
@@ -4233,7 +4240,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 迭代有序集合中的元素（包括元素成员和元素分值）
-	 * https://www.redis.net.cn/order/3628.html
+	 * @see <a href="https://www.redis.net/order/3628.html">Redis命令</a>
 	 * @param bigZsetKey 缓存key
 	 * @param options 扫描选项
 	 * @param consumer 消费者
@@ -4252,7 +4259,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定成员的分数值
-	 * https://www.redis.net.cn/order/3626.html
+	 * @see <a href="https://www.redis.net/order/3626.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @param defaultVal 默认值
@@ -4265,7 +4272,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 返回有序集中，指定成员的分数值
-	 * https://www.redis.net.cn/order/3626.html
+	 * @see <a href="https://www.redis.net/order/3626.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param value 成员元素
 	 * @return 成员的分数值
@@ -4281,7 +4288,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
-	 * https://www.redis.net.cn/order/3627.html
+	 * @see <a href="https://www.redis.net/order/3627.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param otherKey 另外一个缓存Key
 	 * @param destKey 目标缓存Key
@@ -4298,7 +4305,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
-	 * https://www.redis.net.cn/order/3627.html
+	 * @see <a href="https://www.redis.net/order/3627.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param keys 其他缓存Key集合
 	 * @param destKey 目标缓存Key
@@ -4315,7 +4322,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
-	 * https://www.redis.net.cn/order/3627.html
+	 * @see <a href="https://www.redis.net/order/3627.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param keys 其他缓存Key集合
 	 * @param destKey 目标缓存Key
@@ -4333,7 +4340,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	/**
 	 * 计算给定的一个或多个有序集的并集，并存储在新的缓存Key 中
-	 * https://www.redis.net.cn/order/3627.html
+	 * @see <a href="https://www.redis.net/order/3627.html">Redis命令</a>
 	 * @param key 缓存key
 	 * @param keys 其他缓存Key集合
 	 * @param destKey 目标缓存Key
@@ -4358,8 +4365,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public RecordId xAdd(String key, Map<String,Object> message){
 		try {
-			RecordId add = getStreamOperations().add(key, message);
-			return add;	//返回增加后的id
+            return getStreamOperations().add(key, message);	//返回增加后的id
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4368,8 +4374,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xTrim(String key, long count){
 		try {
-			Long ct = getStreamOperations().trim(key, count);
-			return ct;
+            return getStreamOperations().trim(key, count);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4378,8 +4383,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xDel(String key, String... recordIds){
 		try {
-			Long ct = getStreamOperations().delete(key, recordIds);
-			return ct;
+            return getStreamOperations().delete(key, recordIds);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4388,8 +4392,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xDel(String key, RecordId... recordIds){
 		try {
-			Long ct = getStreamOperations().delete(key, recordIds);
-			return ct;
+            return getStreamOperations().delete(key, recordIds);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4398,8 +4401,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long xLen(String key){
 		try {
-			Long ct = getStreamOperations().size(key);
-			return ct;
+            return getStreamOperations().size(key);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4581,20 +4583,23 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
      */
 	public boolean tryBlockLock(String requestKey, int seconds) {
         try {
-			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
-			    // 1、获取时间毫秒值
-			    long expireAt = redisConnection.time() + seconds * 1000 + 1;
-			    // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
-			    Boolean acquire = redisConnection.setNX(rawKey(lockKey), String.valueOf(expireAt).getBytes());
-			    if (acquire) {
-			        return Boolean.TRUE;
-			    } else {
-			    	// 3、非第一次请求，阻塞等待拿到锁
-					String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
-			    	return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(blockingLockKey)));
-			    }
-			}, true);
+            // 1、获取时间毫秒值
+            // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
+            // 3、非第一次请求，阻塞等待拿到锁
+            return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+                String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
+                // 1、获取时间毫秒值
+                long expireAt = Objects.requireNonNull(redisConnection.time()) + seconds * 1000L + 1;
+                // 2、第一次请求, 锁标识不存在的情况，直接拿到锁
+                Boolean acquire = redisConnection.setNX(rawKey(lockKey), String.valueOf(expireAt).getBytes());
+                if (Objects.nonNull(acquire) && acquire) {
+                    return Boolean.TRUE;
+                } else {
+                    // 3、非第一次请求，阻塞等待拿到锁
+                    String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
+                    return !CollectionUtils.isEmpty(redisConnection.bRPop(seconds, rawKey(blockingLockKey)));
+                }
+            }, true));
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -4609,15 +4614,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
     public boolean unBlockLock(String requestKey, String requestId) {
     	try {
-    		return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
-				redisConnection.del(rawKey(lockKey));
-				String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
-    			byte[] rawKey = rawKey(blockingLockKey);
-    			byte[] rawValue = rawValue(requestId);
-    			redisConnection.rPush(rawKey, rawValue);
-    		    return Boolean.TRUE;
-    		}, true);
+    		return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+                String lockKey = RedisKey.LOCK_KEY.getKey(requestKey);
+                redisConnection.del(rawKey(lockKey));
+                String blockingLockKey = RedisKey.BLOCKING_LOCK_KEY.getKey(requestKey);
+                byte[] rawKey = rawKey(blockingLockKey);
+                byte[] rawValue = rawValue(requestId);
+                redisConnection.rPush(rawKey, rawValue);
+                return Boolean.TRUE;
+            }, true));
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 			throw new RedisOperationException(e.getMessage());
@@ -4645,9 +4650,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 			byte[] rawKey = rawKey(lockKey);
 			byte[] rawValue = rawValue(RedisKeyConstant.ONE);
 			Expiration expiration = Expiration.from(lockExpireMillis, TimeUnit.MILLISECONDS);
-			return redisTemplate.execute(connection -> {
-				return connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
-			}, true);
+			return Boolean.TRUE.equals(redisTemplate.execute(connection -> connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -4674,32 +4677,39 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean tryLock(String lockKey, long lockExpireMillis, long lockReleaseMillis) {
         try {
-			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				byte[] rawKey = rawKey(lockKey);
-			    // 1、获取时间毫秒值
-			    long expireAt = redisConnection.time() + lockExpireMillis + 1;
-				byte[] rawValue = String.valueOf(expireAt).getBytes();
-			    // 2、获取锁
-				Expiration expiration = Expiration.from(Math.max(lockExpireMillis, lockReleaseMillis), TimeUnit.MILLISECONDS);
-				Boolean acquire = redisConnection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
-			    if (acquire) {
-			        return Boolean.TRUE;
-			    } else {
-					// 3、获取锁失败，获取锁的时间
-			        byte[] bytes = redisConnection.get(rawKey);
-			        if (Objects.nonNull(bytes) && bytes.length > 0) {
-			            // 4、如果锁已经过期
-						long expireTime = Long.parseLong(new String(bytes));
-			            if (expireTime < redisConnection.time()) {
-			                // 5、重新加锁，防止死锁
-							rawValue = String.valueOf(redisConnection.time() + lockExpireMillis + 1).getBytes();
-			                byte[] set = redisConnection.getSet(rawKey, rawValue);
-			                return Long.parseLong(new String(set)) < redisConnection.time();
-			            }
-			        }
-			    }
-			    return Boolean.FALSE;
-			}, true);
+            // 1、获取时间毫秒值
+            // 2、获取锁
+            // 3、获取锁失败，获取锁的时间
+            // 4、如果锁已经过期
+            // 5、重新加锁，防止死锁
+            return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+                byte[] rawKey = rawKey(lockKey);
+                // 1、获取时间毫秒值
+                long expireAt = Objects.requireNonNull(redisConnection.time()) + lockExpireMillis + 1;
+                byte[] rawValue = String.valueOf(expireAt).getBytes();
+                // 2、首次获取锁
+                Expiration expiration = Expiration.from(Math.max(lockExpireMillis, lockReleaseMillis), TimeUnit.MILLISECONDS);
+                Boolean acquire = redisConnection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent());
+                if (Objects.nonNull(acquire) && acquire) {
+                    return Boolean.TRUE;
+                } else {
+                    // 3、获取锁失败，获取锁的时间
+                    byte[] bytes = redisConnection.get(rawKey);
+                    if (Objects.nonNull(bytes) && bytes.length > 0) {
+                        // 4、如果锁已经过期
+                        long expireTime = Long.parseLong(new String(bytes));
+                        if (expireTime < Objects.requireNonNull(redisConnection.time())) {
+                            // 5、重新加锁，防止死锁
+                            rawValue = String.valueOf(Objects.requireNonNull(redisConnection.time()) + lockExpireMillis + 1).getBytes();
+                            byte[] oldValue = redisConnection.getSet(rawKey, rawValue);
+                            if (Objects.nonNull(oldValue) && oldValue.length > 0) {
+                                return Long.parseLong(new String(oldValue)) < Objects.requireNonNull(redisConnection.time());
+                            }
+                        }
+                    }
+                }
+                return Boolean.FALSE;
+            }, true));
         } catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -4726,7 +4736,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
     /**
 	 * 1、lua脚本加锁
-	 * @param requestKey       锁的 key
+	 * @param lockKey       锁的 key
 	 * @param requestId     锁的 value
 	 * @param expire        key 的过期时间，单位 ms
 	 * @param retryTimes    重试次数，即加锁失败之后的重试次数
@@ -4735,33 +4745,35 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public boolean tryLock(String lockKey, String requestId, long expire, int retryTimes, long retryInterval) {
        try {
-			return redisTemplate.execute((RedisCallback<Boolean>) redisConnection -> {
-				// 1、执行lua脚本
-				Long result =  this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
-				if(LOCK_SUCCESS.equals(result)) {
-					log.debug("locked... lockKey = {}", lockKey);
-					return Boolean.TRUE;
-				} else {
-					// 2、重试获取锁
-					int count = 0;
-					while(count < retryTimes) {
-						try {
-							Thread.sleep(retryInterval);
-							result = this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
-							if(LOCK_SUCCESS.equals(result)) {
-								log.debug("locked... lockKey = {}", lockKey);
-								return Boolean.TRUE;
-							}
-							log.debug("{} times try to acquire lock", count + 1);
-							count++;
-						} catch (Exception e) {
-							log.error("acquire redis occurred an exception", e);
-						}
-					}
-					log.debug("fail to acquire lock {}", lockKey);
-					return Boolean.FALSE;
-				}
-			}, true);
+           // 1、执行lua脚本
+           // 2、重试获取锁
+           return Boolean.TRUE.equals(redisTemplate.execute(redisConnection -> {
+               // 1、执行lua脚本
+               Long result = this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
+               if (LOCK_SUCCESS.equals(result)) {
+                   log.debug("first locked success, lockKey = {}", lockKey);
+                   return Boolean.TRUE;
+               } else {
+                   // 2、重试获取锁
+                   int count = 0;
+                   while (count < retryTimes) {
+                       try {
+                           Thread.sleep(retryInterval);
+                           result = this.executeLuaScript(LOCK_LUA_SCRIPT, Collections.singletonList(lockKey), requestId, expire);
+                           if (LOCK_SUCCESS.equals(result)) {
+                               log.debug("locked... lockKey = {}", lockKey);
+                               return Boolean.TRUE;
+                           }
+                           log.debug("{} times try to acquire lock", count + 1);
+                           count++;
+                       } catch (Exception e) {
+                           log.error("acquire redis occurred an exception", e);
+                       }
+                   }
+                   log.debug("fail to acquire lock {}", lockKey);
+                   return Boolean.FALSE;
+               }
+           }, true));
 		} catch (Exception e) {
 			log.error("acquire redis occurred an exception", e);
 		}
@@ -5095,7 +5107,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	 */
 	public Long timeNow() {
 		try {
-			return redisTemplate.execute((RedisCallback<Long>) redisConnection -> redisConnection.time());
+			return redisTemplate.execute((RedisCallback<Long>) RedisServerCommands::time);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -5110,7 +5122,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	public Long period(long expiration) {
 		try {
 			return redisTemplate.execute((RedisCallback<Long>) redisConnection -> {
-				return expiration - redisConnection.time();
+                if (expiration <= 0) {
+                    return 0L;
+                }
+                Long timeNow = redisConnection.time();
+                if (Objects.isNull(timeNow)) {
+                    return 0L;
+                }
+                return expiration - timeNow;
 			});
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -5120,9 +5139,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long dbSize() {
 		try {
-			return redisTemplate.execute((RedisCallback<Long>) redisConnection -> {
-				return redisConnection.dbSize();
-			});
+			return redisTemplate.execute((RedisCallback<Long>) RedisServerCommands::dbSize);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
@@ -5131,9 +5148,7 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	public Long lastSave() {
 		try {
-			return redisTemplate.execute((RedisCallback<Long>) redisConnection -> {
-				return redisConnection.lastSave();
-			});
+			return redisTemplate.execute((RedisCallback<Long>) RedisServerCommands::lastSave);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new RedisOperationException(e.getMessage());
