@@ -1,41 +1,105 @@
-*#
+### IDE ###
 *.iml
 *.ipr
 *.iws
+.idea
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.apt_generated
+.metadata
+.recommenders
+rebel.xml
+
+### Gradle ###
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+### NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### Maven ###
+target/
+target
+dependency-reduced-pom.xml
+pom.xml.versionsBackup
+.flattened-pom.xml
+
+### Build ###
+/build
+build/
+build
+build.log
+bin
+bin/
+lib/
+codes/
+
+### Logs ###
+/logs/
+*.log
+log.*/
+transaction-logs
+
+### Archives ###
 *.jar
+*.war
+*.ear
+*.tar
+*.tar.gz
+*.gz
+
+### Temporary files ###
+*#
 *.sw?
 *~
 .#*
 .*.md.html
-.apt_generated
+*.cache
+*.diff
+*.patch
+*.tmp
+*.java~
+*.properties~
+*.xml~
+
+### System files ###
 .DS_Store
-.classpath
-.factorypath
-.gradle
-.idea
-.metadata
-.project
-.recommenders
-.settings
-.springBeans
-.sts4-cache
-/build
+Thumbs.db
+Servers
+
+### Application specific ###
 /code
 MANIFEST.MF
 _site/
 activemq-data
-bin
-build
-build.log
-dependency-reduced-pom.xml
 dump.rdb
 interpolated*.xml
-lib/
 manifest.yml
 overridedb.*
-settings.xml
-target
-transaction-logs
-.flattened-pom.xml
 secrets.yml
-!/src/main/java/org/springframework/data/redis/core/RedisOperationTemplate.java
+upload
+gen_code
+
+### Node ###
+node_modules
+
+### Server ###
+/server/nacos-server/data
+/server/nacos-server/logs
+
+### Libraries ###
+!/libs/*.jar
+
+### Development tools ###
+.fastRequest
+*.http
+*.json
+qodana.yaml
