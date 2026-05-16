@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.github.hiwepy</groupId>
+	<groupId>io.github.hiwepy</groupId>
 	<artifactId>redistpl-plus-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Data Redis Extension</description>
 	<version>2.0.0.RELEASE</version>
@@ -393,7 +393,7 @@
 				<version>${netty-tcnative.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.hiwepy</groupId>
+				<groupId>io.github.hiwepy</groupId>
 				<artifactId>spring-biz</artifactId>
 				<version>${spring-biz.version}</version>
 			</dependency>
@@ -506,7 +506,7 @@
 		</dependency>
 		<!-- For Spring Biz -->
 		<dependency>
-			<groupId>com.github.hiwepy</groupId>
+			<groupId>io.github.hiwepy</groupId>
 			<artifactId>spring-biz</artifactId>
 		</dependency>
 	</dependencies>
