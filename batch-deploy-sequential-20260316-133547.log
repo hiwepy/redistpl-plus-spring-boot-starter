@@ -1,0 +1,233 @@
+[redistpl-plus-spring-boot-starter/2.3.x] 失败 - 分支切换失败
+[redistpl-plus-spring-boot-starter/2.7.x] 失败 - 分支切换失败
+[redistpl-plus-spring-boot-starter/3.0.x] 失败 - 分支切换失败
+[redistpl-plus-spring-boot-starter/3.1.x] 失败 - 分支切换失败
+[redistpl-plus-spring-boot-starter/3.2.x] 失败 - 分支切换失败
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--------< [0;36mio.github.hiwepy:redistpl-plus-spring-boot-starter[0;1m >---------[m
+[[1;34mINFO[m] [1mBuilding io.github.hiwepy:redistpl-plus-spring-boot-starter 4.0.x.20251227-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/lettuce/lettuce-core/6.8.1.RELEASE/lettuce-core-6.8.1.RELEASE.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/lettuce/lettuce-core/6.8.1.RELEASE/lettuce-core-6.8.1.RELEASE.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-data-redis-reactive/4.0.1/spring-boot-starter-data-redis-reactive-4.0.1.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-data-redis-reactive/4.0.1/spring-boot-starter-data-redis-reactive-4.0.1.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-reactor/4.0.1/spring-boot-reactor-4.0.1.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-reactor/4.0.1/spring-boot-reactor-4.0.1.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-actuator/4.0.1/spring-boot-starter-actuator-4.0.1.pom
+Progress (1): 3.2 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-actuator/4.0.1/spring-boot-starter-actuator-4.0.1.pom (3.2 kB at 8.5 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-micrometer-metrics/4.0.1/spring-boot-starter-micrometer-metrics-4.0.1.pom
+Progress (1): 2.3 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-micrometer-metrics/4.0.1/spring-boot-starter-micrometer-metrics-4.0.1.pom (2.3 kB at 5.8 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-metrics/4.0.1/spring-boot-micrometer-metrics-4.0.1.pom
+Progress (1): 2.5 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-metrics/4.0.1/spring-boot-micrometer-metrics-4.0.1.pom (2.5 kB at 6.7 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-observation/4.0.1/spring-boot-micrometer-observation-4.0.1.pom
+Progress (1): 2.3 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-observation/4.0.1/spring-boot-micrometer-observation-4.0.1.pom (2.3 kB at 6.0 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-health/4.0.1/spring-boot-health-4.0.1.pom
+Progress (1): 2.0 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-health/4.0.1/spring-boot-health-4.0.1.pom (2.0 kB at 5.4 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/micrometer/micrometer-jakarta9/1.16.1/micrometer-jakarta9-1.16.1.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/micrometer/micrometer-jakarta9/1.16.1/micrometer-jakarta9-1.16.1.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/lettuce/lettuce-core/6.8.1.RELEASE/lettuce-core-6.8.1.RELEASE.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-actuator/4.0.1/spring-boot-starter-actuator-4.0.1.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/netty/netty-transport-native-kqueue/4.2.9.Final/netty-transport-native-kqueue-4.2.9.Final.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-reactor/4.0.1/spring-boot-reactor-4.0.1.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-data-redis-reactive/4.0.1/spring-boot-starter-data-redis-reactive-4.0.1.jar
+Progress (1): 2.6 kB
+Progress (1): 4.8 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-data-redis-reactive/4.0.1/spring-boot-starter-data-redis-reactive-4.0.1.jar (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-micrometer-metrics/4.0.1/spring-boot-starter-micrometer-metrics-4.0.1.jar
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-reactor/4.0.1/spring-boot-reactor-4.0.1.jar (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-metrics/4.0.1/spring-boot-micrometer-metrics-4.0.1.jar
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/lettuce/lettuce-core/6.8.1.RELEASE/lettuce-core-6.8.1.RELEASE.jar (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-observation/4.0.1/spring-boot-micrometer-observation-4.0.1.jar
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-actuator/4.0.1/spring-boot-starter-actuator-4.0.1.jar (4.8 kB at 14 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-health/4.0.1/spring-boot-health-4.0.1.jar
+Progress (1): 2.6 kB
+Progress (1): 4.7 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/netty/netty-transport-native-kqueue/4.2.9.Final/netty-transport-native-kqueue-4.2.9.Final.jar (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/micrometer/micrometer-jakarta9/1.16.1/micrometer-jakarta9-1.16.1.jar
+Progress (2): 4.7 kB | 2.6 kB
+Progress (2): 4.7 kB | 6.7 kB
+Progress (2): 4.7 kB | 11 kB 
+Progress (2): 4.7 kB | 14 kB
+Progress (2): 4.7 kB | 17 kB
+Progress (2): 4.7 kB | 19 kB
+Progress (2): 4.7 kB | 23 kB
+Progress (2): 4.7 kB | 28 kB
+Progress (2): 4.7 kB | 29 kB
+                            
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-micrometer-metrics/4.0.1/spring-boot-starter-micrometer-metrics-4.0.1.jar (4.7 kB at 8.3 kB/s)
+Progress (2): 29 kB | 4.0 kB
+Progress (2): 29 kB | 6.9 kB
+Progress (2): 29 kB | 11 kB 
+Progress (2): 29 kB | 14 kB
+Progress (2): 29 kB | 17 kB
+Progress (2): 29 kB | 21 kB
+Progress (2): 29 kB | 24 kB
+Progress (2): 29 kB | 27 kB
+Progress (2): 29 kB | 31 kB
+Progress (2): 29 kB | 35 kB
+Progress (2): 29 kB | 38 kB
+Progress (2): 29 kB | 40 kB
+Progress (2): 29 kB | 43 kB
+Progress (2): 29 kB | 47 kB
+Progress (2): 29 kB | 51 kB
+Progress (2): 29 kB | 56 kB
+Progress (2): 29 kB | 60 kB
+Progress (2): 29 kB | 64 kB
+Progress (2): 29 kB | 68 kB
+Progress (2): 29 kB | 72 kB
+Progress (2): 29 kB | 76 kB
+Progress (2): 29 kB | 80 kB
+Progress (2): 29 kB | 84 kB
+Progress (2): 29 kB | 88 kB
+Progress (2): 29 kB | 92 kB
+Progress (2): 29 kB | 97 kB
+Progress (2): 29 kB | 101 kB
+Progress (2): 29 kB | 105 kB
+Progress (2): 29 kB | 109 kB
+Progress (2): 29 kB | 113 kB
+Progress (2): 29 kB | 117 kB
+Progress (2): 29 kB | 121 kB
+                            
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/io/micrometer/micrometer-jakarta9/1.16.1/micrometer-jakarta9-1.16.1.jar (0 B at 0 B/s)
+Progress (3): 29 kB | 121 kB | 4.1 kB
+Progress (3): 29 kB | 125 kB | 4.1 kB
+Progress (3): 29 kB | 125 kB | 8.2 kB
+Progress (3): 29 kB | 129 kB | 8.2 kB
+Progress (3): 29 kB | 133 kB | 8.2 kB
+Progress (3): 29 kB | 137 kB | 8.2 kB
+Progress (3): 29 kB | 142 kB | 8.2 kB
+Progress (3): 29 kB | 146 kB | 8.2 kB
+Progress (3): 29 kB | 150 kB | 8.2 kB
+Progress (3): 29 kB | 154 kB | 8.2 kB
+Progress (3): 29 kB | 158 kB | 8.2 kB
+Progress (3): 29 kB | 162 kB | 8.2 kB
+Progress (3): 29 kB | 166 kB | 8.2 kB
+Progress (3): 29 kB | 170 kB | 8.2 kB
+Progress (3): 29 kB | 174 kB | 8.2 kB
+Progress (3): 29 kB | 178 kB | 8.2 kB
+Progress (3): 29 kB | 183 kB | 8.2 kB
+Progress (3): 29 kB | 187 kB | 8.2 kB
+Progress (3): 29 kB | 191 kB | 8.2 kB
+Progress (3): 29 kB | 195 kB | 8.2 kB
+Progress (3): 29 kB | 199 kB | 8.2 kB
+Progress (3): 29 kB | 203 kB | 8.2 kB
+Progress (3): 29 kB | 207 kB | 8.2 kB
+Progress (3): 29 kB | 211 kB | 8.2 kB
+Progress (3): 29 kB | 215 kB | 8.2 kB
+Progress (3): 29 kB | 219 kB | 8.2 kB
+Progress (3): 29 kB | 223 kB | 8.2 kB
+Progress (3): 29 kB | 228 kB | 8.2 kB
+Progress (3): 29 kB | 232 kB | 8.2 kB
+Progress (3): 29 kB | 236 kB | 8.2 kB
+Progress (3): 29 kB | 240 kB | 8.2 kB
+Progress (3): 29 kB | 242 kB | 8.2 kB
+Progress (3): 29 kB | 242 kB | 11 kB 
+Progress (3): 29 kB | 242 kB | 14 kB
+Progress (3): 29 kB | 242 kB | 17 kB
+Progress (3): 29 kB | 242 kB | 20 kB
+Progress (3): 29 kB | 242 kB | 24 kB
+Progress (3): 29 kB | 242 kB | 28 kB
+Progress (3): 29 kB | 242 kB | 32 kB
+Progress (3): 29 kB | 242 kB | 35 kB
+                                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-observation/4.0.1/spring-boot-micrometer-observation-4.0.1.jar (29 kB at 42 kB/s)
+Progress (2): 242 kB | 39 kB
+Progress (2): 242 kB | 42 kB
+Progress (2): 242 kB | 45 kB
+Progress (2): 242 kB | 49 kB
+Progress (2): 242 kB | 52 kB
+Progress (2): 242 kB | 56 kB
+Progress (2): 242 kB | 60 kB
+Progress (2): 242 kB | 64 kB
+Progress (2): 242 kB | 68 kB
+Progress (2): 242 kB | 72 kB
+Progress (2): 242 kB | 76 kB
+Progress (2): 242 kB | 81 kB
+Progress (2): 242 kB | 85 kB
+Progress (2): 242 kB | 89 kB
+Progress (2): 242 kB | 93 kB
+Progress (2): 242 kB | 97 kB
+Progress (2): 242 kB | 101 kB
+Progress (2): 242 kB | 105 kB
+Progress (2): 242 kB | 109 kB
+Progress (2): 242 kB | 113 kB
+Progress (2): 242 kB | 117 kB
+Progress (2): 242 kB | 122 kB
+Progress (2): 242 kB | 126 kB
+Progress (2): 242 kB | 130 kB
+Progress (2): 242 kB | 134 kB
+Progress (2): 242 kB | 138 kB
+Progress (2): 242 kB | 142 kB
+Progress (2): 242 kB | 146 kB
+Progress (2): 242 kB | 150 kB
+Progress (2): 242 kB | 154 kB
+Progress (2): 242 kB | 154 kB
+                             
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-micrometer-metrics/4.0.1/spring-boot-micrometer-metrics-4.0.1.jar (242 kB at 281 kB/s)
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-health/4.0.1/spring-boot-health-4.0.1.jar (154 kB at 160 kB/s)
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:3.4.0:clean[m [1m(default-clean)[m @ [36mredistpl-plus-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Deleting /Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/redistpl-plus-spring-boot-starter/target
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m @ [36mredistpl-plus-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  4.275 s
+[[1;34mINFO[m] Finished at: 2026-03-16T14:11:34+08:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m on project [36mredistpl-plus-spring-boot-starter[m: [1;31m[m
+[[1;31mERROR[m] [1;31mRule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:[m
+[[1;31mERROR[m] [1;31mYou are running an older version of Maven. This application requires at least Maven 3.9.9.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[redistpl-plus-spring-boot-starter/3.3.x] 失败 - 查看日志
+[redistpl-plus-spring-boot-starter/3.4.x] 失败 - 分支切换失败
+[redistpl-plus-spring-boot-starter/3.5.x] 失败 - 分支切换失败
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--------< [0;36mio.github.hiwepy:redistpl-plus-spring-boot-starter[0;1m >---------[m
+[[1;34mINFO[m] [1mBuilding io.github.hiwepy:redistpl-plus-spring-boot-starter 4.0.x.20251227-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:3.4.0:clean[m [1m(default-clean)[m @ [36mredistpl-plus-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m @ [36mredistpl-plus-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  0.308 s
+[[1;34mINFO[m] Finished at: 2026-03-16T14:11:34+08:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m on project [36mredistpl-plus-spring-boot-starter[m: [1;31m[m
+[[1;31mERROR[m] [1;31mRule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:[m
+[[1;31mERROR[m] [1;31mYou are running an older version of Maven. This application requires at least Maven 3.9.9.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[redistpl-plus-spring-boot-starter/4.0.x] 失败 - 查看日志
+[redistpl-plus-spring-boot-starter/main] 失败 - 分支切换失败
