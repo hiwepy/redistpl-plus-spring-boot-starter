@@ -12,7 +12,7 @@
 	<groupId>io.github.hiwepy</groupId>
 	<artifactId>redistpl-plus-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Data Redis Extension</description>
-	<version>3.3.x.20251227-SNAPSHOT</version>
+	<version>3.3.x.20260527-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -343,6 +343,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
 		
 		<maven.version>3.9.9</maven.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
@@ -370,7 +371,7 @@
 		
 		<geodesy.version>1.1.3</geodesy.version>
 		<guava.version>33.3.1-jre</guava.version>
-		<spring-biz.version>3.3.x.20241020.RELEASE</spring-biz.version>
+		<spring-biz.version>3.3.x.20260527-SNAPSHOT</spring-biz.version>
 		<netty-tcnative.version>2.0.69.Final</netty-tcnative.version>
 	</properties>
 
