@@ -38,6 +38,7 @@ import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Configuration(proxyBeanMethods = false)
@@ -118,10 +119,10 @@ public class RedisJacksonConfiguration {
 			@Override
 			public void customize(JsonMapper.Builder builder) {
 
-				if (this.jacksonProperties.getDefaultPropertyInclusion() != null) {
+				if (Objects.nonNull(this.jacksonProperties.getDefaultPropertyInclusion())) {
 					builder.serializationInclusion(this.jacksonProperties.getDefaultPropertyInclusion());
 				}
-				if (this.jacksonProperties.getTimeZone() != null) {
+				if (Objects.nonNull(this.jacksonProperties.getTimeZone())) {
 					builder.defaultTimeZone(this.jacksonProperties.getTimeZone());
 				}
 				configureFeatures(builder, FEATURE_DEFAULTS);
@@ -139,7 +140,7 @@ public class RedisJacksonConfiguration {
 
 			private void configureFeatures(JsonMapper.Builder builder, Map<?, Boolean> features) {
 				features.forEach((feature, value) -> {
-					if (value != null) {
+					if (Objects.nonNull(value)) {
 						if (value) {
 							if(feature instanceof DeserializationFeature) {
 								builder.enable((DeserializationFeature) feature);
@@ -179,7 +180,7 @@ public class RedisJacksonConfiguration {
 				// We support a fully qualified class name extending DateFormat or a date
 				// pattern string value
 				String dateFormat = Optional.ofNullable(this.jacksonProperties.getDateFormat()).orElse(DateFormats.DATE_LONGFORMAT);
-				if (dateFormat != null) {
+				if (Objects.nonNull(dateFormat)) {
 					try {
 						Class<?> dateFormatClass = ClassUtils.forName(dateFormat, null);
 						builder.defaultDateFormat((DateFormat) BeanUtils.instantiateClass(dateFormatClass));
@@ -190,7 +191,7 @@ public class RedisJacksonConfiguration {
 						// gh-4170). If none in our properties fallback to the Jackson's
 						// default
 						TimeZone timeZone = this.jacksonProperties.getTimeZone();
-						if (timeZone == null) {
+						if (Objects.isNull(timeZone)) {
 							timeZone = new ObjectMapper().getSerializationConfig().getTimeZone();
 						}
 						simpleDateFormat.setTimeZone(timeZone);
@@ -205,7 +206,7 @@ public class RedisJacksonConfiguration {
 				// names in PropertyNamingStrategy which hold default provided
 				// implementations
 				String strategy = this.jacksonProperties.getPropertyNamingStrategy();
-				if (strategy != null) {
+				if (Objects.nonNull(strategy)) {
 					try {
 						configurePropertyNamingStrategyClass(builder, ClassUtils.forName(strategy, null));
 					}
@@ -236,13 +237,14 @@ public class RedisJacksonConfiguration {
 			}
 
 			private void configureModules(JsonMapper.Builder builder) {
-				Collection<Module> moduleBeans = getBeans(this.applicationContext, Module.class);
-				builder.addModules(moduleBeans.toArray(new Module[0]));
+				Collection<com.fasterxml.jackson.databind.Module> moduleBeans =
+						getBeans(this.applicationContext, com.fasterxml.jackson.databind.Module.class);
+				builder.addModules(moduleBeans.toArray(new com.fasterxml.jackson.databind.Module[0]));
 			}
 
 			private void configureLocale(JsonMapper.Builder builder) {
 				Locale locale = this.jacksonProperties.getLocale();
-				if (locale != null) {
+				if (Objects.nonNull(locale)) {
 					builder.defaultLocale(locale);
 				}
 			}

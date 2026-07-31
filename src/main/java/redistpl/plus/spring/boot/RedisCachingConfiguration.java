@@ -2,6 +2,9 @@ package redistpl.plus.spring.boot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
+import io.github.easy4j.redistpl.core.annotation.RedisChannelTopic;
+import io.github.easy4j.redistpl.core.annotation.RedisPatternTopic;
+import io.github.easy4j.redistpl.core.connection.MessageListenerAdapter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.springframework.beans.factory.ObjectProvider;
@@ -18,10 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.annotation.RedisChannelTopic;
-import org.springframework.data.redis.annotation.RedisPatternTopic;
 import org.springframework.data.redis.annotation.RedisStreamConsumer;
-import org.springframework.data.redis.connection.MessageListenerAdapter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
@@ -103,7 +103,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		// 2、初始化 ObjectMapper
 		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
 		// 3、初始化 RedisOperationTemplate
-		return new RedisOperationTemplate(redisTemplate, objectMapper);
+		return new RedisOperationTemplate(redisTemplate);
 	}
 
 	@Bean

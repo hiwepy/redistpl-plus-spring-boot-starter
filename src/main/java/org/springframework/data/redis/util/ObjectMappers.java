@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.json.JsonMapperBuilderCustomizer;
 import hitool.core.lang3.time.DateFormats;
-import org.springframework.data.redis.core.RedisOperationException;
+import io.github.easy4j.redistpl.core.RedisOperationException;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;

@@ -20,6 +20,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Jsr310JsonMapperBuilderCustomizer implements JsonMapperBuilderCustomizer, Ordered {
@@ -93,7 +94,7 @@ public class Jsr310JsonMapperBuilderCustomizer implements JsonMapperBuilderCusto
     public Jsr310JsonMapperBuilderCustomizer serializers(JsonSerializer<?>... serializers) {
         for (JsonSerializer<?> serializer : serializers) {
             Class<?> handledType = serializer.handledType();
-            if (handledType == null || handledType == Object.class) {
+            if (Objects.isNull(handledType) || handledType == Object.class) {
                 throw new IllegalArgumentException("Unknown handled type in " + serializer.getClass().getName());
             }
             this.serializers.put(serializer.handledType(), serializer);
@@ -129,7 +130,7 @@ public class Jsr310JsonMapperBuilderCustomizer implements JsonMapperBuilderCusto
     public Jsr310JsonMapperBuilderCustomizer deserializers(JsonDeserializer<?>... deserializers) {
         for (JsonDeserializer<?> deserializer : deserializers) {
             Class<?> handledType = deserializer.handledType();
-            if (handledType == null || handledType == Object.class) {
+            if (Objects.isNull(handledType) || handledType == Object.class) {
                 throw new IllegalArgumentException("Unknown handled type in " + deserializer.getClass().getName());
             }
             this.deserializers.put(deserializer.handledType(), deserializer);

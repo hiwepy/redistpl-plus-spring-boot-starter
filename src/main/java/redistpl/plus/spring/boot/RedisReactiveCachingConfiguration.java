@@ -71,7 +71,7 @@ public class RedisReactiveCachingConfiguration {
 		// 2、初始化 ObjectMapper
 		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
 		// 3、初始化 ReactiveRedisOperationTemplate
-		return new ReactiveRedisOperationTemplate(reactiveRedisTemplate, objectMapper);
+		return new ReactiveRedisOperationTemplate(reactiveRedisTemplate);
 	}
 
 }
