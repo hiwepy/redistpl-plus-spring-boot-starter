@@ -12,7 +12,11 @@ Extension of Spring Data Redis
 
 ``` xml
 <dependency>
+<<<<<<< Updated upstream
 	<groupId>com.github.hiwepy</groupId>
+=======
+	<groupId>io.github.easy4j</groupId>
+>>>>>>> Stashed changes
 	<artifactId>redistpl-plus-spring-boot-starter</artifactId>
 	<version>${project.version}</version>
 </dependency>
