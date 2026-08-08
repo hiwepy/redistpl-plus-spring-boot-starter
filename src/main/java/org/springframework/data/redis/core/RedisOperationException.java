@@ -3,7 +3,7 @@ package org.springframework.data.redis.core;
 import org.springframework.dao.NonTransientDataAccessException;
 
 /**
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @SuppressWarnings("serial")
 public class RedisOperationException extends NonTransientDataAccessException {
