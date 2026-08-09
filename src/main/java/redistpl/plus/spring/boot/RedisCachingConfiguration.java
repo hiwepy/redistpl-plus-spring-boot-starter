@@ -7,11 +7,11 @@ import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
@@ -56,8 +56,8 @@ import java.util.stream.Collectors;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisOperations.class)
 @AutoConfigureAfter({CacheAutoConfiguration.class})
-@AutoConfigureBefore({RedisJacksonConfiguration.class, RedisAutoConfiguration.class})
-@EnableConfigurationProperties({RedisProperties.class, RedisThreadPoolProperties.class})
+@AutoConfigureBefore({RedisJacksonConfiguration.class, DataRedisAutoConfiguration.class})
+@EnableConfigurationProperties({DataRedisProperties.class, RedisThreadPoolProperties.class})
 public class RedisCachingConfiguration extends CachingConfigurerSupport {
 
 	@Bean(name = "redisTemplate")
