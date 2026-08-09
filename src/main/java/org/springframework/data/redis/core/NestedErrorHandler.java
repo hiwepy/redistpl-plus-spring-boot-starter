@@ -6,6 +6,12 @@ import org.springframework.util.ErrorHandler;
 
 import java.util.List;
 
+/**
+ * NestedErrorHandler.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Slf4j
 public class NestedErrorHandler implements ErrorHandler {
 

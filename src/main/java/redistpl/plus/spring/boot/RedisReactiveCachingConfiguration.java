@@ -22,6 +22,12 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * RedisReactiveCachingConfiguration.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
 @AutoConfigureAfter({RedisAutoConfiguration.class, RedisCachingConfiguration.class})

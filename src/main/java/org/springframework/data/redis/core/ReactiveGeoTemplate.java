@@ -12,6 +12,12 @@ import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Function;
+/**
+ * ReactiveGeoTemplate.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public class ReactiveGeoTemplate {
 

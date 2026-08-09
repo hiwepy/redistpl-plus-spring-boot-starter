@@ -8,6 +8,12 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
 
+/**
+ * RedisThreadPoolProperties.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @ConfigurationProperties(prefix = "spring.redis.thread-pool")
 public class RedisThreadPoolProperties {
 

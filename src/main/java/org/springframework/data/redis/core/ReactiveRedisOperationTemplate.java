@@ -34,6 +34,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * ReactiveRedisOperationTemplate.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 @Slf4j
 public class ReactiveRedisOperationTemplate {

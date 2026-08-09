@@ -5,6 +5,12 @@ import org.springframework.util.StringUtils;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
+/**
+ * RedisKey.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public enum RedisKey {
 

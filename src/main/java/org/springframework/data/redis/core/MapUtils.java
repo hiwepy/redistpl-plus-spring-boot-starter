@@ -1,6 +1,12 @@
 package org.springframework.data.redis.core;
 
 import java.util.Map;
+/**
+ * MapUtils.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public class MapUtils {
 

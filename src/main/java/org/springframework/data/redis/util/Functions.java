@@ -3,6 +3,12 @@ package org.springframework.data.redis.util;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
+/**
+ * Functions.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public class Functions {
 

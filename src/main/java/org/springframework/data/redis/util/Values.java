@@ -5,6 +5,12 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+/**
+ * Values.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public class Values {
 
