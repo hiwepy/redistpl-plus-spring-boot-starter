@@ -11,7 +11,7 @@ import java.util.function.Function;
 /**
  * RedisThreadPoolProperties.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(prefix = "spring.redis.thread-pool")

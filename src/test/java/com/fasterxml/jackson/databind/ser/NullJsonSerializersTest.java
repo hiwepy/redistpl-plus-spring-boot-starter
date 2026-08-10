@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 /**
  * Tests for Null*JsonSerializer classes.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 class NullJsonSerializersTest {
 

@@ -11,7 +11,7 @@ import org.springframework.util.ErrorHandler;
 /**
  * Tests for {@link NestedErrorHandler}.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 class NestedErrorHandlerTest {
 

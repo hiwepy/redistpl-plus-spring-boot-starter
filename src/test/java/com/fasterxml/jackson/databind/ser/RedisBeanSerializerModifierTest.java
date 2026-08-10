@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@link RedisBeanSerializerModifier}.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 class RedisBeanSerializerModifierTest {
 
