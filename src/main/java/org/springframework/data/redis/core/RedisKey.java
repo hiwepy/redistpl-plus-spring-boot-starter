@@ -55,6 +55,10 @@ public enum RedisKey {
         this.function = function;
     }
 
+    /**
+     * <p>Returns the desc.</p>
+     * @return the get desc
+     */
     public String getDesc() {
 		return desc;
 	}

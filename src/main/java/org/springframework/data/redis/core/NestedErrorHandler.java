@@ -22,6 +22,10 @@ public class NestedErrorHandler implements ErrorHandler {
     }
 
     @Override
+    /**
+     * <p>Handle error.</p>
+     * @param e
+     */
     public void handleError(Throwable e) {
         if(CollectionUtils.isEmpty(errorHandlers)){
             log.error("Stream Message handle Error :", e);

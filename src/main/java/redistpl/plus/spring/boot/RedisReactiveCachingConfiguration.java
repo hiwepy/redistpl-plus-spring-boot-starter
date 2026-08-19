@@ -48,6 +48,11 @@ public class RedisReactiveCachingConfiguration {
 			}
 
 			@Override
+    /**
+     * <p>Deserialize.</p>
+     * @param bytes
+     * @return the deserialize
+     */
 			public String deserialize(byte[] bytes) throws SerializationException {
 				return StringRedisSerializer.UTF_8.deserialize(bytes);
 			}}

@@ -110,6 +110,13 @@ public class ReactiveGeoTemplate {
 
 	}
 
+    /**
+     * <p>Returns the distance.</p>
+     * @param gpsFrom
+     * @param gpsTo
+     * @param ellipsoid
+     * @return the get distance
+     */
 	public double getDistance(GlobalCoordinates gpsFrom, GlobalCoordinates gpsTo, Ellipsoid ellipsoid){
 
         // 1、创建GeodeticCalculator，调用计算方法，传入坐标系、经纬度用于计算距离
@@ -132,6 +139,12 @@ public class ReactiveGeoTemplate {
         getReactiveRedisTemplate().opsForGeo().add(USER_GEO_KEY, point, uid);
     }
 
+    /**
+     * <p>Distance.</p>
+     * @param uid1
+     * @param uid2
+     * @return the distance
+     */
     public String distance(String uid1, String uid2) {
     	// 例：89 118.803805,32.060168
     	return getReactiveRedisTemplate().opsForGeo().distance(USER_GEO_KEY, uid1, uid2)

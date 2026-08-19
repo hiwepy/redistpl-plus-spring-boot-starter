@@ -70,6 +70,11 @@ public class RedisJacksonConfiguration {
 	}
 
 	@Bean
+    /**
+     * <p>Jackson2 json redis serializer.</p>
+     * @param customizerProvider
+     * @return the jackson2 json redis serializer
+     */
 	public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer(ObjectProvider<JsonMapperBuilderCustomizer> customizerProvider) {
 		// 1、获取自定义的JsonMapperBuilderCustomizer
 		List<JsonMapperBuilderCustomizer> customizers = customizerProvider.orderedStream().collect(Collectors.toList());
@@ -95,6 +100,11 @@ public class RedisJacksonConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
+    /**
+     * <p>Jsr310 json mapper builder customizer.</p>
+     * @param jacksonProperties
+     * @return the jsr310 json mapper builder customizer
+     */
 		public Jsr310JsonMapperBuilderCustomizer jsr310JsonMapperBuilderCustomizer(RedisJacksonProperties jacksonProperties) {
 			return new Jsr310JsonMapperBuilderCustomizer(jacksonProperties);
 		}
@@ -113,11 +123,19 @@ public class RedisJacksonConfiguration {
 			}
 
 			@Override
+    /**
+     * <p>Returns the order.</p>
+     * @return the get order
+     */
 			public int getOrder() {
 				return 0;
 			}
 
 			@Override
+    /**
+     * <p>Customize.</p>
+     * @param builder
+     */
 			public void customize(JsonMapper.Builder builder) {
 
 				if (this.jacksonProperties.getDefaultPropertyInclusion() != null) {

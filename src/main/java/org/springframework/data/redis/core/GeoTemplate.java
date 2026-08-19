@@ -113,6 +113,13 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
 
 	}
 
+    /**
+     * <p>Returns the distance.</p>
+     * @param gpsFrom
+     * @param gpsTo
+     * @param ellipsoid
+     * @return the get distance
+     */
 	public double getDistance(GlobalCoordinates gpsFrom, GlobalCoordinates gpsTo, Ellipsoid ellipsoid){
 
         // 1、创建GeodeticCalculator，调用计算方法，传入坐标系、经纬度用于计算距离
@@ -124,10 +131,20 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
 
     // ===============================Geo=================================
 
+    /**
+     * <p>Geo add.</p>
+     * @param location
+     * @return the geo add
+     */
  	public Long geoAdd(GeoLocation<Object> location) {
  		return getBoundGeoOperations().add(location);
  	}
 
+    /**
+     * <p>Geo add.</p>
+     * @param locations
+     * @return the geo add
+     */
  	public Long geoAdd(Iterable<GeoLocation<Object>> locations) {
  		return getBoundGeoOperations().add(locations);
  	}
@@ -136,6 +153,11 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
  		return getBoundGeoOperations().add(point, member);
  	}
 
+    /**
+     * <p>Geo add.</p>
+     * @param memberCoordinateMap
+     * @return the geo add
+     */
  	public Long geoAdd(Map<Object, Point> memberCoordinateMap) {
  		return getBoundGeoOperations().add(memberCoordinateMap);
  	}
@@ -224,6 +246,10 @@ public class GeoTemplate extends AbstractOperations<String, Object>  {
     	return geoResultList.stream().map(mapper).collect(Collectors.toList());
     }
 
+    /**
+     * <p>Returns the bound geo operations.</p>
+     * @return the get bound geo operations
+     */
     public BoundGeoOperations<String, Object> getBoundGeoOperations() {
 		return boundGeoOperations;
 	}

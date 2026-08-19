@@ -24,6 +24,12 @@ public class NullObjectJsonSerializer extends JsonSerializer<Object> {
 	private static final Map<String, Object> EMPTY_MAP = new HashMap<>(1);
 	
 	@Override
+    /**
+     * <p>Serialize.</p>
+     * @param value
+     * @param jsonGenerator
+     * @param serializerProvider
+     */
 	public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
 			throws IOException {
 		if (Objects.isNull(value)) {

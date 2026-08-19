@@ -61,6 +61,10 @@ public final class TypeReferences {
         }
 
         @Override
+    /**
+     * <p>Returns the type.</p>
+     * @return the get type
+     */
         public Type getType() {
             return _type;
         }

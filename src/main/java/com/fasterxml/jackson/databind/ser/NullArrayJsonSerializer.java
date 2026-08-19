@@ -21,6 +21,12 @@ public class NullArrayJsonSerializer extends JsonSerializer<Object> {
 	public static final NullArrayJsonSerializer INSTANCE = new NullArrayJsonSerializer();
 	
 	@Override
+    /**
+     * <p>Serialize.</p>
+     * @param value
+     * @param jsonGenerator
+     * @param serializerProvider
+     */
 	public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
 			throws IOException {
 		if (Objects.isNull(value)) {

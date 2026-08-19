@@ -32,26 +32,50 @@ public class RedisThreadPoolProperties {
      */
     private StreamPool stream = new StreamPool();
 
+    /**
+     * <p>Sets the listener.</p>
+     * @param listener
+     */
     public void setListener(Pool listener) {
         this.listener = listener;
     }
 
+    /**
+     * <p>Returns the listener.</p>
+     * @return the get listener
+     */
     public Pool getListener() {
         return listener;
     }
 
+    /**
+     * <p>Sets the subscription.</p>
+     * @param subscription
+     */
     public void setSubscription(Pool subscription) {
         this.subscription = subscription;
     }
 
+    /**
+     * <p>Returns the subscription.</p>
+     * @return the get subscription
+     */
     public Pool getSubscription() {
         return subscription;
     }
 
+    /**
+     * <p>Sets the stream.</p>
+     * @param stream
+     */
     public void setStream(StreamPool stream) {
         this.stream = stream;
     }
 
+    /**
+     * <p>Returns the stream.</p>
+     * @return the get stream
+     */
     public StreamPool getStream() {
         return stream;
     }
@@ -115,66 +139,130 @@ public class RedisThreadPoolProperties {
          */
         private RejectedPolicy rejectedPolicy = RejectedPolicy.AbortPolicy;
 
+    /**
+     * <p>Sets the core size.</p>
+     * @param coreSize
+     */
         public void setCoreSize(int coreSize) {
             this.coreSize = coreSize;
         }
 
+    /**
+     * <p>Returns the core size.</p>
+     * @return the get core size
+     */
         public int getCoreSize() {
             return coreSize;
         }
 
+    /**
+     * <p>Sets the max size.</p>
+     * @param maxSize
+     */
         public void setMaxSize(int maxSize) {
             this.maxSize = maxSize;
         }
 
+    /**
+     * <p>Returns the max size.</p>
+     * @return the get max size
+     */
         public int getMaxSize() {
             return maxSize;
         }
 
+    /**
+     * <p>Sets the queue capacity.</p>
+     * @param queueCapacity
+     */
         public void setQueueCapacity(int queueCapacity) {
             this.queueCapacity = queueCapacity;
         }
 
+    /**
+     * <p>Returns the queue capacity.</p>
+     * @return the get queue capacity
+     */
         public int getQueueCapacity() {
             return queueCapacity;
         }
 
+    /**
+     * <p>Sets the keep alive.</p>
+     * @param keepAlive
+     */
         public void setKeepAlive(Duration keepAlive) {
             this.keepAlive = keepAlive;
         }
 
+    /**
+     * <p>Returns the keep alive.</p>
+     * @return the get keep alive
+     */
         public Duration getKeepAlive() {
             return keepAlive;
         }
 
+    /**
+     * <p>Sets the allow core thread time out.</p>
+     * @param allowCoreThreadTimeOut
+     */
         public void setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
             this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
         }
 
+    /**
+     * <p>Checks if allow core thread time out.</p>
+     * @return the is allow core thread time out
+     */
         public boolean isAllowCoreThreadTimeOut() {
             return allowCoreThreadTimeOut;
         }
 
+    /**
+     * <p>Sets the thread name prefix.</p>
+     * @param threadNamePrefix
+     */
         public void setThreadNamePrefix(String threadNamePrefix) {
             this.threadNamePrefix = threadNamePrefix;
         }
 
+    /**
+     * <p>Returns the thread name prefix.</p>
+     * @return the get thread name prefix
+     */
         public String getThreadNamePrefix() {
             return threadNamePrefix;
         }
 
+    /**
+     * <p>Sets the daemon.</p>
+     * @param daemon
+     */
         public void setDaemon(boolean daemon) {
             this.daemon = daemon;
         }
 
+    /**
+     * <p>Checks if daemon.</p>
+     * @return the is daemon
+     */
         public boolean isDaemon() {
             return daemon;
         }
 
+    /**
+     * <p>Returns the rejected policy.</p>
+     * @return the get rejected policy
+     */
         public RejectedPolicy getRejectedPolicy() {
             return rejectedPolicy;
         }
 
+    /**
+     * <p>Sets the rejected policy.</p>
+     * @param rejectedPolicy
+     */
         public void setRejectedPolicy(RejectedPolicy rejectedPolicy) {
             this.rejectedPolicy = rejectedPolicy;
         }
@@ -200,26 +288,50 @@ public class RedisThreadPoolProperties {
 
         private ReadOffsetPolicy readOffset = ReadOffsetPolicy.lastConsumed;
 
+    /**
+     * <p>Sets the batch size.</p>
+     * @param batchSize
+     */
         public void setBatchSize(Integer batchSize) {
             this.batchSize = batchSize;
         }
 
+    /**
+     * <p>Returns the batch size.</p>
+     * @return the get batch size
+     */
         public Integer getBatchSize() {
             return batchSize;
         }
 
+    /**
+     * <p>Sets the poll timeout.</p>
+     * @param pollTimeout
+     */
         public void setPollTimeout(Duration pollTimeout) {
             this.pollTimeout = pollTimeout;
         }
 
+    /**
+     * <p>Returns the poll timeout.</p>
+     * @return the get poll timeout
+     */
         public Duration getPollTimeout() {
             return pollTimeout;
         }
 
+    /**
+     * <p>Sets the read offset.</p>
+     * @param readOffset
+     */
         public void setReadOffset(ReadOffsetPolicy readOffset) {
             this.readOffset = readOffset;
         }
 
+    /**
+     * <p>Returns the read offset.</p>
+     * @return the get read offset
+     */
         public ReadOffsetPolicy getReadOffset() {
             return readOffset;
         }
@@ -243,9 +355,18 @@ public class RedisThreadPoolProperties {
             this.function = function;
         }
 
+    /**
+     * <p>Returns the read offset.</p>
+     * @return the get read offset
+     */
         public ReadOffset getReadOffset(){
             return this.function.apply(">");
         }
+    /**
+     * <p>Returns the read offset.</p>
+     * @param offset
+     * @return the get read offset
+     */
         public ReadOffset getReadOffset(String offset){
             return this.function.apply(offset);
         }
@@ -280,6 +401,10 @@ public class RedisThreadPoolProperties {
             this.function = function;
         }
 
+    /**
+     * <p>Returns the rejected execution handler.</p>
+     * @return the get rejected execution handler
+     */
         public RejectedExecutionHandler getRejectedExecutionHandler(){
             return this.function.apply(null);
         }

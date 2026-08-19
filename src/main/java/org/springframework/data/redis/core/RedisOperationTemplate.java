@@ -46,12 +46,6 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings({"unchecked","rawtypes"})
 @Slf4j
-/**
- * <p>RedisOperationTemplate implementation.</p>
- *
- * @author <a href="https://github.com/loong10k">Loong Wan</a>
- * @since 1.0.0
- */
 public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	private static final Long LOCK_SUCCESS = 1L;
@@ -85,10 +79,18 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		this.objectMapper = objectMapper;
 	}
 
+    /**
+     * <p>Returns the redis template.</p>
+     * @return the get redis template
+     */
 	public RedisTemplate<String, Object> getRedisTemplate() {
 		return redisTemplate;
 	}
 
+    /**
+     * <p>Returns the object mapper.</p>
+     * @return the get object mapper
+     */
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
@@ -137,6 +139,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	// =============================Deserialize============================
 
+    /**
+     * <p>Returns the deserialize values.</p>
+     * @param rawValues
+     * @return the get deserialize values
+     */
 	public Set<Object> getDeserializeValues(Set<byte[]> rawValues) {
 		return deserializeValues(rawValues);
 	}
@@ -149,14 +156,29 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return super.deserializeTupleValues(rawValues);
 	}
 
+    /**
+     * <p>Returns the deserialize tuple.</p>
+     * @param tuple
+     * @return the get deserialize tuple
+     */
 	public TypedTuple<Object> getDeserializeTuple(Tuple tuple) {
 		return super.deserializeTuple(tuple);
 	}
 
+    /**
+     * <p>Returns the raw tuple values.</p>
+     * @param values
+     * @return the get raw tuple values
+     */
 	public Set<Tuple> getRawTupleValues(Set<TypedTuple<Object>> values) {
 		return super.rawTupleValues(values);
 	}
 
+    /**
+     * <p>Returns the deserialize values.</p>
+     * @param rawValues
+     * @return the get deserialize values
+     */
 	public List<Object> getDeserializeValues(List<byte[]> rawValues) {
 		return super.deserializeValues(rawValues);
 	}
@@ -173,18 +195,38 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return super.deserializeHashMap(entries);
 	}
 
+    /**
+     * <p>Returns the deserialize key.</p>
+     * @param value
+     * @return the get deserialize key
+     */
 	public String getDeserializeKey(byte[] value) {
 		return super.deserializeKey(value);
 	}
 
+    /**
+     * <p>Returns the deserialize keys.</p>
+     * @param keys
+     * @return the get deserialize keys
+     */
 	public Set<String> getDeserializeKeys(Set<byte[]> keys) {
 		return super.deserializeKeys(keys);
 	}
 
+    /**
+     * <p>Returns the deserialize value.</p>
+     * @param value
+     * @return the get deserialize value
+     */
 	public Object getDeserializeValue(byte[] value) {
 		return super.deserializeValue(value);
 	}
 
+    /**
+     * <p>Returns the deserialize string.</p>
+     * @param value
+     * @return the get deserialize string
+     */
 	public String getDeserializeString(byte[] value) {
 		return super.deserializeString(value);
 	}
@@ -298,6 +340,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 	}
 
 	// 模糊匹配缓存中的key
+    /**
+     * <p>Keys.</p>
+     * @param pattern
+     * @return the keys
+     */
 	public Set<String> keys(String pattern) {
 		try {
 			if (Objects.isNull(pattern)) {
@@ -434,6 +481,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Sets the nx.</p>
+     * @param key
+     * @param value
+     * @return the set nx
+     */
 	public boolean setNx(String key, Object value) {
 		try {
 			return Boolean.TRUE.equals(getValueOperations().setIfAbsent(key, value));
@@ -583,6 +636,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
+    /**
+     * <p>Returns the map.</p>
+     * @param key
+     * @return the get map
+     */
 	public Map<String, Object> getMap(String key) {
 		Object obj = this.get(key);
 		if (Objects.nonNull(obj)) {
@@ -595,6 +653,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return getFor(key, ObjectMappers.getMapperFor( objectMapper, TypeReferences.MAP_TYPE));
 	}
 
+    /**
+     * <p>Returns the list.</p>
+     * @param key
+     * @return the get list
+     */
 	public List<Object> getList(String key) {
 		Object obj = this.get(key);
 		if (Objects.nonNull(obj)) {
@@ -801,18 +864,38 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>M get double.</p>
+     * @param keys
+     * @return the m get double
+     */
 	public List<Double> mGetDouble(Collection keys) {
 		return mGetFor(keys, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>M get long.</p>
+     * @param keys
+     * @return the m get long
+     */
 	public List<Long> mGetLong(Collection keys) {
 		return mGetFor(keys, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>M get integer.</p>
+     * @param keys
+     * @return the m get integer
+     */
 	public List<Integer> mGetInteger(Collection keys) {
 		return mGetFor(keys, Functions.TO_INTEGER);
 	}
 
+    /**
+     * <p>M get string.</p>
+     * @param keys
+     * @return the m get string
+     */
 	public List<String> mGetString(Collection keys) {
 		return mGetFor(keys, Functions.TO_STRING);
 	}
@@ -859,6 +942,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>M get.</p>
+     * @param keys
+     * @param redisPrefix
+     * @return the m get
+     */
 	public List<Object> mGet(Collection<Object> keys, String redisPrefix) {
 		try {
 			if(CollectionUtils.isEmpty(keys)) {
@@ -915,6 +1004,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Incr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the incr
+     */
 	public Long incr(String key, long delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
@@ -974,6 +1070,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Incr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the incr
+     */
 	public Double incr(String key, double delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递增因子必须>=0");
@@ -1033,6 +1136,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Decr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the decr
+     */
 	public Long decr(String key, long delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递减因子必须>=0");
@@ -1092,6 +1202,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Decr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the decr
+     */
 	public Double decr(String key, double delta, Duration timeout) {
 		if (delta < 0) {
 			throw new RedisOperationException("递减因子必须>=0");
@@ -1131,6 +1248,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Del pattern.</p>
+     * @param pattern
+     * @return the del pattern
+     */
 	public Long delPattern(String pattern) {
 		try {
 			Set<String> keys = this.keys(pattern);
@@ -1156,11 +1278,21 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.scan(options);
 	}
 
+    /**
+     * <p>Scan.</p>
+     * @param pattern
+     * @return the scan
+     */
 	public Set<String> scan(String pattern) {
 		ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
 		return this.scan(options);
 	}
 
+    /**
+     * <p>Scan.</p>
+     * @param options
+     * @return the scan
+     */
 	public Set<String> scan(ScanOptions options) {
 		return this.redisTemplate.execute((RedisConnection redisConnection) -> {
 			try (Cursor<byte[]> cursor = redisConnection.scan(options)) {
@@ -1195,18 +1327,46 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L range string.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range string
+     */
 	public List<String> lRangeString(String key, long start, long end) {
 		return lRangeFor(key, start, end, Functions.TO_STRING);
 	}
 
+    /**
+     * <p>L range double.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range double
+     */
 	public List<Double> lRangeDouble(String key, long start, long end) {
 		return lRangeFor(key, start, end, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>L range long.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range long
+     */
 	public List<Long> lRangeLong(String key, long start, long end) {
 		return lRangeFor(key, start, end, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>L range integer.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range integer
+     */
 	public List<Integer> lRangeInteger(String key, long start, long end) {
 		return lRangeFor(key, start, end, Functions.TO_INTEGER);
 	}
@@ -1270,37 +1430,89 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L index string.</p>
+     * @param key
+     * @param index
+     * @return the l index string
+     */
 	public String lIndexString(String key, long index) {
 		return lIndexFor(key, index, Functions.TO_STRING);
 	}
 
+    /**
+     * <p>Gl index string.</p>
+     * @param key
+     * @param index
+     * @param defaultVal
+     * @return the gl index string
+     */
 	public String glIndexString(String key, long index, String defaultVal) {
 		String rtVal = lIndexString(key, index);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
+    /**
+     * <p>L index double.</p>
+     * @param key
+     * @param index
+     * @return the l index double
+     */
 	public Double lIndexDouble(String key, long index) {
 		return lIndexFor(key, index, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>L index double.</p>
+     * @param key
+     * @param index
+     * @param defaultVal
+     * @return the l index double
+     */
 	public Double lIndexDouble(String key, long index, double defaultVal) {
 		Double rtVal = lIndexDouble(key, index);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
+    /**
+     * <p>L index long.</p>
+     * @param key
+     * @param index
+     * @return the l index long
+     */
 	public Long lIndexLong(String key, long index) {
 		return lIndexFor(key, index, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>L index long.</p>
+     * @param key
+     * @param index
+     * @param defaultVal
+     * @return the l index long
+     */
 	public Long lIndexLong(String key, long index, long defaultVal) {
 		Long rtVal = lIndexLong(key, index);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
 	}
 
+    /**
+     * <p>L index integer.</p>
+     * @param key
+     * @param index
+     * @return the l index integer
+     */
 	public Integer lIndexInteger(String key, long index) {
 		return lIndexFor(key, index, Functions.TO_INTEGER);
 	}
 
+    /**
+     * <p>L index integer.</p>
+     * @param key
+     * @param index
+     * @param defaultVal
+     * @return the l index integer
+     */
 	public Integer lIndexInteger(String key, long index, int defaultVal) {
 		Integer rtVal = lIndexInteger(key, index);
 		return Objects.nonNull(rtVal) ? rtVal : defaultVal;
@@ -1464,6 +1676,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L left pop.</p>
+     * @param key
+     * @return the l left pop
+     */
 	public Object lLeftPop(String key) {
 		try {
 			return redisTemplate.opsForList().leftPop(key);
@@ -1487,6 +1704,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L left pop.</p>
+     * @param key
+     * @param timeout
+     * @param unit
+     * @return the l left pop
+     */
 	public Object lLeftPop(String key, long timeout, TimeUnit unit) {
 		try {
 			return redisTemplate.opsForList().leftPop(key, timeout, unit);
@@ -1496,6 +1720,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L left pop.</p>
+     * @param key
+     * @param timeout
+     * @return the l left pop
+     */
 	public Object lLeftPop(String key, Duration timeout) {
 		try {
 			return redisTemplate.opsForList().leftPop(key, timeout);
@@ -1732,6 +1962,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L right pop.</p>
+     * @param key
+     * @return the l right pop
+     */
 	public Object lRightPop(String key) {
 		try {
 			return redisTemplate.opsForList().rightPop(key);
@@ -1755,6 +1990,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L right pop.</p>
+     * @param key
+     * @param timeout
+     * @param unit
+     * @return the l right pop
+     */
 	public Object lRightPop(String key, long timeout, TimeUnit unit) {
 		try {
 			return redisTemplate.opsForList().rightPop(key, timeout, unit);
@@ -1764,6 +2006,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L right pop.</p>
+     * @param key
+     * @param timeout
+     * @return the l right pop
+     */
 	public Object lRightPop(String key, Duration timeout) {
 		try {
 			return redisTemplate.opsForList().rightPop(key, timeout);
@@ -1796,6 +2044,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L right pop and left push.</p>
+     * @param sourceKey
+     * @param destinationKey
+     * @return the l right pop and left push
+     */
 	public Object lRightPopAndLeftPush(String sourceKey, String destinationKey) {
 		try {
 			return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey);
@@ -1805,6 +2059,14 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L right pop and left push.</p>
+     * @param sourceKey
+     * @param destinationKey
+     * @param timeout
+     * @param unit
+     * @return the l right pop and left push
+     */
 	public Object lRightPopAndLeftPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit) {
 		try {
 			return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey, timeout, unit);
@@ -1814,6 +2076,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L right pop and left push.</p>
+     * @param sourceKey
+     * @param destinationKey
+     * @param timeout
+     * @return the l right pop and left push
+     */
 	public Object lRightPopAndLeftPush(String sourceKey, String destinationKey, Duration timeout) {
 		try {
 			return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey, timeout);
@@ -1856,6 +2125,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>L trim.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l trim
+     */
 	public boolean lTrim(String key, long start, long end) {
 		try {
 			redisTemplate.opsForList().trim(key, start, end);
@@ -2106,6 +2382,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+    /**
+     * <p>H get.</p>
+     * @param keys
+     * @param hashKey
+     * @return the h get
+     */
 	public List<Object> hGet(Collection<String> keys, Object hashKey) {
 		try {
 			List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
@@ -2154,6 +2436,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+    /**
+     * <p>Hm get for string.</p>
+     * @param key
+     * @return the hm get for string
+     */
     public Map<String, String> hmGetForString(String key) {
         return this.hmGetFor(key, Functions.TO_STRING, Functions.TO_STRING);
     }
@@ -2170,6 +2457,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, Functions.TO_STRING, typeRef);
 	}
 
+    /**
+     * <p>Hm get for integer.</p>
+     * @param key
+     * @return the hm get for integer
+     */
     public Map<Integer, Integer> hmGetForInteger(String key) {
         return this.hmGetFor(key, Functions.TO_INTEGER, Functions.TO_INTEGER);
     }
@@ -2186,6 +2478,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, Functions.TO_INTEGER, typeRef);
 	}
 
+    /**
+     * <p>Hm get for long.</p>
+     * @param key
+     * @return the hm get for long
+     */
     public Map<Long, Long> hmGetForLong(String key) {
         return this.hmGetFor(key, Functions.TO_LONG, Functions.TO_LONG);
     }
@@ -2202,6 +2499,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return this.hmGetFor(key, Functions.TO_LONG, typeRef);
 	}
 
+    /**
+     * <p>Hm get for double.</p>
+     * @param key
+     * @return the hm get for double
+     */
     public Map<Double, Double> hmGetForDouble(String key) {
         return this.hmGetFor(key, Functions.TO_DOUBLE, Functions.TO_DOUBLE);
     }
@@ -2526,16 +2828,33 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>H scan.</p>
+     * @param bigHashKey
+     * @param consumer
+     */
 	public void hScan(String bigHashKey, Consumer<Entry<Object,Object>> consumer) {
 		ScanOptions options = ScanOptions.scanOptions().count(Long.MAX_VALUE).build();
 		this.hScan(bigHashKey, options).forEachRemaining(consumer);
 	}
 
+    /**
+     * <p>H scan.</p>
+     * @param bigHashKey
+     * @param pattern
+     * @param consumer
+     */
 	public void hScan(String bigHashKey, String pattern, Consumer<Entry<Object,Object>> consumer) {
 		ScanOptions options = ScanOptions.scanOptions().count(Long.MAX_VALUE).match(pattern).build();
 		this.hScan(bigHashKey, options).forEachRemaining(consumer);
 	}
 
+    /**
+     * <p>H scan.</p>
+     * @param bigHashKey
+     * @param options
+     * @param consumer
+     */
 	public void hScan(String bigHashKey, ScanOptions options, Consumer<Entry<Object,Object>> consumer) {
 		this.hScan(bigHashKey, options).forEachRemaining(consumer);
 	}
@@ -2855,6 +3174,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Returns the hash operations.</p>
+     * @return the get hash operations
+     */
 	protected HashOperations<String, Object, Object> getHashOperations() {
 		return redisTemplate.opsForHash();
 	}
@@ -2877,6 +3200,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S add and expire.</p>
+     * @param key
+     * @param seconds
+     * @param values
+     * @return the s add and expire
+     */
 	public Long sAddAndExpire(String key, long seconds, Object... values) {
 		try {
 			Long rt = getSetOperations().add(key, values);
@@ -2890,6 +3220,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S add and expire.</p>
+     * @param key
+     * @param timeout
+     * @param values
+     * @return the s add and expire
+     */
 	public Long sAddAndExpire(String key, Duration timeout, Object... values) {
 		try {
 			Long rt = getSetOperations().add(key, values);
@@ -2936,18 +3273,38 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S get string.</p>
+     * @param key
+     * @return the s get string
+     */
 	public Set<String> sGetString(String key) {
 		return sGetFor(key, Functions.TO_STRING);
 	}
 
+    /**
+     * <p>S get double.</p>
+     * @param key
+     * @return the s get double
+     */
 	public Set<Double> sGetDouble(String key) {
 		return sGetFor(key, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>S get long.</p>
+     * @param key
+     * @return the s get long
+     */
 	public Set<Long> sGetLong(String key) {
 		return sGetFor(key, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>S get integer.</p>
+     * @param key
+     * @return the s get integer
+     */
 	public Set<Integer> sGetInteger(String key) {
 		return sGetFor(key, Functions.TO_INTEGER);
 	}
@@ -3050,6 +3407,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S intersect.</p>
+     * @param key
+     * @param otherKey
+     * @return the s intersect
+     */
 	public Set<Object> sIntersect(String key, String otherKey) {
 		try {
 			return getSetOperations().intersect(key, otherKey);
@@ -3059,6 +3422,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S intersect.</p>
+     * @param key
+     * @param otherKeys
+     * @return the s intersect
+     */
 	public Set<Object> sIntersect(String key, Collection<String> otherKeys) {
 		try {
 			return getSetOperations().intersect(key, otherKeys);
@@ -3068,6 +3437,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S intersect.</p>
+     * @param otherKeys
+     * @return the s intersect
+     */
 	public Set<Object> sIntersect(Collection<String> otherKeys) {
 		try {
 			return getSetOperations().intersect(otherKeys);
@@ -3077,6 +3451,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S intersect and store.</p>
+     * @param key
+     * @param otherKey
+     * @param destKey
+     * @return the s intersect and store
+     */
 	public Long sIntersectAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getSetOperations().intersectAndStore(key, otherKey, destKey);
@@ -3086,6 +3467,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S intersect and store.</p>
+     * @param key
+     * @param otherKeys
+     * @param destKey
+     * @return the s intersect and store
+     */
 	public Long sIntersectAndStore(String key, Collection<String> otherKeys, String destKey) {
 		try {
 			return getSetOperations().intersectAndStore(key, otherKeys, destKey);
@@ -3095,6 +3483,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S intersect and store.</p>
+     * @param otherKeys
+     * @param destKey
+     * @return the s intersect and store
+     */
 	public Long sIntersectAndStore(Collection<String> otherKeys, String destKey) {
 		try {
 			return getSetOperations().intersectAndStore(otherKeys, destKey);
@@ -3115,14 +3509,32 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return sRandomFor(key, count, Functions.TO_STRING);
 	}
 
+    /**
+     * <p>S random double.</p>
+     * @param key
+     * @param count
+     * @return the s random double
+     */
 	public List<Double> sRandomDouble(String key, long count) {
 		return sRandomFor(key, count, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>S random long.</p>
+     * @param key
+     * @param count
+     * @return the s random long
+     */
 	public List<Long> sRandomLong(String key, long count) {
 		return sRandomFor(key, count, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>S random integer.</p>
+     * @param key
+     * @param count
+     * @return the s random integer
+     */
 	public List<Integer> sRandomInteger(String key, long count) {
 		return sRandomFor(key, count, Functions.TO_INTEGER);
 	}
@@ -3143,6 +3555,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+    /**
+     * <p>S random.</p>
+     * @param key
+     * @param count
+     * @return the s random
+     */
 	public List<Object> sRandom(String key, long count) {
 		try {
 			return getSetOperations().randomMembers(key, count);
@@ -3163,14 +3581,32 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return sRandomDistinctFor(key, count, Functions.TO_STRING);
 	}
 
+    /**
+     * <p>S random distinct double.</p>
+     * @param key
+     * @param count
+     * @return the s random distinct double
+     */
 	public Set<Double> sRandomDistinctDouble(String key, long count) {
 		return sRandomDistinctFor(key, count, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>S random distinct long.</p>
+     * @param key
+     * @param count
+     * @return the s random distinct long
+     */
 	public Set<Long> sRandomDistinctLong(String key, long count) {
 		return sRandomDistinctFor(key, count, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>S random distinct integer.</p>
+     * @param key
+     * @param count
+     * @return the s random distinct integer
+     */
 	public Set<Integer> sRandomDistinctInteger(String key, long count) {
 		return sRandomDistinctFor(key, count, Functions.TO_INTEGER);
 	}
@@ -3191,6 +3627,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return null;
 	}
 
+    /**
+     * <p>S random distinct.</p>
+     * @param key
+     * @param count
+     * @return the s random distinct
+     */
 	public Set<Object> sRandomDistinct(String key, long count) {
 		try {
 			return getSetOperations().distinctRandomMembers(key, count);
@@ -3217,16 +3659,33 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S scan.</p>
+     * @param bigSetKey
+     * @param consumer
+     */
 	public void sScan(String bigSetKey, Consumer<byte[]> consumer) {
 		ScanOptions options = ScanOptions.scanOptions().count(Long.MAX_VALUE).build();
 		this.sScan(bigSetKey, options, consumer);
 	}
 
+    /**
+     * <p>S scan.</p>
+     * @param bigSetKey
+     * @param pattern
+     * @param consumer
+     */
 	public void sScan(String bigSetKey, String pattern, Consumer<byte[]> consumer) {
 		ScanOptions options = ScanOptions.scanOptions().count(Long.MAX_VALUE).match(pattern).build();
 		this.sScan(bigSetKey, options, consumer);
 	}
 
+    /**
+     * <p>S scan.</p>
+     * @param bigSetKey
+     * @param options
+     * @param consumer
+     */
 	public void sScan(String bigSetKey, ScanOptions options, Consumer<byte[]> consumer) {
 		this.redisTemplate.execute((RedisConnection redisConnection) -> {
 			try (Cursor<byte[]> cursor = redisConnection.sScan(rawKey(bigSetKey), options)) {
@@ -3275,6 +3734,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S union.</p>
+     * @param key
+     * @param otherKey
+     * @return the s union
+     */
 	public Set<Object> sUnion(String key, String otherKey) {
 		try {
 			return getSetOperations().union(key, otherKey);
@@ -3284,6 +3749,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S union.</p>
+     * @param key
+     * @param keys
+     * @return the s union
+     */
 	public Set<Object> sUnion(String key, Collection<String> keys) {
 		try {
 			return getSetOperations().union(key, keys);
@@ -3308,6 +3779,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S union and store.</p>
+     * @param key
+     * @param otherKey
+     * @param destKey
+     * @return the s union and store
+     */
 	public Long sUnionAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getSetOperations().unionAndStore(key, otherKey, destKey);
@@ -3317,6 +3795,13 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>S union and store.</p>
+     * @param key
+     * @param keys
+     * @param destKey
+     * @return the s union and store
+     */
 	public Long sUnionAndStore(String key, Collection<String> keys, String destKey) {
 		try {
 			return getSetOperations().unionAndStore(key, keys, destKey);
@@ -3342,6 +3827,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Returns the set operations.</p>
+     * @return the get set operations
+     */
 	protected SetOperations<String, Object> getSetOperations() {
 		return redisTemplate.opsForSet();
 	}
@@ -3852,14 +4341,35 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		return zRangeByScoreFor(key, min, max, Functions.TO_STRING);
 	}
 
+    /**
+     * <p>Z range double by score.</p>
+     * @param key
+     * @param min
+     * @param max
+     * @return the z range double by score
+     */
 	public Set<Double> zRangeDoubleByScore(String key, double min, double max) {
 		return zRangeByScoreFor(key, min, max, Functions.TO_DOUBLE);
 	}
 
+    /**
+     * <p>Z range long by score.</p>
+     * @param key
+     * @param min
+     * @param max
+     * @return the z range long by score
+     */
 	public Set<Long> zRangeLongByScore(String key, double min, double max) {
 		return zRangeByScoreFor(key, min, max, Functions.TO_LONG);
 	}
 
+    /**
+     * <p>Z range integer by score.</p>
+     * @param key
+     * @param min
+     * @param max
+     * @return the z range integer by score
+     */
 	public Set<Integer> zRangeIntegerByScore(String key, double min, double max) {
 		return zRangeByScoreFor(key, min, max, Functions.TO_INTEGER);
 	}
@@ -4364,12 +4874,22 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Returns the z set operations.</p>
+     * @return the get z set operations
+     */
 	protected ZSetOperations<String, Object> getZSetOperations() {
 		return redisTemplate.opsForZSet();
 	}
 
 	// ===============================Stream=================================
 
+    /**
+     * <p>X add.</p>
+     * @param key
+     * @param message
+     * @return the x add
+     */
 	public RecordId xAdd(String key, Map<String,Object> message){
 		try {
 			RecordId add = getStreamOperations().add(key, message);
@@ -4380,6 +4900,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>X trim.</p>
+     * @param key
+     * @param count
+     * @return the x trim
+     */
 	public Long xTrim(String key, long count){
 		try {
 			Long ct = getStreamOperations().trim(key, count);
@@ -4390,6 +4916,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>X del.</p>
+     * @param key
+     * @param recordIds
+     * @return the x del
+     */
 	public Long xDel(String key, String... recordIds){
 		try {
 			Long ct = getStreamOperations().delete(key, recordIds);
@@ -4400,6 +4932,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>X del.</p>
+     * @param key
+     * @param recordIds
+     * @return the x del
+     */
 	public Long xDel(String key, RecordId... recordIds){
 		try {
 			Long ct = getStreamOperations().delete(key, recordIds);
@@ -4410,6 +4948,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>X len.</p>
+     * @param key
+     * @return the x len
+     */
 	public Long xLen(String key){
 		try {
 			Long ct = getStreamOperations().size(key);
@@ -4456,6 +4999,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Add group.</p>
+     * @param key
+     * @param groupName
+     * @return the add group
+     */
 	public String addGroup(String key, String groupName){
 		try {
 			return getStreamOperations().createGroup(key, groupName);
@@ -4465,12 +5014,22 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Returns the stream operations.</p>
+     * @return the get stream operations
+     */
 	protected StreamOperations<String, Object, Object> getStreamOperations() {
 		return redisTemplate.opsForStream();
 	}
 
 	// ===============================HyperLogLog=================================
 
+    /**
+     * <p>Pf add.</p>
+     * @param key
+     * @param values
+     * @return the pf add
+     */
 	public Long pfAdd(String key, Object... values) {
 		try {
 			return getHyperLogLogOperations().add(key, values);
@@ -4480,6 +5039,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Pf del.</p>
+     * @param key
+     * @return the pf del
+     */
 	public Boolean pfDel(String key) {
 		try {
 			getHyperLogLogOperations().delete(key);
@@ -4490,6 +5054,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Pf count.</p>
+     * @param keys
+     * @return the pf count
+     */
 	public Long pfCount(String... keys) {
 		try {
 			return getHyperLogLogOperations().size(keys);
@@ -4499,6 +5068,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Pf merge.</p>
+     * @param destination
+     * @param sourceKeys
+     * @return the pf merge
+     */
 	public Long pfMerge(String destination, String... sourceKeys) {
 		try {
 			return getHyperLogLogOperations().union(destination, sourceKeys);
@@ -4508,6 +5083,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Returns the hyper log log operations.</p>
+     * @return the get hyper log log operations
+     */
 	protected HyperLogLogOperations<String, Object> getHyperLogLogOperations() {
 		return redisTemplate.opsForHyperLogLog();
 	}
@@ -4564,6 +5143,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Returns the value operations.</p>
+     * @return the get value operations
+     */
 	protected ValueOperations<String, Object> getValueOperations() {
 		return redisTemplate.opsForValue();
 	}
@@ -4636,6 +5219,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Try lock.</p>
+     * @param lockKey
+     * @param timeout
+     * @return the try lock
+     */
 	public boolean tryLock(String lockKey, Duration timeout) {
 		return tryLock( lockKey, timeout.toMillis());
 	}
@@ -4691,6 +5280,15 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Try lock.</p>
+     * @param lockKey
+     * @param requestId
+     * @param timeout
+     * @param retryTimes
+     * @param retryInterval
+     * @return the try lock
+     */
     public boolean tryLock(String lockKey, String requestId, Duration timeout, int retryTimes, long retryInterval) {
     	return tryLock(lockKey, requestId, timeout.toMillis(), retryTimes, retryInterval);
     }
@@ -4769,6 +5367,11 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	// ===============================Pipeline=================================
 
+    /**
+     * <p>Execute pipelined.</p>
+     * @param action
+     * @return the execute pipelined
+     */
 	public List<Object> executePipelined(RedisCallback<?> action) {
 		try {
 			return redisTemplate.executePipelined(action);
@@ -4778,6 +5381,12 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Execute pipelined.</p>
+     * @param action
+     * @param resultSerializer
+     * @return the execute pipelined
+     */
 	public List<Object> executePipelined(RedisCallback<?> action, RedisSerializer<?> resultSerializer) {
 		try {
 			return redisTemplate.executePipelined(action, resultSerializer);
@@ -5089,6 +5698,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Db size.</p>
+     * @return the db size
+     */
 	public Long dbSize() {
 		try {
 			return redisTemplate.execute((RedisCallback<Long>) redisConnection -> {
@@ -5100,6 +5713,10 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Last save.</p>
+     * @return the last save
+     */
 	public Long lastSave() {
 		try {
 			return redisTemplate.execute((RedisCallback<Long>) redisConnection -> {
@@ -5111,6 +5728,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Bg re write aof.</p>
+     */
 	public void bgReWriteAof() {
 		try {
 			redisTemplate.execute((RedisCallback<Void>) redisConnection -> {
@@ -5123,6 +5743,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Bg save.</p>
+     */
 	public void bgSave() {
 		try {
 			redisTemplate.execute((RedisCallback<Void>) redisConnection -> {
@@ -5135,6 +5758,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Save.</p>
+     */
 	public void save() {
 		try {
 			redisTemplate.execute((RedisCallback<Void>) redisConnection -> {
@@ -5147,6 +5773,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Flush db.</p>
+     */
 	public void flushDb() {
 		try {
 			redisTemplate.execute((RedisCallback<Void>) redisConnection -> {
@@ -5159,6 +5788,9 @@ public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 		}
 	}
 
+    /**
+     * <p>Flush all.</p>
+     */
 	public void flushAll() {
 		try {
 			redisTemplate.execute((RedisCallback<Void>) redisConnection -> {

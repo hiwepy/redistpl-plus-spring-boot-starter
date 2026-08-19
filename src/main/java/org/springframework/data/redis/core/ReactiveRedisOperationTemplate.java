@@ -95,10 +95,18 @@ public class ReactiveRedisOperationTemplate {
 		this.objectMapper = objectMapper;
 	}
 
+    /**
+     * <p>Returns the reactive redis template.</p>
+     * @return the get reactive redis template
+     */
 	public ReactiveRedisTemplate<String, Object> getReactiveRedisTemplate() {
 		return reactiveRedisTemplate;
 	}
 
+    /**
+     * <p>Returns the object mapper.</p>
+     * @return the get object mapper
+     */
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
@@ -115,6 +123,11 @@ public class ReactiveRedisOperationTemplate {
 
 	// =============================Serializer============================
 
+    /**
+     * <p>Returns the raw key.</p>
+     * @param key
+     * @return the get raw key
+     */
 	public ByteBuffer getRawKey(String key) {
 		return reactiveRedisTemplate.getSerializationContext().getStringSerializationPair().write(key);
 	}
@@ -144,10 +157,20 @@ public class ReactiveRedisOperationTemplate {
 
 	// =============================Deserialize============================
 
+    /**
+     * <p>Returns the deserialize values.</p>
+     * @param rawValues
+     * @return the get deserialize values
+     */
 	public Set<Object> getDeserializeValues(Set<ByteBuffer> rawValues) {
 		return rawValues.stream().map(rawValue -> reactiveRedisTemplate.getSerializationContext().getValueSerializationPair().read(rawValue)).collect(Collectors.toSet());
 	}
 
+    /**
+     * <p>Returns the deserialize values.</p>
+     * @param rawValues
+     * @return the get deserialize values
+     */
 	public List<Object> getDeserializeValues(List<ByteBuffer> rawValues) {
 		return rawValues.stream().map(rawValue -> reactiveRedisTemplate.getSerializationContext().getValueSerializationPair().read(rawValue)).collect(Collectors.toList());
 	}
@@ -160,18 +183,38 @@ public class ReactiveRedisOperationTemplate {
 		return rawValues.stream().map(rawValue -> (T) reactiveRedisTemplate.getSerializationContext().getHashValueSerializationPair().read(rawValue)).collect(Collectors.toList());
 	}
 
+    /**
+     * <p>Returns the deserialize key.</p>
+     * @param rawKey
+     * @return the get deserialize key
+     */
 	public String getDeserializeKey(ByteBuffer rawKey) {
 		return reactiveRedisTemplate.getSerializationContext().getStringSerializationPair().read(rawKey);
 	}
 
+    /**
+     * <p>Returns the deserialize keys.</p>
+     * @param rawKeys
+     * @return the get deserialize keys
+     */
 	public Set<String> getDeserializeKeys(Set<ByteBuffer> rawKeys) {
 		return rawKeys.stream().map(rawKey -> reactiveRedisTemplate.getSerializationContext().getStringSerializationPair().read(rawKey)).collect(Collectors.toSet());
 	}
 
+    /**
+     * <p>Returns the deserialize value.</p>
+     * @param rawValue
+     * @return the get deserialize value
+     */
 	public Object getDeserializeValue(ByteBuffer rawValue) {
 		return reactiveRedisTemplate.getSerializationContext().getValueSerializationPair().read(rawValue);
 	}
 
+    /**
+     * <p>Returns the deserialize string.</p>
+     * @param rawValue
+     * @return the get deserialize string
+     */
 	public String getDeserializeString(ByteBuffer rawValue) {
 		return reactiveRedisTemplate.getSerializationContext().getStringSerializationPair().read(rawValue);
 	}
@@ -184,6 +227,11 @@ public class ReactiveRedisOperationTemplate {
 		return (HV) reactiveRedisTemplate.getSerializationContext().getHashValueSerializationPair().read(rawValue);
 	}
 
+    /**
+     * <p>Returns the deserialize tuple.</p>
+     * @param raw
+     * @return the get deserialize tuple
+     */
 	public TypedTuple<Object> getDeserializeTuple(Tuple raw) {
 		return new DefaultTypedTuple<>(getDeserializeValue(ByteBuffer.wrap(raw.getValue())), raw.getScore());
 	}
@@ -265,6 +313,11 @@ public class ReactiveRedisOperationTemplate {
 	}
 
 	// 模糊匹配缓存中的key
+    /**
+     * <p>Returns the key.</p>
+     * @param pattern
+     * @return the get key
+     */
 	public Flux<String> getKey(String pattern) {
 		try {
 			if (Objects.isNull(pattern)) {
@@ -277,6 +330,11 @@ public class ReactiveRedisOperationTemplate {
 	}
 
 	// 模糊匹配缓存中的key
+    /**
+     * <p>Returns the vague key.</p>
+     * @param pattern
+     * @return the get vague key
+     */
 	public Flux<String> getVagueKey(String pattern) {
 		try {
 			return reactiveRedisTemplate.keys("*" + pattern + "*");
@@ -285,6 +343,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the value key by prefix.</p>
+     * @param prefixPattern
+     * @return the get value key by prefix
+     */
 	public Flux<String> getValueKeyByPrefix(String prefixPattern) {
 		try {
 			return reactiveRedisTemplate.keys(prefixPattern + "*");
@@ -350,6 +413,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Sets the n x.</p>
+     * @param key
+     * @param value
+     * @return the set n x
+     */
 	public Mono<Boolean> setNX(String key, Object value) {
 		try {
 			Assert.hasLength(key, "key must not be empty");
@@ -404,18 +473,38 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the double.</p>
+     * @param key
+     * @return the get double
+     */
 	public Mono<Double> getDouble(String key) {
 		return getFor(key, TO_DOUBLE);
 	}
 
+    /**
+     * <p>Returns the long.</p>
+     * @param key
+     * @return the get long
+     */
 	public Mono<Long> getLong(String key) {
 		return getFor(key, TO_LONG);
 	}
 
+    /**
+     * <p>Returns the integer.</p>
+     * @param key
+     * @return the get integer
+     */
 	public Mono<Integer> getInteger(String key) {
 		return getFor(key, TO_INTEGER);
 	}
 
+    /**
+     * <p>Returns the string.</p>
+     * @param key
+     * @return the get string
+     */
 	public Mono<String> getString(String key) {
 		return getFor(key, TO_STRING);
 	}
@@ -548,6 +637,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Incr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the incr
+     */
 	public Mono<Long> incr(String key, long delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
@@ -606,6 +702,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Incr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the incr
+     */
 	public Mono<Double> incr(String key, double delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
@@ -664,6 +767,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Decr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the decr
+     */
 	public Mono<Long> decr(String key, long delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递减因子必须>=0"));
@@ -722,6 +832,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Decr.</p>
+     * @param key
+     * @param delta
+     * @param timeout
+     * @return the decr
+     */
 	public Mono<Double> decr(String key, double delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递减因子必须>=0"));
@@ -777,18 +894,46 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L range string.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range string
+     */
 	public Flux<String> lRangeString(String key, long start, long end) {
 		return lRangeFor(key, start, end, TO_STRING);
 	}
 
+    /**
+     * <p>L range double.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range double
+     */
 	public Flux<Double> lRangeDouble(String key, long start, long end) {
 		return lRangeFor(key, start, end, TO_DOUBLE);
 	}
 
+    /**
+     * <p>L range long.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range long
+     */
 	public Flux<Long> lRangeLong(String key, long start, long end) {
 		return lRangeFor(key, start, end, TO_LONG);
 	}
 
+    /**
+     * <p>L range integer.</p>
+     * @param key
+     * @param start
+     * @param end
+     * @return the l range integer
+     */
 	public Flux<Integer> lRangeInteger(String key, long start, long end) {
 		return lRangeFor(key, start, end, TO_INTEGER);
 	}
@@ -974,6 +1119,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L left pop.</p>
+     * @param key
+     * @return the l left pop
+     */
 	public Mono<Object> lLeftPop(String key) {
 		try {
 			return getListOperations().leftPop(key);
@@ -994,6 +1144,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L left pop.</p>
+     * @param key
+     * @param timeout
+     * @return the l left pop
+     */
 	public Mono<Object> lLeftPop(String key, Duration timeout) {
 		try {
 			return getListOperations().leftPop(key, timeout);
@@ -1211,6 +1367,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L right pop.</p>
+     * @param key
+     * @return the l right pop
+     */
 	public Mono<Object> lRightPop(String key) {
 		try {
 			return getListOperations().rightPop(key);
@@ -1232,6 +1393,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L right pop.</p>
+     * @param key
+     * @param timeout
+     * @return the l right pop
+     */
 	public Mono<Object> lRightPop(String key, Duration timeout) {
 		try {
 			return getListOperations().rightPop(key, timeout);
@@ -1262,6 +1429,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L right pop and left push.</p>
+     * @param sourceKey
+     * @param destinationKey
+     * @return the l right pop and left push
+     */
 	public Mono<Object> lRightPopAndLeftPush(String sourceKey, String destinationKey) {
 		try {
 			return getListOperations().rightPopAndLeftPush(sourceKey, destinationKey);
@@ -1270,6 +1443,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>L right pop and left push.</p>
+     * @param sourceKey
+     * @param destinationKey
+     * @param timeout
+     * @return the l right pop and left push
+     */
 	public Mono<Object> lRightPopAndLeftPush(String sourceKey, String destinationKey, Duration timeout) {
 		try {
 			return getListOperations().rightPopAndLeftPush(sourceKey, destinationKey, timeout);
@@ -1340,6 +1520,10 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the list operations.</p>
+     * @return the get list operations
+     */
 	protected ReactiveListOperations<String, Object> getListOperations() {
 		return reactiveRedisTemplate.opsForList();
 	}
@@ -1451,6 +1635,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H get.</p>
+     * @param key
+     * @param hashKey
+     * @param defaultVal
+     * @return the h get
+     */
 	public Mono<Object> hGet(String key, Object hashKey, Object defaultVal) {
 		try {
 			Mono<Object> rtVal = getHashOperations().get(key, hashKey);
@@ -1460,37 +1651,89 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H get string.</p>
+     * @param key
+     * @param hashKey
+     * @return the h get string
+     */
 	public Mono<String> hGetString(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_STRING);
 	}
 
+    /**
+     * <p>H get string.</p>
+     * @param key
+     * @param hashKey
+     * @param defaultVal
+     * @return the h get string
+     */
 	public Mono<String> hGetString(String key, Object hashKey, String defaultVal) {
 		Mono<String> rtVal = hGetString(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
+    /**
+     * <p>H get double.</p>
+     * @param key
+     * @param hashKey
+     * @return the h get double
+     */
 	public Mono<Double> hGetDouble(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_DOUBLE);
 	}
 
+    /**
+     * <p>H get double.</p>
+     * @param key
+     * @param hashKey
+     * @param defaultVal
+     * @return the h get double
+     */
 	public Mono<Double> hGetDouble(String key, Object hashKey, double defaultVal) {
 		Mono<Double> rtVal = hGetDouble(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
+    /**
+     * <p>H get long.</p>
+     * @param key
+     * @param hashKey
+     * @return the h get long
+     */
 	public Mono<Long> hGetLong(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_LONG);
 	}
 
+    /**
+     * <p>H get long.</p>
+     * @param key
+     * @param hashKey
+     * @param defaultVal
+     * @return the h get long
+     */
 	public Mono<Long> hGetLong(String key, Object hashKey, long defaultVal) {
 		Mono<Long> rtVal = hGetLong(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
 	}
 
+    /**
+     * <p>H get integer.</p>
+     * @param key
+     * @param hashKey
+     * @return the h get integer
+     */
 	public Mono<Integer> hGetInteger(String key, Object hashKey) {
 		return hGetFor(key, hashKey, TO_INTEGER);
 	}
 
+    /**
+     * <p>H get integer.</p>
+     * @param key
+     * @param hashKey
+     * @param defaultVal
+     * @return the h get integer
+     */
 	public Mono<Integer> hGetInteger(String key, Object hashKey, int defaultVal) {
 		Mono<Integer> rtVal = hGetInteger(key, hashKey);
 		return rtVal.defaultIfEmpty(defaultVal);
@@ -1505,18 +1748,42 @@ public class ReactiveRedisOperationTemplate {
 		return rt.map(mapper);
 	}
 
+    /**
+     * <p>H get string.</p>
+     * @param keys
+     * @param hashKey
+     * @return the h get string
+     */
 	public Flux<String> hGetString(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_STRING);
 	}
 
+    /**
+     * <p>H get double.</p>
+     * @param keys
+     * @param hashKey
+     * @return the h get double
+     */
 	public Flux<Double> hGetDouble(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_DOUBLE);
 	}
 
+    /**
+     * <p>H get long.</p>
+     * @param keys
+     * @param hashKey
+     * @return the h get long
+     */
 	public Flux<Long> hGetLong(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_LONG);
 	}
 
+    /**
+     * <p>H get integer.</p>
+     * @param keys
+     * @param hashKey
+     * @return the h get integer
+     */
 	public Flux<Integer> hGetInteger(Collection<String> keys, Object hashKey) {
 		return hGetFor(keys, hashKey, TO_INTEGER);
 	}
@@ -1530,6 +1797,12 @@ public class ReactiveRedisOperationTemplate {
 		return members.map(mapper);
 	}
 
+    /**
+     * <p>H get.</p>
+     * @param keys
+     * @param hashKey
+     * @return the h get
+     */
 	public Flux<Object> hGet(Collection<String> keys, Object hashKey) {
 		try {
 			return Flux.fromIterable(keys).flatMap(key -> {
@@ -1540,6 +1813,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H get.</p>
+     * @param keys
+     * @param redisPrefix
+     * @param hashKey
+     * @return the h get
+     */
 	public Flux<Object> hGet(Collection<String> keys, String redisPrefix, Object hashKey) {
 		try {
 			return Flux.fromIterable(keys).flatMap(key -> {
@@ -1671,6 +1951,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Hm multi set.</p>
+     * @param key
+     * @param hashKeys
+     * @param value
+     * @return the hm multi set
+     */
 	public Mono<Boolean> hmMultiSet(String key, Collection<Object> hashKeys, Object value) {
 		if (CollectionUtils.isEmpty(hashKeys) || !StringUtils.hasText(key)) {
 			return Mono.just(false);
@@ -1719,6 +2006,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Hm set.</p>
+     * @param key
+     * @param map
+     * @param timeout
+     * @return the hm set
+     */
 	public Mono<Boolean> hmSet(String key, Map<Object, Object> map, Duration timeout) {
 		try {
 			return getHashOperations().putAll(key, map).doOnSuccess(nvalue -> {
@@ -1731,12 +2025,23 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H scan.</p>
+     * @param bigHashKey
+     * @param consumer
+     */
 	public void hScan(String bigHashKey, Consumer<? super Signal<Entry<Object, Object>>> consumer) {
 		getHashOperations()
 			.scan(bigHashKey, ScanOptions.scanOptions().count(Long.MAX_VALUE).build())
 			.doOnEach(consumer);
 	}
 
+    /**
+     * <p>H scan.</p>
+     * @param bigHashKey
+     * @param pattern
+     * @param consumer
+     */
 	public void hScan(String bigHashKey, String pattern, Consumer<? super Signal<Entry<Object, Object>>> consumer) {
 		getHashOperations()
 			.scan(bigHashKey, ScanOptions.scanOptions().count(Long.MAX_VALUE).match(pattern).build())
@@ -1781,6 +2086,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H set.</p>
+     * @param key
+     * @param hashKey
+     * @param value
+     * @param timeout
+     * @return the h set
+     */
 	public Mono<Boolean> hSet(String key, Object hashKey, Object value, Duration timeout) {
 		try {
 			Mono<Boolean> rt = getHashOperations().put(key, hashKey, value);
@@ -1794,6 +2107,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H set n x.</p>
+     * @param key
+     * @param hashKey
+     * @param value
+     * @return the h set n x
+     */
 	public Mono<Boolean> hSetNX(String key, Object hashKey, Object value) {
 		try {
 			return getHashOperations().putIfAbsent(key, hashKey, value);
@@ -1860,6 +2180,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H incr.</p>
+     * @param key
+     * @param hashKey
+     * @param delta
+     * @param timeout
+     * @return the h incr
+     */
 	public Mono<Long> hIncr(String key, Object hashKey, int delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
@@ -1920,6 +2248,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H incr.</p>
+     * @param key
+     * @param hashKey
+     * @param delta
+     * @param timeout
+     * @return the h incr
+     */
 	public Mono<Long> hIncr(String key, Object hashKey, long delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
@@ -1955,6 +2291,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H incr.</p>
+     * @param key
+     * @param hashKey
+     * @param delta
+     * @param seconds
+     * @return the h incr
+     */
 	public Mono<Double> hIncr(String key, Object hashKey, double delta, long seconds) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
@@ -1971,6 +2315,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H incr.</p>
+     * @param key
+     * @param hashKey
+     * @param delta
+     * @param timeout
+     * @return the h incr
+     */
 	public Mono<Double> hIncr(String key, Object hashKey, double delta, Duration timeout) {
 		if (delta < 0) {
 			return Mono.error(new RedisOperationException("递增因子必须>=0"));
@@ -1987,6 +2339,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>H keys.</p>
+     * @param key
+     * @return the h keys
+     */
 	public Flux<Object> hKeys(String key) {
 		try {
 			return getHashOperations().keys(key);
@@ -1995,6 +2352,10 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the hash operations.</p>
+     * @return the get hash operations
+     */
 	protected ReactiveHashOperations<String, Object, Object> getHashOperations() {
 		return reactiveRedisTemplate.opsForHash();
 	}
@@ -2016,6 +2377,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S add and expire.</p>
+     * @param key
+     * @param seconds
+     * @param values
+     * @return the s add and expire
+     */
 	public Mono<Long> sAddAndExpire(String key, long seconds, Object... values) {
 		try {
 			Mono<Long> rt = getSetOperations().add(key, values);
@@ -2029,6 +2397,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S add and expire.</p>
+     * @param key
+     * @param timeout
+     * @param values
+     * @return the s add and expire
+     */
 	public Mono<Long> sAddAndExpire(String key, Duration timeout, Object... values) {
 		try {
 			Mono<Long> rt = getSetOperations().add(key, values);
@@ -2074,18 +2449,38 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S get string.</p>
+     * @param key
+     * @return the s get string
+     */
 	public Flux<String> sGetString(String key) {
 		return sGetFor(key, TO_STRING);
 	}
 
+    /**
+     * <p>S get double.</p>
+     * @param key
+     * @return the s get double
+     */
 	public Flux<Double> sGetDouble(String key) {
 		return sGetFor(key, TO_DOUBLE);
 	}
 
+    /**
+     * <p>S get long.</p>
+     * @param key
+     * @return the s get long
+     */
 	public Flux<Long> sGetLong(String key) {
 		return sGetFor(key, TO_LONG);
 	}
 
+    /**
+     * <p>S get integer.</p>
+     * @param key
+     * @return the s get integer
+     */
 	public Flux<Integer> sGetInteger(String key) {
 		return sGetFor(key, TO_INTEGER);
 	}
@@ -2190,6 +2585,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S intersect.</p>
+     * @param key
+     * @param otherKey
+     * @return the s intersect
+     */
 	public Flux<Object> sIntersect(String key, String otherKey) {
 		try {
 			return getSetOperations().intersect(key, otherKey);
@@ -2198,6 +2599,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S intersect.</p>
+     * @param key
+     * @param otherKeys
+     * @return the s intersect
+     */
 	public Flux<Object> sIntersect(String key, Collection<String> otherKeys) {
 		try {
 			return getSetOperations().intersect(key, otherKeys);
@@ -2206,6 +2613,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S intersect.</p>
+     * @param otherKeys
+     * @return the s intersect
+     */
 	public Flux<Object> sIntersect(Collection<String> otherKeys) {
 		try {
 			return getSetOperations().intersect(otherKeys);
@@ -2214,6 +2626,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S intersect and store.</p>
+     * @param key
+     * @param otherKey
+     * @param destKey
+     * @return the s intersect and store
+     */
 	public Mono<Long> sIntersectAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getSetOperations().intersectAndStore(key, otherKey, destKey);
@@ -2222,6 +2641,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S intersect and store.</p>
+     * @param key
+     * @param otherKeys
+     * @param destKey
+     * @return the s intersect and store
+     */
 	public Mono<Long> sIntersectAndStore(String key, Collection<String> otherKeys, String destKey) {
 		try {
 			return getSetOperations().intersectAndStore(key, otherKeys, destKey);
@@ -2230,6 +2656,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S intersect and store.</p>
+     * @param otherKeys
+     * @param destKey
+     * @return the s intersect and store
+     */
 	public Mono<Long> sIntersectAndStore(Collection<String> otherKeys, String destKey) {
 		try {
 			return getSetOperations().intersectAndStore(otherKeys, destKey);
@@ -2283,6 +2715,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S scan.</p>
+     * @param bigSetKey
+     * @param consumer
+     */
 	public void sScan(String bigSetKey, Consumer<? super Signal<ByteBuffer>> consumer) {
 		reactiveRedisTemplate.execute((ReactiveRedisConnection redisConnection) -> {
 			return redisConnection.setCommands()
@@ -2291,6 +2728,12 @@ public class ReactiveRedisOperationTemplate {
 		});
 	}
 
+    /**
+     * <p>S scan.</p>
+     * @param bigSetKey
+     * @param pattern
+     * @param consumer
+     */
 	public void sScan(String bigSetKey, String pattern, Consumer<? super Signal<ByteBuffer>> consumer) {
 		reactiveRedisTemplate.execute((ReactiveRedisConnection redisConnection) -> {
 			return redisConnection.setCommands()
@@ -2334,6 +2777,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S union.</p>
+     * @param key
+     * @param otherKey
+     * @return the s union
+     */
 	public Flux<Object> sUnion(String key, String otherKey) {
 		try {
 			return getSetOperations().union(key, otherKey);
@@ -2342,6 +2791,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S union.</p>
+     * @param key
+     * @param keys
+     * @return the s union
+     */
 	public Flux<Object> sUnion(String key, Collection<String> keys) {
 		try {
 			return getSetOperations().union(key, keys);
@@ -2364,6 +2819,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S union and store.</p>
+     * @param key
+     * @param otherKey
+     * @param destKey
+     * @return the s union and store
+     */
 	public Mono<Long> sUnionAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getSetOperations().unionAndStore(key, otherKey, destKey);
@@ -2372,6 +2834,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>S union and store.</p>
+     * @param key
+     * @param keys
+     * @param destKey
+     * @return the s union and store
+     */
 	public Mono<Long> sUnionAndStore(String key, Collection<String> keys, String destKey) {
 		try {
 			return getSetOperations().unionAndStore(key, keys, destKey);
@@ -2395,6 +2864,10 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the set operations.</p>
+     * @return the get set operations
+     */
 	protected ReactiveSetOperations<String, Object> getSetOperations() {
 		return reactiveRedisTemplate.opsForSet();
 	}
@@ -2402,6 +2875,13 @@ public class ReactiveRedisOperationTemplate {
 	
 	// ===============================ZSet=================================
 
+    /**
+     * <p>Z add.</p>
+     * @param key
+     * @param value
+     * @param score
+     * @return the z add
+     */
 	public Mono<Boolean> zAdd(String key, Object value, double score) {
 		try {
 			return getZSetOperations().add(key, value, score);
@@ -2410,6 +2890,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z add.</p>
+     * @param key
+     * @param tuples
+     * @return the z add
+     */
 	public Mono<Long> zAdd(String key, Set<TypedTuple<Object>> tuples) {
 		try {
 			return getZSetOperations().addAll(key, tuples);
@@ -2418,6 +2904,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z card.</p>
+     * @param key
+     * @return the z card
+     */
 	public Mono<Long> zCard(String key) {
 		try {
 			return getZSetOperations().size(key);
@@ -2426,6 +2917,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z has.</p>
+     * @param key
+     * @param value
+     * @return the z has
+     */
 	public Mono<Boolean> zHas(String key, Object value) {
 		try {
 			return getZSetOperations().score(key, value).flatMap(score -> Mono.just(Objects.nonNull(score)));
@@ -2465,6 +2962,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z incr.</p>
+     * @param key
+     * @param value
+     * @param delta
+     * @return the z incr
+     */
 	public Mono<Double> zIncr(String key, Object value, double delta) {
 		try {
 			return getZSetOperations().incrementScore(key, value, delta);
@@ -2473,6 +2977,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z incr.</p>
+     * @param key
+     * @param value
+     * @param delta
+     * @param seconds
+     * @return the z incr
+     */
 	public Mono<Double> zIncr(String key, Object value, double delta, long seconds) {
 		try {
 			Mono<Double> rt = getZSetOperations().incrementScore(key, value, delta);
@@ -2486,6 +2998,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z incr.</p>
+     * @param key
+     * @param value
+     * @param delta
+     * @param timeout
+     * @return the z incr
+     */
 	public Mono<Double> zIncr(String key, Object value, double delta, Duration timeout) {
 		try {
 			Mono<Double> rt = getZSetOperations().incrementScore(key, value, delta);
@@ -2499,6 +3019,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z intersect and store.</p>
+     * @param key
+     * @param otherKey
+     * @param destKey
+     * @return the z intersect and store
+     */
 	public Mono<Long> zIntersectAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKey, destKey);
@@ -2507,6 +3034,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z intersect and store.</p>
+     * @param key
+     * @param otherKeys
+     * @param destKey
+     * @return the z intersect and store
+     */
 	public Mono<Long> zIntersectAndStore(String key, Collection<String> otherKeys, String destKey) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKeys, destKey);
@@ -2515,6 +3049,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z intersect and store.</p>
+     * @param key
+     * @param otherKeys
+     * @param destKey
+     * @param aggregate
+     * @return the z intersect and store
+     */
 	public Mono<Long> zIntersectAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate) {
 		try {
 			return getZSetOperations().intersectAndStore(key, otherKeys, destKey, aggregate);
@@ -2560,6 +3102,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z range.</p>
+     * @param key
+     * @param range
+     * @return the z range
+     */
 	public Flux<Object> zRange(String key, Range<Long> range) {
 		try {
 			return getZSetOperations().range(key, range);
@@ -2568,18 +3116,42 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z range string.</p>
+     * @param key
+     * @param range
+     * @return the z range string
+     */
 	public Flux<String> zRangeString(String key, Range<Long> range) {
 		return zRangeFor(key, range, TO_STRING);
 	}
 
+    /**
+     * <p>Z range double.</p>
+     * @param key
+     * @param range
+     * @return the z range double
+     */
 	public Flux<Double> zRangeDouble(String key, Range<Long> range) {
 		return zRangeFor(key, range, TO_DOUBLE);
 	}
 
+    /**
+     * <p>Z range long.</p>
+     * @param key
+     * @param range
+     * @return the z range long
+     */
 	public Flux<Long> zRangeLong(String key, Range<Long> range) {
 		return zRangeFor(key, range, TO_LONG);
 	}
 
+    /**
+     * <p>Z range integer.</p>
+     * @param key
+     * @param range
+     * @return the z range integer
+     */
 	public Flux<Integer> zRangeInteger(String key, Range<Long> range) {
 		return zRangeFor(key, range, TO_INTEGER);
 	}
@@ -2599,6 +3171,12 @@ public class ReactiveRedisOperationTemplate {
 		return members.map(mapper);
 	}
 
+    /**
+     * <p>Z range by score.</p>
+     * @param key
+     * @param range
+     * @return the z range by score
+     */
 	public Flux<Object> zRangeByScore(String key, Range<Double> range) {
 		try {
 			return getZSetOperations().rangeByScore(key, range);
@@ -2607,18 +3185,42 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z range string by score.</p>
+     * @param key
+     * @param range
+     * @return the z range string by score
+     */
 	public Flux<String> zRangeStringByScore(String key, Range<Double> range) {
 		return zRangeByScoreFor(key, range, TO_STRING);
 	}
 
+    /**
+     * <p>Z range double by score.</p>
+     * @param key
+     * @param range
+     * @return the z range double by score
+     */
 	public Flux<Double> zRangeDoubleByScore(String key, Range<Double> range) {
 		return zRangeByScoreFor(key, range, TO_DOUBLE);
 	}
 
+    /**
+     * <p>Z range long by score.</p>
+     * @param key
+     * @param range
+     * @return the z range long by score
+     */
 	public Flux<Long> zRangeLongByScore(String key, Range<Double> range) {
 		return zRangeByScoreFor(key, range, TO_LONG);
 	}
 
+    /**
+     * <p>Z range integer by score.</p>
+     * @param key
+     * @param range
+     * @return the z range integer by score
+     */
 	public Flux<Integer> zRangeIntegerByScore(String key, Range<Double> range) {
 		return zRangeByScoreFor(key, range, TO_INTEGER);
 	}
@@ -2651,6 +3253,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z range by lex.</p>
+     * @param key
+     * @param range
+     * @return the z range by lex
+     */
 	public Flux<Object> zRangeByLex(String key, Range range) {
 		try {
 			return getZSetOperations().rangeByLex(key, range);
@@ -2659,6 +3267,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z range by lex.</p>
+     * @param key
+     * @param range
+     * @param limit
+     * @return the z range by lex
+     */
 	public Flux<Object> zRangeByLex(String key, Range range, Limit limit) {
 		try {
 			return getZSetOperations().rangeByLex(key, range, limit);
@@ -2680,18 +3295,42 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z revrange string.</p>
+     * @param key
+     * @param range
+     * @return the z revrange string
+     */
 	public Flux<String> zRevrangeString(String key, Range<Long> range) {
 		return zRevrangeFor(key, range, TO_STRING);
 	}
 
+    /**
+     * <p>Z revrange double.</p>
+     * @param key
+     * @param range
+     * @return the z revrange double
+     */
 	public Flux<Double> zRevrangeDouble(String key, Range<Long> range) {
 		return zRevrangeFor(key, range, TO_DOUBLE);
 	}
 
+    /**
+     * <p>Z revrange long.</p>
+     * @param key
+     * @param range
+     * @return the z revrange long
+     */
 	public Flux<Long> zRevrangeLong(String key, Range<Long> range) {
 		return zRevrangeFor(key, range, TO_LONG);
 	}
 
+    /**
+     * <p>Z revrange integer.</p>
+     * @param key
+     * @param range
+     * @return the z revrange integer
+     */
 	public Flux<Integer> zRevrangeInteger(String key, Range<Long> range) {
 		return zRevrangeFor(key, range, TO_INTEGER);
 	}
@@ -2735,18 +3374,42 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z revrange string by score.</p>
+     * @param key
+     * @param range
+     * @return the z revrange string by score
+     */
 	public Flux<String> zRevrangeStringByScore(String key, Range<Double> range) {
 		return zRevrangeForByScore(key, range, TO_STRING);
 	}
 
+    /**
+     * <p>Z revrange double by score.</p>
+     * @param key
+     * @param range
+     * @return the z revrange double by score
+     */
 	public Flux<Double> zRevrangeDoubleByScore(String key, Range<Double> range) {
 		return zRevrangeForByScore(key, range, TO_DOUBLE);
 	}
 
+    /**
+     * <p>Z revrange long by score.</p>
+     * @param key
+     * @param range
+     * @return the z revrange long by score
+     */
 	public Flux<Long> zRevrangeLongByScore(String key, Range<Double> range) {
 		return zRevrangeForByScore(key, range, TO_LONG);
 	}
 
+    /**
+     * <p>Z revrange integer by score.</p>
+     * @param key
+     * @param range
+     * @return the z revrange integer by score
+     */
 	public Flux<Integer> zRevrangeIntegerByScore(String key, Range<Double> range) {
 		return zRevrangeForByScore(key, range, TO_INTEGER);
 	}
@@ -2775,6 +3438,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z rev rank.</p>
+     * @param key
+     * @param value
+     * @return the z rev rank
+     */
 	public Mono<Long> zRevRank(String key, Object value) {
 		try {
 			return getZSetOperations().reverseRank(key, value);
@@ -2784,18 +3453,35 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z scan.</p>
+     * @param bigZsetKey
+     * @param consumer
+     */
 	public void zScan(String bigZsetKey, Consumer<? super Signal<TypedTuple<Object>>> consumer) {
 		reactiveRedisTemplate.opsForZSet()
 			.scan(bigZsetKey, ScanOptions.scanOptions().count(Long.MAX_VALUE).build())
 			.doOnEach(consumer);
 	}
 
+    /**
+     * <p>Z scan.</p>
+     * @param bigZsetKey
+     * @param pattern
+     * @param consumer
+     */
 	public void zScan(String bigZsetKey, String pattern, Consumer<? super Signal<TypedTuple<Object>>> consumer) {
 		reactiveRedisTemplate.opsForZSet()
 		.scan(bigZsetKey, ScanOptions.scanOptions().match(pattern).count(Long.MAX_VALUE).build())
 		.doOnEach(consumer);
 	}
 
+    /**
+     * <p>Z score.</p>
+     * @param key
+     * @param value
+     * @return the z score
+     */
 	public Mono<Double> zScore(String key, Object value) {
 		try {
 			return getZSetOperations().score(key, value);
@@ -2804,6 +3490,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z union and store.</p>
+     * @param key
+     * @param otherKey
+     * @param destKey
+     * @return the z union and store
+     */
 	public Mono<Long> zUnionAndStore(String key, String otherKey, String destKey) {
 		try {
 			return getZSetOperations().unionAndStore(key, otherKey, destKey);
@@ -2812,6 +3505,13 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z union and store.</p>
+     * @param key
+     * @param keys
+     * @param destKey
+     * @return the z union and store
+     */
 	public Mono<Long> zUnionAndStore(String key, Collection<String> keys, String destKey) {
 		try {
 			return getZSetOperations().unionAndStore(key, keys, destKey);
@@ -2820,6 +3520,14 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z union and store.</p>
+     * @param key
+     * @param keys
+     * @param destKey
+     * @param aggregate
+     * @return the z union and store
+     */
 	public Mono<Long> zUnionAndStore(String key, Collection<String> keys, String destKey, Aggregate aggregate) {
 		try {
 			return getZSetOperations().unionAndStore(key, keys, destKey, aggregate);
@@ -2828,6 +3536,15 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Z union and store.</p>
+     * @param key
+     * @param keys
+     * @param destKey
+     * @param aggregate
+     * @param weights
+     * @return the z union and store
+     */
 	public Mono<Long> zUnionAndStore(String key, Collection<String> keys, String destKey, Aggregate aggregate, Weights weights) {
 		try {
 			return getZSetOperations().unionAndStore(key, keys, destKey, aggregate, weights);
@@ -2836,12 +3553,22 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the z set operations.</p>
+     * @return the get z set operations
+     */
 	protected ReactiveZSetOperations<String, Object> getZSetOperations() {
 		return reactiveRedisTemplate.opsForZSet();
 	}
 
 	// ===============================HyperLogLog=================================
 
+    /**
+     * <p>Pf add.</p>
+     * @param key
+     * @param values
+     * @return the pf add
+     */
 	public Mono<Long> pfAdd(String key, Object... values) {
 		try {
 			return getHyperLogLogOperations().add(key, values);
@@ -2850,6 +3577,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Pf del.</p>
+     * @param key
+     * @return the pf del
+     */
 	public Mono<Boolean> pfDel(String key) {
 		try {
 			return getHyperLogLogOperations().delete(key);
@@ -2858,6 +3590,11 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Pf count.</p>
+     * @param keys
+     * @return the pf count
+     */
 	public Mono<Long> pfCount(String... keys) {
 		try {
 			return getHyperLogLogOperations().size(keys);
@@ -2866,6 +3603,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Pf merge.</p>
+     * @param destination
+     * @param sourceKeys
+     * @return the pf merge
+     */
 	public Mono<Boolean> pfMerge(String destination, String... sourceKeys) {
 		try {
 			return getHyperLogLogOperations().union(destination, sourceKeys);
@@ -2874,12 +3617,23 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the hyper log log operations.</p>
+     * @return the get hyper log log operations
+     */
 	protected ReactiveHyperLogLogOperations<String, Object> getHyperLogLogOperations() {
 		return reactiveRedisTemplate.opsForHyperLogLog();
 	}
 
 	// ===============================BitMap=================================
 
+    /**
+     * <p>Sets the bit.</p>
+     * @param key
+     * @param offset
+     * @param value
+     * @return the set bit
+     */
 	public Mono<Boolean> setBit(String key, long offset, boolean value) {
 		try {
 			return getValueOperations().setBit(key, offset, value);
@@ -2888,6 +3642,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the bit.</p>
+     * @param key
+     * @param offset
+     * @return the get bit
+     */
 	public Mono<Boolean> getBit(String key, long offset) {
 		try {
 			return getValueOperations().getBit(key, offset);
@@ -2896,6 +3656,10 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Returns the value operations.</p>
+     * @return the get value operations
+     */
 	protected ReactiveValueOperations<String, Object> getValueOperations() {
 		return reactiveRedisTemplate.opsForValue();
 	}
@@ -2970,6 +3734,12 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Try lock.</p>
+     * @param lockKey
+     * @param timeout
+     * @return the try lock
+     */
     public Mono<Boolean> tryLock(String lockKey, Duration timeout) {
 		return tryLock( lockKey, timeout.toMillis());
 	}
@@ -3024,6 +3794,15 @@ public class ReactiveRedisOperationTemplate {
 		}
 	}
 
+    /**
+     * <p>Try lock.</p>
+     * @param lockKey
+     * @param requestId
+     * @param timeout
+     * @param retryTimes
+     * @param retryInterval
+     * @return the try lock
+     */
     public Mono<Boolean> tryLock(String lockKey, String requestId, Duration timeout, int retryTimes, long retryInterval) {
     	return tryLock(lockKey, requestId, timeout.toMillis(), retryTimes, retryInterval);
     }
@@ -3359,30 +4138,58 @@ public class ReactiveRedisOperationTemplate {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().time().map(time -> expiration - time));
 	}
 
+    /**
+     * <p>Db size.</p>
+     * @return the db size
+     */
 	public Mono<Long> dbSize() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().dbSize());
 	}
 
+    /**
+     * <p>Last save.</p>
+     * @return the last save
+     */
 	public Mono<Long> lastSave() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().lastSave());
 	}
 
+    /**
+     * <p>Bg re write aof.</p>
+     * @return the bg re write aof
+     */
 	public Mono<String> bgReWriteAof() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().bgReWriteAof());
 	}
 
+    /**
+     * <p>Bg save.</p>
+     * @return the bg save
+     */
 	public Mono<String> bgSave() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().bgSave());
 	}
 
+    /**
+     * <p>Save.</p>
+     * @return the save
+     */
 	public Mono<String> save() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().save());
 	}
 
+    /**
+     * <p>Flush db.</p>
+     * @return the flush db
+     */
 	public Mono<String> flushDb() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().flushDb());
 	}
 
+    /**
+     * <p>Flush all.</p>
+     * @return the flush all
+     */
 	public Mono<String> flushAll() {
 		return reactiveRedisTemplate.createMono(redisConnection -> redisConnection.serverCommands().flushAll());
 	}
