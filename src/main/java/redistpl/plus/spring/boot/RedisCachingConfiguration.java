@@ -58,6 +58,12 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter({CacheAutoConfiguration.class})
 @AutoConfigureBefore({RedisJacksonConfiguration.class, DataRedisAutoConfiguration.class})
 @EnableConfigurationProperties({DataRedisProperties.class, RedisThreadPoolProperties.class})
+/**
+ * <p>Configuration class for RedisCaching.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class RedisCachingConfiguration extends CachingConfigurerSupport {
 
 	@Bean(name = "redisTemplate")

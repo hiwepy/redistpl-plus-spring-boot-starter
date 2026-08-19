@@ -11,6 +11,12 @@ import java.util.Objects;
 /**
  * 处理日期类型的null值
  */
+/**
+ * <p>NullDateJsonSerializer implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class NullDateJsonSerializer extends JsonSerializer<Object> {
 
 	public static final NullDateJsonSerializer INSTANCE = new NullDateJsonSerializer();

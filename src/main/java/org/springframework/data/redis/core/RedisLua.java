@@ -5,6 +5,12 @@ package org.springframework.data.redis.core;
 /**
  * https://www.233tw.com/lua/7033
  */
+/**
+ * <p>RedisLua implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class RedisLua {
 
 	public static final String LOCK_LUA_SCRIPT = "if redis.call('setnx', KEYS[1], ARGV[1]) == 1 then return redis.call('pexpire', KEYS[1], ARGV[2]) else return -1 end";

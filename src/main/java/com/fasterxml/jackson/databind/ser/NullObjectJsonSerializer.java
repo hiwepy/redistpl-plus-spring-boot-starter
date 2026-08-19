@@ -12,6 +12,12 @@ import java.util.Objects;
 /**
  * 处理实体对象类型的null值
  */
+/**
+ * <p>NullObjectJsonSerializer implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class NullObjectJsonSerializer extends JsonSerializer<Object> {
 
 	public static final NullObjectJsonSerializer INSTANCE = new NullObjectJsonSerializer();

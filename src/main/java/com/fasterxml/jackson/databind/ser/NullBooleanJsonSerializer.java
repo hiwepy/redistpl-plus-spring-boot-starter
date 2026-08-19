@@ -10,6 +10,12 @@ import java.util.Objects;
 /**
  * 处理boolean类型的null值
  */
+/**
+ * <p>NullBooleanJsonSerializer implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class NullBooleanJsonSerializer extends JsonSerializer<Object> {
 
 	public static final NullBooleanJsonSerializer INSTANCE = new NullBooleanJsonSerializer();

@@ -10,6 +10,12 @@ import java.util.Objects;
 /**
  *
  */
+/**
+ * <p>NullJsonSerializer implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class NullJsonSerializer extends JsonSerializer<Object> {
 
 	public static final NullJsonSerializer INSTANCE = new NullJsonSerializer();

@@ -19,6 +19,12 @@ import java.util.List;
  *
  * </pre>
  */
+/**
+ * <p>RedisBeanSerializerModifier implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class RedisBeanSerializerModifier extends BeanSerializerModifier {
 
     @Override

@@ -46,6 +46,12 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings({"unchecked","rawtypes"})
 @Slf4j
+/**
+ * <p>RedisOperationTemplate implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class RedisOperationTemplate extends AbstractOperations<String, Object> {
 
 	private static final Long LOCK_SUCCESS = 1L;
