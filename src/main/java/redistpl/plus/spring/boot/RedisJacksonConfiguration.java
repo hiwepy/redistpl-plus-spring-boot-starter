@@ -17,10 +17,10 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -38,10 +38,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * RedisJacksonConfiguration.
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ObjectMapper.class)
 @AutoConfigureAfter({CacheAutoConfiguration.class})
-@AutoConfigureBefore(RedisAutoConfiguration.class)
+@AutoConfigureBefore(DataRedisAutoConfiguration.class)
 @EnableConfigurationProperties({RedisJacksonProperties.class})
 public class RedisJacksonConfiguration {
 
@@ -64,6 +70,11 @@ public class RedisJacksonConfiguration {
 	}
 
 	@Bean
+    /**
+     * <p>Jackson2 json redis serializer.</p>
+     * @param customizerProvider
+     * @return the jackson2 json redis serializer
+     */
 	public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer(ObjectProvider<JsonMapperBuilderCustomizer> customizerProvider) {
 		// 1、获取自定义的JsonMapperBuilderCustomizer
 		List<JsonMapperBuilderCustomizer> customizers = customizerProvider.orderedStream().collect(Collectors.toList());
@@ -89,6 +100,11 @@ public class RedisJacksonConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
+    /**
+     * <p>Jsr310 json mapper builder customizer.</p>
+     * @param jacksonProperties
+     * @return the jsr310 json mapper builder customizer
+     */
 		public Jsr310JsonMapperBuilderCustomizer jsr310JsonMapperBuilderCustomizer(RedisJacksonProperties jacksonProperties) {
 			return new Jsr310JsonMapperBuilderCustomizer(jacksonProperties);
 		}
@@ -107,11 +123,19 @@ public class RedisJacksonConfiguration {
 			}
 
 			@Override
+    /**
+     * <p>Returns the order.</p>
+     * @return the get order
+     */
 			public int getOrder() {
 				return 0;
 			}
 
 			@Override
+    /**
+     * <p>Customize.</p>
+     * @param builder
+     */
 			public void customize(JsonMapper.Builder builder) {
 
 				if (this.jacksonProperties.getDefaultPropertyInclusion() != null) {

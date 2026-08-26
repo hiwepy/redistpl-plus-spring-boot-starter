@@ -86,42 +86,82 @@ public class RedisJacksonProperties {
      */
     private Locale locale;
 
+    /**
+     * <p>Returns the date format.</p>
+     * @return the get date format
+     */
     public String getDateFormat() {
         return this.dateFormat;
     }
 
+    /**
+     * <p>Sets the date format.</p>
+     * @param dateFormat
+     */
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
 
+    /**
+     * <p>Returns the property naming strategy.</p>
+     * @return the get property naming strategy
+     */
     public String getPropertyNamingStrategy() {
         return this.propertyNamingStrategy;
     }
 
+    /**
+     * <p>Sets the property naming strategy.</p>
+     * @param propertyNamingStrategy
+     */
     public void setPropertyNamingStrategy(String propertyNamingStrategy) {
         this.propertyNamingStrategy = propertyNamingStrategy;
     }
 
+    /**
+     * <p>Returns the visibility.</p>
+     * @return the get visibility
+     */
     public Map<PropertyAccessor, JsonAutoDetect.Visibility> getVisibility() {
         return this.visibility;
     }
 
+    /**
+     * <p>Returns the serialization.</p>
+     * @return the get serialization
+     */
     public Map<SerializationFeature, Boolean> getSerialization() {
         return this.serialization;
     }
 
+    /**
+     * <p>Returns the deserialization.</p>
+     * @return the get deserialization
+     */
     public Map<DeserializationFeature, Boolean> getDeserialization() {
         return this.deserialization;
     }
 
+    /**
+     * <p>Returns the mapper.</p>
+     * @return the get mapper
+     */
     public Map<MapperFeature, Boolean> getMapper() {
         return this.mapper;
     }
 
+    /**
+     * <p>Returns the parser.</p>
+     * @return the get parser
+     */
     public Map<JsonParser.Feature, Boolean> getParser() {
         return this.parser;
     }
 
+    /**
+     * <p>Returns the generator.</p>
+     * @return the get generator
+     */
     public Map<JsonGenerator.Feature, Boolean> getGenerator() {
         return this.generator;
     }
@@ -130,22 +170,42 @@ public class RedisJacksonProperties {
         return this.defaultPropertyInclusion;
     }
 
+    /**
+     * <p>Sets the default property inclusion.</p>
+     * @param defaultPropertyInclusion
+     */
     public void setDefaultPropertyInclusion(JsonInclude.Include defaultPropertyInclusion) {
         this.defaultPropertyInclusion = defaultPropertyInclusion;
     }
 
+    /**
+     * <p>Returns the time zone.</p>
+     * @return the get time zone
+     */
     public TimeZone getTimeZone() {
         return this.timeZone;
     }
 
+    /**
+     * <p>Sets the time zone.</p>
+     * @param timeZone
+     */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
+    /**
+     * <p>Returns the locale.</p>
+     * @return the get locale
+     */
     public Locale getLocale() {
         return this.locale;
     }
 
+    /**
+     * <p>Sets the locale.</p>
+     * @param locale
+     */
     public void setLocale(Locale locale) {
         this.locale = locale;
     }

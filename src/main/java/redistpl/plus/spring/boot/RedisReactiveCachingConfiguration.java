@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisReactiveAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -22,11 +22,17 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * RedisReactiveCachingConfiguration.
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ReactiveRedisConnectionFactory.class, ReactiveRedisTemplate.class, Flux.class })
-@AutoConfigureAfter({RedisAutoConfiguration.class, RedisCachingConfiguration.class})
+@AutoConfigureAfter({DataRedisAutoConfiguration.class, RedisCachingConfiguration.class})
 @ConditionalOnBean({ ReactiveRedisConnectionFactory.class })
-@AutoConfigureBefore({RedisJacksonConfiguration.class, RedisReactiveAutoConfiguration.class})
+@AutoConfigureBefore({RedisJacksonConfiguration.class, DataRedisReactiveAutoConfiguration.class})
 public class RedisReactiveCachingConfiguration {
 
 	@Bean(name = "reactiveRedisTemplate")
@@ -42,6 +48,11 @@ public class RedisReactiveCachingConfiguration {
 			}
 
 			@Override
+    /**
+     * <p>Deserialize.</p>
+     * @param bytes
+     * @return the deserialize
+     */
 			public String deserialize(byte[] bytes) throws SerializationException {
 				return StringRedisSerializer.UTF_8.deserialize(bytes);
 			}}
