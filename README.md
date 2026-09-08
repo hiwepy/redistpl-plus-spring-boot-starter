@@ -75,7 +75,7 @@ Auto-configuration registration:
 <dependency>
     <groupId>io.github.easy4j</groupId>
     <artifactId>redistpl-plus-spring-boot-starter</artifactId>
-    <version>2.7.x.20260527-SNAPSHOT</version>
+    <version>2.7.x.20260630-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -84,11 +84,7 @@ This starter depends on the following components (managed by ddd4j BOM):
 ```xml
 <dependency>
     <groupId>io.github.easy4j</groupId>
-    <artifactId>redistpl-plus-sdk</artifactId>
-</dependency>
-<dependency>
-    <groupId>io.github.easy4j</groupId>
-    <artifactId>redistpl-plus-sdk</artifactId>
+    <artifactId>spring-extension</artifactId>
 </dependency>
 ```
 

@@ -67,18 +67,18 @@
         <java.version>1.8</java.version>
         <maven.version>3.0</maven.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <maven-jacoco-plugin.version>0.8.12</maven-jacoco-plugin.version>
         <maven-release-plugin.version>3.2.0</maven-release-plugin.version>
         <maven-nexus-staging-plugin.version>1.7.0</maven-nexus-staging-plugin.version>
         <!-- Dependency versions -->
         <geodesy.version>1.1.3</geodesy.version>
         <guava.version>31.0.1-jre</guava.version>
-        <redistpl-plus-sdk.version>1.0.x.20260630-SNAPSHOT</redistpl-plus-sdk.version>
-        <spring-biz.version>1.1.4.RELEASE</spring-biz.version>
+        <spring-extension.version>1.0.x.20260630-SNAPSHOT</spring-extension.version>
         <micrometer.version>1.10.4</micrometer.version>
         <netty-tcnative.version>2.0.65.Final</netty-tcnative.version>
         <commons-io.version>2.22.0</commons-io.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
-        <slf4j.version>2.0.18</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <build>
@@ -513,17 +513,11 @@
                 <artifactId>netty-tcnative-boringssl-static</artifactId>
                 <version>${netty-tcnative.version}</version>
             </dependency>
-            <!-- Source: https://github.com/easy-4-java/redistpl-plus-sdk — easy4j redistpl-plus-sdk -->
+            <!-- Source: https://github.com/easy-4-java/spring-extension -->
             <dependency>
                 <groupId>io.github.easy4j</groupId>
-                <artifactId>redistpl-plus-sdk</artifactId>
-                <version>${redistpl-plus-sdk.version}</version>
-            </dependency>
-            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
-            <dependency>
-                <groupId>com.github.hiwepy</groupId>
-                <artifactId>spring-enhance</artifactId>
-                <version>${spring-biz.version}</version>
+                <artifactId>spring-extension</artifactId>
+                <version>${spring-extension.version}</version>
             </dependency>
                 <dependency>
             <groupId>javax.servlet</groupId>
@@ -672,16 +666,10 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-        <!-- Source: https://github.com/easy-4-java/redistpl-plus-sdk — easy4j redistpl-plus-sdk -->
+        <!-- Source: https://github.com/easy-4-java/spring-extension -->
         <dependency>
             <groupId>io.github.easy4j</groupId>
-            <artifactId>redistpl-plus-sdk</artifactId>
-        </dependency>
-        <!-- For Spring Biz -->
-        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>spring-enhance</artifactId>
+            <artifactId>spring-extension</artifactId>
         </dependency>
         <!-- For Spring Boot Actuator -->
         <dependency>

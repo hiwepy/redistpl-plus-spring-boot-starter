@@ -2,15 +2,35 @@ package redistpl.plus.spring.boot;
 
 import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GlobalCoordinates;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.redis.core.GeoTemplate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CaculateDistanceTest {
 
-	private static GeoTemplate geoTemplate = new GeoTemplate();
+	private final GeoTemplate geoTemplate = new GeoTemplate();
+
+	@Test
+	void calculatesDistanceWithoutRedisConnection() {
+		double distance = geoTemplate.getDistance(39.95676, 116.401394, 36.63014, 114.499574);
+
+		assertEquals(405404.17D, distance, 0.01D);
+	}
+
+	@Test
+	void calculatesEllipsoidalDistanceWithoutRedisConnection() {
+		GlobalCoordinates source = new GlobalCoordinates(39.95676, 116.401394);
+		GlobalCoordinates target = new GlobalCoordinates(36.63014, 114.499574);
+
+		assertEquals(405404.17D, geoTemplate.getDistance(source, target, Ellipsoid.Sphere), 0.01D);
+		assertEquals(404982.96D, geoTemplate.getDistance(source, target, Ellipsoid.WGS84), 0.01D);
+	}
 
     public static void main(String[] args){
 
-    	double meterx = geoTemplate.getDistance(116.401394, 39.95676, 114.499574 , 36.63014);
+		GeoTemplate geoTemplate = new GeoTemplate();
+		double meterx = geoTemplate.getDistance(39.95676, 116.401394, 36.63014, 114.499574);
     	System.out.println("原始坐标系计算结果："+meterx + "米");
 
         GlobalCoordinates source = new GlobalCoordinates(39.95676, 116.401394);

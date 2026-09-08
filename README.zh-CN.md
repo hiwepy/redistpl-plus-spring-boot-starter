@@ -75,7 +75,7 @@ Starter 自动装配以下 Bean：
 <dependency>
     <groupId>io.github.easy4j</groupId>
     <artifactId>redistpl-plus-spring-boot-starter</artifactId>
-    <version>2.7.x.20260527-SNAPSHOT</version>
+    <version>2.7.x.20260630-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -84,11 +84,7 @@ Starter 自动装配以下 Bean：
 ```xml
 <dependency>
     <groupId>io.github.easy4j</groupId>
-    <artifactId>redistpl-plus-sdk</artifactId>
-</dependency>
-<dependency>
-    <groupId>io.github.easy4j</groupId>
-    <artifactId>redistpl-plus-sdk</artifactId>
+    <artifactId>spring-extension</artifactId>
 </dependency>
 ```
 
