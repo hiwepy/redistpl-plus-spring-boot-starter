@@ -103,7 +103,7 @@ public class RedisCachingConfiguration extends CachingConfigurerSupport {
 		// 2、初始化 ObjectMapper
 		ObjectMapper objectMapper = ObjectMappers.defaultObjectMapper(customizers);
 		// 3、初始化 RedisOperationTemplate
-		return new RedisOperationTemplate(redisTemplate);
+		return new RedisOperationTemplate(redisTemplate, objectMapper);
 	}
 
 	@Bean
