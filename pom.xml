@@ -63,7 +63,7 @@
         <guava.version>33.3.1-jre</guava.version>
         <netty-tcnative.version>2.0.69.Final</netty-tcnative.version>
         <slf4j.version>2.0.18</slf4j.version>
-        <spring-biz.version>3.0.x.20260630-SNAPSHOT</spring-biz.version>
+        <spring-extension.version>3.0.x.20260630-SNAPSHOT</spring-extension.version>
         <!-- Maven Plugin Dependencies -->
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-central-publishing-plugin.version>0.11.0</maven-central-publishing-plugin.version>
@@ -111,11 +111,11 @@
                 <artifactId>netty-tcnative-boringssl-static</artifactId>
                 <version>${netty-tcnative.version}</version>
             </dependency>
-            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
+            <!-- Source: https://github.com/easy-4-java/spring-extension -->
             <dependency>
                 <groupId>io.github.easy4j</groupId>
-                <artifactId>spring-enhance</artifactId>
-                <version>${spring-biz.version}</version>
+                <artifactId>spring-extension</artifactId>
+                <version>${spring-extension.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -265,10 +265,10 @@
             <artifactId>spring-boot-data-redis</artifactId>
         </dependency>
 
-        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
+        <!-- Source: https://github.com/easy-4-java/spring-extension -->
         <dependency>
             <groupId>io.github.easy4j</groupId>
-            <artifactId>spring-enhance</artifactId>
+            <artifactId>spring-extension</artifactId>
         </dependency>
 
         <!-- For Spring Boot Actuator -->
