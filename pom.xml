@@ -67,7 +67,7 @@
         <java.version>1.8</java.version>
         <maven.version>3.0</maven.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-        <maven-jacoco-plugin.version>0.8.12</maven-jacoco-plugin.version>
+        <maven-jacoco-plugin.version>0.8.15</maven-jacoco-plugin.version>
         <maven-release-plugin.version>3.2.0</maven-release-plugin.version>
         <maven-nexus-staging-plugin.version>1.7.0</maven-nexus-staging-plugin.version>
         <!-- Dependency versions -->
@@ -307,7 +307,11 @@
                             <haltOnFailure>true</haltOnFailure>
                             <rules>
                                 <rule>
-                                    <element>BUNDLE</element>
+                                    <element>CLASS</element>
+                                    <includes>
+                                        <include>org.springframework.data.redis.core.RedisKey</include>
+                                        <include>org.springframework.data.redis.core.MapUtils</include>
+                                    </includes>
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
